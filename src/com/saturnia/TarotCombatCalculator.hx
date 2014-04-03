@@ -1,6 +1,6 @@
 package com.saturnia;
 
-class CombatCalculator
+class TarotCombatCalculator
 {
   public static function play(action:TarotCard, reaction:TarotCard, result:TarotCard):CombatResult
   {

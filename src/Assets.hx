@@ -30,6 +30,9 @@ class Assets
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_spread", "graphics/ui/tarot_spread.png");
     assetDictionary.set("ui_arrow", "graphics/ui/tarot_pointer.png");
+
+    assetDictionary.set("ui_pile", "graphics/ui/card_pile.png");
+    assetDictionary.set("ui_card", "graphics/ui/test_card.png");
   }
 
   public static function get(asset:String):String

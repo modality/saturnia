@@ -14,6 +14,8 @@ class PlayerResources extends Base
   public var maxFuel:Int;
   public var maxShields:Int;
 
+  public var deck:Deck;
+
   public var items:Array<Item>;
 
   public var fuel_icon:Base;
@@ -36,6 +38,8 @@ class PlayerResources extends Base
 
     maxFuel = fuel;
     maxShields = shields;
+
+    deck = new Deck();
 
     items = [];
 
@@ -92,39 +96,6 @@ class PlayerResources extends Base
       item.dispatchEvent(new Event(Item.PURCHASED));
       applyItem(item);
       updateGraphic();
-    }
-  }
-
-  public function applyResult(result:CombatResult)
-  {
-    switch(result.reactionElement) {
-      case "air":
-        science -= result.penaltyAmount;
-        if(science < 0) science = 0;
-      case "water":
-        shields -= result.penaltyAmount;
-        if(shields < 0) shields = 0;
-      case "fire":
-        fuel -= result.penaltyAmount;
-        if(fuel < 0) fuel = 0;
-      case "earth":
-        cargo -= result.penaltyAmount;
-        if(cargo < 0) cargo = 0;
-      default:
-    }
-
-    switch(result.resultElement) {
-      case "air":
-        science += result.rewardAmount;
-      case "water":
-        shields += result.rewardAmount;
-        if(shields > maxShields) shields = maxShields;
-      case "fire":
-        fuel += result.rewardAmount;
-        if(fuel > maxFuel) fuel = maxFuel;
-      case "earth":
-        cargo += result.rewardAmount;
-      default:
     }
   }
 

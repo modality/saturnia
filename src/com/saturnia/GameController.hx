@@ -8,7 +8,6 @@ import com.modality.TextBase;
 class GameController extends Scene
 {
   public var player:PlayerResources;
-  public var tarot:TarotDeck;
   public var grid:Grid<Space>;
   public var sectorType:SectorType;
   public var name:String;
@@ -27,7 +26,6 @@ class GameController extends Scene
   {
     super();
     player = new PlayerResources();
-    tarot = new TarotDeck();
     sectorType = SectorType.Peaceful;
     anyExplored = false;
     inCombat = false;
@@ -87,7 +85,7 @@ class GameController extends Scene
   public function enterCombat(space:Space):Void
   {
     inCombat = true;
-    combatPanel = new CombatPanel(space, player, tarot);
+    combatPanel = new CombatPanel(space, player);
     add(combatPanel);
   }
 
