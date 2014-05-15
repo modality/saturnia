@@ -7,4 +7,3 @@ enum SpaceType {
   Pirate;
   Merchant;
 }
-

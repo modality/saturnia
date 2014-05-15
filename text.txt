@@ -1,0 +1,102 @@
+Card {
+  name
+  strategy {
+    trigger
+    effects: []
+  }
+  action {
+    effects
+  }
+  reaction {
+    trigger
+    effects: []
+  }
+}
+
+Triggers {
+  play card(strategy, action, reaction, discard)
+  effect (target, resource, mod)
+  reaction triggered
+}
+
+Effect {
+  target (self, opponent)
+  resource (fuel, shields, cargo, science, hand, deck)
+  mod: gain/loss
+  value (number: +1, -5)
+}
+
+
+// CARDS
+
+{
+  name: "Pepper Ray",
+  action: {
+    effects: [
+      "effect(opponent, shields, loss, 1)"
+    ]
+  }
+},
+{
+  name: "Bonnet Blaster",
+  action: {
+    effects: [
+      "effect(opponent, shields, loss, 2)"
+    ]
+  }
+},
+{
+  name: "Shield Resonance",
+  strategy: {
+    trigger: "play(self, discard)",
+    effects: [
+      "effect(self, shields, gain, 1)"
+    ]
+  },
+  reaction: {
+    trigger: "effect(self, shields, lose, @X)",
+    effects: [
+      "effect(self, shields, gain, @X)"
+    ]
+  },
+}
+
+/*****************************************************/
+
+Part {
+  cards: [],
+  buyable: true/false
+  cost
+  level:
+}
+
+// PARTS
+
+{
+  name: "Pepper Cannon",
+  cards: [
+    "Pepper Ray",
+    "Pepper Ray",
+    "Pepper Ray",
+  ],
+  buyable: false,
+  level: 1
+},
+{
+  name: "Bonnet Cannon",
+  cards: [
+    "Bonnet Blaster",
+    "Bonnet Blaster"
+  ]
+  buyable: true,
+  cost: "25 cargo",
+  level: 2
+},
+{
+  name "Bell Shield",
+  cards: [
+    "Shield Resonance"
+  ]
+  buyable: false,
+  level: 1
+}

@@ -7,81 +7,159 @@ import com.modality.TextBase;
 
 class CombatPanel extends Base
 {
-  public var space:Space;
   public var player:PlayerResources;
   public var deck:Deck;
 
+  public var draw_pile:CardPile;
   public var strategy_pile:CardPile;
-  public var action_pile:CardPile;
   public var reaction_pile:CardPile;
+  public var discard_pile:CardPile;
 
+  public var mouseOffsetX:Int;
+  public var mouseOffsetY:Int;
   public var heldCard:Card;
+  public var _didCardAction:Bool;
 
   public var strategyCard:Card;
+  public var strategyTrigger:CombatTrigger;
+
   public var reactionCard:Card;
+  public var reactionTrigger:CombatTrigger;
+
   public var actionCards:Array<Card>;
 
-  public function new(_space:Space, _player:PlayerResources)
+  public function new(_player:PlayerResources)
   {
-    super(0, 0, Assets.getImage("ui_modal"));
+    super(0, 0);
 
-    space = _space;
     player = _player;
     deck = player.deck;
+    _didCardAction = false;
 
     layer = Constants.OVERLAY_LAYER;
+    /*
     image.scaleX = 320;
     image.scaleY = 480;
+    */
 
     actionCards = [];
 
-    strategy_pile = new CardPile(10, 200);
+    draw_pile = new CardPile(0, 0);
+    addChild(draw_pile);
+    addChild(new TextBase(0, -20, "Draw Deck"));
+
+    strategy_pile = new CardPile(400, 0, playStrategy);
     addChild(strategy_pile);
+    addChild(new TextBase(400, -20, "Strategy"));
 
-    action_pile = new CardPile(115, 200);
-    addChild(action_pile);
-
-    reaction_pile = new CardPile(220, 200);
+    reaction_pile = new CardPile(500, 0, playReaction);
     addChild(reaction_pile);
+    addChild(new TextBase(500, -20, "Reaction"));
+
+    discard_pile = new CardPile(600, 0, discardCard);
+    addChild(discard_pile);
+    addChild(new TextBase(600, -20, "Discard"));
     deal();
   }
 
   public override function update()
   {
+    var mouse_x = Input.mouseX;
+    var mouse_y = Input.mouseY;
+    _didCardAction = false;
+
+    if(Input.mousePressed && heldCard == null) {
+      var card:Card = cast(scene.collidePoint("card", mouse_x, mouse_y), Card);
+      if(card != null && card.playable) {
+        heldCard = card;
+        heldCard.pickUp();
+        mouseOffsetX = mouse_x;
+        mouseOffsetY = mouse_y;
+      }
+    } else if(Input.mouseDown && heldCard != null) {
+      var card_pile:CardPile = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPile);
+
+      heldCard.graphic.x = mouse_x - mouseOffsetX;
+      heldCard.graphic.y = mouse_y - mouseOffsetY;
+
+      draw_pile.blur();
+      strategy_pile.blur();
+      reaction_pile.blur();
+      discard_pile.blur();
+
+      if(card_pile != null) {
+        card_pile.focus();
+      }
+    } else if(Input.mouseReleased && heldCard != null) {
+      var card_pile:CardPile = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPile);
+
+      if(card_pile != null) {
+        if(card_pile.playCard(heldCard)) {
+          heldCard.x = card_pile.x + 5;
+          heldCard.y = card_pile.y + 5;
+        }
+        card_pile.blur();
+      }
+
+      var space:Space = cast(scene.collidePoint("space", mouse_x, mouse_y), Space);
+      if(space != null) {
+        playAction(heldCard, space);
+      }
+
+      heldCard.putDown();
+      heldCard.graphic.x = 0;
+      heldCard.graphic.y = 0;
+      heldCard = null;
+      _didCardAction = true;
+    }
+  }
+
+  public function doingCardAction():Bool
+  {
+    return _didCardAction || (heldCard != null);
   }
 
   public function deal()
   {
-    trace("dealing");
     deck.draw(3);
 
     var count = 0;
     for(card in deck.hand) {
-      card.x = count * 90 + 30;
-      card.y = 320;
-      card.layer = Constants.OVERLAY_LAYER;
+      card.x = (count * 90) + 120;
+      card.y = 0;
+      count++;
       addChild(card);
     }
   }
   
-  public function endTurn()
+  public function playStrategy(card:Card):Bool
   {
+    if(!card.has_strategy) return false;
+
+    strategyCard = card;
+    strategyTrigger = new CombatTrigger(card.strategy_trigger, card.strategy_effect);
+
+    return true;
   }
 
-  public function playStrategy(card:Card)
+  public function playAction(card:Card, space:Space):Bool
   {
+    if(!card.has_action) return false;
+    return false;
   }
 
-  public function playAction(card:Card)
+  public function playReaction(card:Card):Bool
   {
+    if(!card.has_reaction) return false;
+
+    reactionCard = card;
+    reactionTrigger = new CombatTrigger(card.reaction_trigger, card.reaction_effect);
+
+    return true;
   }
 
-  public function playReaction(card:Card)
+  public function discardCard(card:Card):Bool
   {
+    return true;
   }
-
-  public function discard(card:Card)
-  {
-  }
-
 }

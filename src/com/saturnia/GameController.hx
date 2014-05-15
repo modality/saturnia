@@ -1,11 +1,12 @@
 package com.saturnia;
 
 import com.haxepunk.utils.Input;
-import com.haxepunk.Scene;
 import com.modality.Grid;
+import com.modality.ElasticGrid;
 import com.modality.TextBase;
+import com.modality.Controller;
 
-class GameController extends Scene
+class GameController extends Controller
 {
   public var player:PlayerResources;
   public var grid:Grid<Space>;
@@ -20,7 +21,7 @@ class GameController extends Scene
   public var combatPanel:CombatPanel;
   public var merchantPanel:MerchantPanel;
 
-  public var nextBtn:TextBase;
+  public var nextExplore:NextExploreView;
 
   public function new()
   {
@@ -42,15 +43,21 @@ class GameController extends Scene
 
     startLevel();
 
-    nextBtn = new TextBase(60, 400, "Next Level >>");
-    nextBtn.size = Constants.FONT_SIZE_MD;
-    nextBtn.type = "next_btn";
+    nextExplore = new NextExploreView();
+    nextExplore.x = 700;
+    nextExplore.y = 500;
+    add(nextExplore);
+
+    combatPanel = new CombatPanel(player);
+    combatPanel.x = 0;
+    combatPanel.y = 500;
+    add(combatPanel);
   }
 
   public override function update():Void
   {
     super.update();
-    if(regainFocus) {
+    if(regainFocus || combatPanel.doingCardAction()) {
       regainFocus = false;
       return;
     }
@@ -62,13 +69,12 @@ class GameController extends Scene
         var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
         if(space != null) {
           if(canExplore(space)) {
-            space.explore();
+            space.explore(nextExplore.spaceType);
+            nextExplore.getNextSpace();
             player.useFuel(1);
             if(space.spaceType == SpaceType.Pirate) {
               checkLocked();
             }
-          } else if(space.explored && space.spaceType == SpaceType.Pirate) {
-            enterCombat(space);
           } else if(space.explored && space.spaceType == SpaceType.Merchant) {
             enterMerchant(space);
           }
@@ -79,34 +85,6 @@ class GameController extends Scene
           nextLevel();
         }
       }
-    }
-  }
-
-  public function enterCombat(space:Space):Void
-  {
-    inCombat = true;
-    combatPanel = new CombatPanel(space, player);
-    add(combatPanel);
-  }
-
-  public function exitCombat(space:Space):Void
-  {
-    remove(combatPanel);
-    combatPanel = null;
-    inCombat = false;
-    space.removeEncounter();
-    checkLocked();
-    regainFocus = true;
-
-    var enemiesDestroyed = true;
-    grid.each(function(space:Space, i:Int, j:Int) {
-      if(space.hasObject("pirate") || (!space.explored && space.spaceType == SpaceType.Pirate)) {
-        enemiesDestroyed = false;
-      }
-    });
-
-    if(enemiesDestroyed) {
-      add(nextBtn);
     }
   }
 
@@ -137,9 +115,12 @@ class GameController extends Scene
     name = Generator.generateSectorName();
     sectorName.text = name;
 
-    var spaces:Array<Space> = Generator.generateSectorSpaces(sectorType);
-    grid = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H, function(i:Int, j:Int):Space {
-      var space:Space = spaces.shift();
+    var egrid = new ElasticGrid<Space>(0, 0);
+
+    grid = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
+    grid.init(function(i:Int, j:Int):Space {
+      var space:Space = new Space();
+      space.spaceType = SpaceType.Voidness;
       space.grid = grid;
       space.x = Constants.GRID_X+(i*Constants.BLOCK_W);
       space.y = Constants.GRID_Y+(j*Constants.BLOCK_H);
@@ -147,14 +128,10 @@ class GameController extends Scene
       add(space);
       return space;
     });
-    grid.each(function(space:Space, i:Int, j:Int) {
-      space.grid = grid;
-    });
   }
 
   public function nextLevel():Void
   {
-    remove(nextBtn);
     grid.each(function(space:Space, i:Int, j:Int) {
       remove(space);
     });

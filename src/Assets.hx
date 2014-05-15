@@ -26,6 +26,7 @@ class Assets
     assetDictionary.set("space_star", "graphics/spaces/star.png");
     assetDictionary.set("space_unexplored", "graphics/spaces/unexplored.png");
     assetDictionary.set("space_locked", "graphics/spaces/locked.png");
+    assetDictionary.set("space_void", "graphics/spaces/void.png");
 
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_spread", "graphics/ui/tarot_spread.png");
@@ -33,6 +34,8 @@ class Assets
 
     assetDictionary.set("ui_pile", "graphics/ui/card_pile.png");
     assetDictionary.set("ui_card", "graphics/ui/test_card.png");
+
+    assetDictionary.set("equipment", "data/equipment.yml");
   }
 
   public static function get(asset:String):String

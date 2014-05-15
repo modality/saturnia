@@ -10,18 +10,22 @@ class Grid<T:(Block)>
 
   public var blocks:Array<Array<T>>;
 
-  public function new(_x:Int, _y:Int, _width:Int, _height:Int, _createFn:Int->Int->T)
+  public function new(_x:Int, _y:Int, _width:Int, _height:Int)
   {
     x = _x;
     y = _y;
     width = _width;
     height = _height;
     blocks = [];
+  }
+
+  public function init(_createFn:Int->Int->T)
+  {
     createFn = _createFn;
     for(j in 0...height) {
       var rowArray:Array<T> = []; 
       for(i in 0...width) {
-        var block:T = createFn(i,j);
+        var block:T = _createFn(i,j);
         block.setIndex(i, j);
         rowArray.push(block); 
       }
@@ -79,7 +83,10 @@ class Grid<T:(Block)>
 
   public function map(fn:T->Int->Int->T):Grid<T>
   {
-    var mapped:Grid<T> = new Grid(x, y, width, height, createFn);
+    var mapped:Grid<T> = new Grid(x, y, width, height);
+    if(createFn != null) {
+      mapped.init(createFn);
+    }
     for(j in 0...height) {
       for(i in 0...width) {
         mapped.blocks[j][i] = fn(get(i,j), i, j);

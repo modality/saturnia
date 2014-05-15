@@ -9,8 +9,8 @@ class Constants
   public static var SCREEN_H:Int = 480;
   public static var GRID_X:Int = 0;
   public static var GRID_Y:Int = 64;
-  public static var GRID_W:Int = 5;
-  public static var GRID_H:Int = 5;
+  public static var GRID_W:Int = 8;
+  public static var GRID_H:Int = 6;
   public static var BLOCK_W:Int = 64;
   public static var BLOCK_H:Int = 64;
 

@@ -26,11 +26,19 @@ class Space extends Block
     encounter = null;
   }
 
-  public function explore():Void
+  public function explore(_st:SpaceType):Void
   {
     if(!explored) {
       explored = true;
       layer = Constants.EXPLORED_LAYER;
+
+      spaceType = _st;
+      if(spaceType == SpaceType.Pirate) {
+        encounter = new PirateEncounter(this);
+      } else if(spaceType == SpaceType.Merchant) {
+        encounter = new MerchantEncounter(this);
+      }
+      
       updateGraphic();
       if(encounter != null) {
         encounter.activate();

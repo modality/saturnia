@@ -2,9 +2,9 @@ package com.saturnia;
 
 class TarotCombatCalculator
 {
-  public static function play(action:TarotCard, reaction:TarotCard, result:TarotCard):CombatResult
+  public static function play(action:TarotCard, reaction:TarotCard, result:TarotCard):TarotCombatResult
   {
-    var combat_result = new CombatResult();
+    var combat_result = new TarotCombatResult();
 
     var deltas:Array<Int> = [];
     deltas.push(Math.round(Math.abs(action.number - reaction.number)));
