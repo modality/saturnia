@@ -111,6 +111,7 @@ class CombatPanel extends Base
       heldCard.graphic.y = 0;
       heldCard = null;
       _didCardAction = true;
+      player.updateGraphic();
     }
   }
 
@@ -131,10 +132,23 @@ class CombatPanel extends Base
       addChild(card);
     }
   }
+
+  public function checkTriggerAction(ct:CombatTrigger, action:String, space:Space = null):Bool {
+    var interrupt = false;
+    if(ct != null && ct.actionWillTrigger(action)) {
+      ct.apply(player, space);
+      if(ct.trigger_interrupt) interrupt = true;
+      if(ct.trigger_expire) ct = null;
+    }
+    return interrupt;
+  }
   
   public function playStrategy(card:Card):Bool
   {
     if(!card.has_strategy) return false;
+
+    if(checkTriggerAction(reactionTrigger, "strategy")) return true;
+    if(checkTriggerAction(strategyTrigger, "strategy")) return true;
 
     strategyCard = card;
     strategyTrigger = new CombatTrigger(card.strategy_trigger, card.strategy_effect);
@@ -145,12 +159,19 @@ class CombatPanel extends Base
   public function playAction(card:Card, space:Space):Bool
   {
     if(!card.has_action) return false;
+
+    if(checkTriggerAction(reactionTrigger, "action", space)) return true;
+    if(checkTriggerAction(strategyTrigger, "action", space)) return true;
+
     return false;
   }
 
   public function playReaction(card:Card):Bool
   {
     if(!card.has_reaction) return false;
+
+    if(checkTriggerAction(reactionTrigger, "reaction")) return true;
+    if(checkTriggerAction(strategyTrigger, "reaction")) return true;
 
     reactionCard = card;
     reactionTrigger = new CombatTrigger(card.reaction_trigger, card.reaction_effect);
@@ -160,6 +181,9 @@ class CombatPanel extends Base
 
   public function discardCard(card:Card):Bool
   {
+    if(checkTriggerAction(reactionTrigger, "discard")) return true;
+    if(checkTriggerAction(strategyTrigger, "discard")) return true;
+
     return true;
   }
 }

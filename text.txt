@@ -54,7 +54,7 @@ Effect {
     ]
   },
   reaction: {
-    trigger: "effect(self, shields, lose, @X)",
+    trigger: "effect(self, shields, loss, @X)",
     effects: [
       "effect(self, shields, gain, @X)"
     ]
