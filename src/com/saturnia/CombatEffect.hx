@@ -20,7 +20,21 @@ class CombatEffect
     effect_value = tokens[4];
   }
 
-  public function apply(_player:PlayerResources, _space:Space = null):Void
+  public function apply(self:Inventory, opponent:Inventory = null):Bool
+  {
+    if(effect_target == "self") {
+      applyTo(self);
+      return true;
+    } else if(opponent != null) {
+      applyTo(opponent);
+      return true;
+    }
+
+    trace("Could not apply effect! "+effect);
+    return false;
+  }
+
+  public function applyTo(target:Inventory):Void
   {
     var modval = Std.parseInt(effect_value);
 
@@ -33,21 +47,12 @@ class CombatEffect
       modval = modval * -1;
     }
 
-    if(effect_target == "self") {
-      switch(effect_resource) {
-        case "fuel":    _player.fuel += modval;
-        case "shields": _player.shields += modval;
-        case "cargo":   _player.cargo += modval;
-        case "science": _player.science += modval;
-        default: trace("Can't parse effect resource: "+effect_resource);
-      }
-    } else {
-      var enc = cast(_space.encounter, PirateEncounter);
-      if(effect_resource == "shields") {
-        enc.life += modval;
-      } else {
-        trace("Can't do effect resource on opponent: "+effect_resource);
-      }
+    switch(effect_resource) {
+      case "fuel":    target.fuel += modval;
+      case "shields": target.shields += modval;
+      case "cargo":   target.cargo += modval;
+      case "science": target.science += modval;
+      default: trace("Can't parse effect resource: "+effect_resource);
     }
   }
 
@@ -56,14 +61,14 @@ class CombatEffect
     var tokens = [];
     var typeRx = ~/^(\w+)\(/;
     var paramRx = ~/\((.+)\)/;
-    var splitRx = ~/, ?/;
+    var splitRx = ~/, ?/g;
 
     typeRx.match(rule);
     tokens.push(typeRx.matched(1));
 
     paramRx.match(rule);
     tokens = tokens.concat(splitRx.split(paramRx.matched(1)));
-    
+
     return tokens;
   }
 }

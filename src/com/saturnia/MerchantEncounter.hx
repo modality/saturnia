@@ -5,8 +5,6 @@ import com.modality.AugRandom;
 
 class MerchantEncounter extends Encounter
 {
-  public var goods:Array<Item>;
-
   public function new(_space:Space)
   {
     super(_space);
@@ -17,8 +15,8 @@ class MerchantEncounter extends Encounter
   public override function activate()
   {
     space.object = this;
-    goods = AugRandom.sample(MerchantGoods.currentGoods, 2);
-    for(item in goods) {
+    inventory.items = AugRandom.sample(MerchantGoods.currentGoods, 2);
+    for(item in inventory.items) {
       item.addEventListener(Item.PURCHASED, boughtItem);
     }
   }
@@ -26,6 +24,6 @@ class MerchantEncounter extends Encounter
   public function boughtItem(event:Dynamic):Void
   {
     var item:Item = cast(cast(event, Event).currentTarget, Item);
-    goods.remove(item);
+    inventory.items.remove(item);
   }
 }

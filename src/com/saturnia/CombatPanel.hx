@@ -33,14 +33,10 @@ class CombatPanel extends Base
     super(0, 0);
 
     player = _player;
-    deck = player.deck;
+    deck = player.inv.deck;
     _didCardAction = false;
 
     layer = Constants.OVERLAY_LAYER;
-    /*
-    image.scaleX = 320;
-    image.scaleY = 480;
-    */
 
     actionCards = [];
 
@@ -79,8 +75,7 @@ class CombatPanel extends Base
     } else if(Input.mouseDown && heldCard != null) {
       var card_pile:CardPile = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPile);
 
-      heldCard.graphic.x = mouse_x - mouseOffsetX;
-      heldCard.graphic.y = mouse_y - mouseOffsetY;
+      heldCard.moveGraphic(mouse_x-mouseOffsetX, mouse_y-mouseOffsetY);
 
       draw_pile.blur();
       strategy_pile.blur();
@@ -95,20 +90,22 @@ class CombatPanel extends Base
 
       if(card_pile != null) {
         if(card_pile.playCard(heldCard)) {
-          heldCard.x = card_pile.x + 5;
-          heldCard.y = card_pile.y + 5;
+          heldCard.move(card_pile.x + 5, card_pile.y + 5);
+          heldCard.playable = false;
         }
         card_pile.blur();
       }
 
       var space:Space = cast(scene.collidePoint("space", mouse_x, mouse_y), Space);
-      if(space != null) {
-        playAction(heldCard, space);
+      if(space != null && space.encounter != null) {
+        if(playAction(heldCard, space.encounter.inventory)) {
+          heldCard.move(discard_pile.x + 5, discard_pile.y + 5);
+          heldCard.playable = false;
+        }
       }
 
       heldCard.putDown();
-      heldCard.graphic.x = 0;
-      heldCard.graphic.y = 0;
+      heldCard.moveGraphic(0, 0);
       heldCard = null;
       _didCardAction = true;
       player.updateGraphic();
@@ -133,12 +130,15 @@ class CombatPanel extends Base
     }
   }
 
-  public function checkTriggerAction(ct:CombatTrigger, action:String, space:Space = null):Bool {
+  public function checkTriggerAction(ct:CombatTrigger, action:String, opponent:Inventory = null):Bool {
     var interrupt = false;
     if(ct != null && ct.actionWillTrigger(action)) {
-      ct.apply(player, space);
-      if(ct.trigger_interrupt) interrupt = true;
-      if(ct.trigger_expire) ct = null;
+      if(ct.apply(player.inv, opponent)) {
+        if(ct.trigger_interrupt) interrupt = true;
+        if(ct.trigger_expire) ct = null;
+      } else {
+        trace("Could not apply trigger! "+ct.trigger);
+      }
     }
     return interrupt;
   }
@@ -156,14 +156,15 @@ class CombatPanel extends Base
     return true;
   }
 
-  public function playAction(card:Card, space:Space):Bool
+  public function playAction(card:Card, opponent:Inventory):Bool
   {
     if(!card.has_action) return false;
 
-    if(checkTriggerAction(reactionTrigger, "action", space)) return true;
-    if(checkTriggerAction(strategyTrigger, "action", space)) return true;
+    if(checkTriggerAction(reactionTrigger, "action", opponent)) return true;
+    if(checkTriggerAction(strategyTrigger, "action", opponent)) return true;
 
-    return false;
+    var ce = new CombatEffect(card.action_effect);
+    return ce.apply(player.inv, opponent);
   }
 
   public function playReaction(card:Card):Bool

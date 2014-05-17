@@ -26,7 +26,7 @@ class MerchantPanel extends Base
     this.layer = Constants.OVERLAY_LAYER;
 
     var pos = 0;
-    for(good in cast(space.encounter, MerchantEncounter).goods) {
+    for(good in cast(space.encounter, MerchantEncounter).inventory.items) {
       var mmi = new MerchantMenuItem(10, (50 * pos) + 50, good);
       mmi.addEventListener(MerchantMenuItem.CLICKED, clickedItem);
       mmi.addEventListener(MerchantMenuItem.REMOVED, removedItem);
@@ -62,7 +62,7 @@ class MerchantPanel extends Base
     var menuItem = cast(cast(event, Event).currentTarget, MerchantMenuItem);
     var item:Item = menuItem.item;
 
-    player.buyItem(item);
+    //player.buyItem(item);
   }
 
   public function removedItem(event:Dynamic):Void

@@ -38,7 +38,24 @@ class Card extends Base
     setHitboxTo(this.graphic);
     nameText.text = this.card_name;
   }
-  
+
+  public function moveGraphic(_x:Float, _y:Float)
+  {
+    graphic.x = _x;
+    graphic.y = _y;
+    nameText.graphic.x = _x;
+    nameText.graphic.y = _y;
+  }
+
+  public function move(_x:Float, _y:Float)
+  {
+    x = _x;
+    y = _y;
+    nameText.x = _x;
+    nameText.y = _y;
+    moveGraphic(0, 0);
+  }
+
   public function pickUp()
   {
     image.scaleX = 1.1;

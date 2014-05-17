@@ -27,7 +27,7 @@ class Deck
     c = new Card();
     c.card_name = "Pepper\nRay";
     c.has_action = true;
-    c.action_effect = "effect(opponent, shileds, loss, 1)";
+    c.action_effect = "effect(opponent, shields, loss, 1)";
     c.updateGraphic();
 
     cards.push(c);
