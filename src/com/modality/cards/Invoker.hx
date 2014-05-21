@@ -1,16 +1,14 @@
 package com.modality.cards;
 
-import com.modality.Message;
-
-class Invoker implements IMessageContext {
-  public var gameContext:IMessageContext;
+class Invoker implements Receiver {
+  public var game:Receiver;
   public var rules:Array<Message>; // specify what types of events are valid
   public var triggers:Array<Message>; // specify what happens when events are fired
   public var history:Array<Message>;
 
-  public function new(gc:IMessageContext)
+  public function new(_game:Receiver)
   {
-    gameContext = gc;
+    game = _game;
     rules = [];
     triggers = [];
     history = [];
@@ -50,7 +48,7 @@ class Invoker implements IMessageContext {
             return Message.read("(interrupt ("+message.toString()+"))");
           }
 
-          return gameContext.eval(message);
+          return game.eval(message);
         } else {
           return Message.read("(noRule ("+message.toString()+"))");
         }

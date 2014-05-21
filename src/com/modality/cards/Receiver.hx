@@ -1,5 +1,5 @@
-package com.modality;
+package com.modality.cards;
 
-interface IMessageContext {
+interface Receiver {
   public function eval(message:Message):Message;  
 }

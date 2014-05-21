@@ -1,4 +1,4 @@
-package com.modality;
+package com.modality.cards;
 
 class Message {
   public var tokens:Array<Dynamic>;
@@ -8,9 +8,9 @@ class Message {
     tokens = _tokens;
   }
 
-  public function eval(mc:IMessageContext):Message
+  public function eval(r:Receiver):Message
   {
-    return mc.eval(this);
+    return r.eval(this);
   }
 
   public function type():String
