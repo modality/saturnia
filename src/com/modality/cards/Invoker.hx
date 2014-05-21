@@ -2,60 +2,94 @@ package com.modality.cards;
 
 import com.modality.Message;
 
-class Invoker {
-  public var zones:Array<Zone>;
-  public var rules:Array<Rule>; // specify what types of events are valid
-  public var triggers:Array<Trigger>; // specify what happens when events are fired
-  public var history:Array<Result>;
+class Invoker implements IMessageContext {
+  public var gameContext:IMessageContext;
+  public var rules:Array<Message>; // specify what types of events are valid
+  public var triggers:Array<Message>; // specify what happens when events are fired
+  public var history:Array<Message>;
 
-  public function new()
+  public function new(gc:IMessageContext)
   {
-    zones = [];
+    gameContext = gc;
     rules = [];
     triggers = [];
     history = [];
   }
 
-  public function createZone(_name:String):Zone
+  public function execute(message:Message):Void
   {
-    if(getZone(_name) == null) {
-      var zone = new Zone(_name, this);
-      zones.push(zone);
-      return zone;
-    } else {
-      throw "Can't create zone with duplicate name!";
-    }
+    var msg = message.eval(this);
+    trace(msg);
+    history.push(msg);
   }
 
-  public function getZone(_name:String):Zone
+  public function eval(message:Message):Message
   {
-    for(i in 0...zones.length) {
-      if(zones[i].name == _name) {
-        return zones[i];
-      }
+    switch(message.type()) {
+      case "rule":
+        rules.push(message);
+        return Message.read("(addedRule ("+message.toString()+"))");
+      case "trigger":
+        triggers.push(message);
+        return Message.read("(addedTrigger ("+message.toString()+"))");
+      default:
+        if(matchRules(message)) {
+          var matched = matchTriggers(message);
+
+          var interrupt = false;
+
+          for(trigger in matched) {
+            interrupt = interrupt || trigger.tokens[3];
+            if(trigger.tokens[4]) {
+              triggers.remove(trigger);
+            }
+            execute(new Message(trigger.tokens[2]));
+          }
+
+          if(interrupt) {
+            return Message.read("(interrupt ("+message.toString()+"))");
+          }
+
+          return gameContext.eval(message);
+        } else {
+          return Message.read("(noRule ("+message.toString()+"))");
+        }
     }
-    return null;
+    return Message.read("(error)");
   }
 
-  public function valid(message:Message):Bool
+  public function matchRules(input:Message):Bool
   {
-    for(i in 0...rules.length) {
-      if(rules[i].relevant(message) && rules[i].match(message)) {
+    for(rule in rules) {
+      var ruleMsg = new Message(rule.tokens[1]);
+      if(matchMessage(ruleMsg, input)) {
         return true;
       }
     }
     return false;
   }
 
-  public function execute(message:Message):Result
+  public function matchTriggers(input:Message):Array<Message>
   {
-    var result = new Result();
+    var matched = [];
 
-    if(valid(message)) {
-
-    } else {
-      result.message = "Event not valid";
+    for(trigger in triggers) {
+      var trigMsg = new Message(trigger.tokens[1]);
+      if(matchMessage(trigMsg, input)) {
+        matched.push(trigger);
+      }
     }
-    return result;
+
+    return matched;
+  }
+
+  public function matchMessage(base:Message, input:Message):Bool
+  {
+    for(i in 0...base.tokens.length) {
+      if(base.tokens[i] != input.tokens[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 }
