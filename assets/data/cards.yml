@@ -47,7 +47,7 @@
       type: action
       rule: (effect self science gain 1)
     - name: Scientific Operation
-      text: Gaine 1 science for each planet placed.
+      text: Gain 1 science for each planet placed.
       type: strategy
       rule: (trigger (explore planet) (effect self science gain 1) false false)
     count: 1

@@ -17,7 +17,7 @@ class Invoker implements Receiver {
   public function execute(message:Message):Bool
   {
     var msg = message.eval(this);
-    trace(msg);
+    //trace(msg);
     history.push(msg);
     return msg.type() != "noRule";
   }

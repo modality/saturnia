@@ -32,6 +32,19 @@ class Card
     return false;
   }
 
+  public function getExplainText():String
+  {
+    var explain = "";
+
+    for(rule in rules) {
+      explain += rule.name + " ("+rule.type+")\n";
+      explain += rule.text + "\n\n";
+      explain += rule.rule + "\n\n";
+    }
+
+    return explain;
+  }
+
   public static function fromYamlObj(obj:Dynamic):Card
   {
     //trace("Building card: "+obj.id);

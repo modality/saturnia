@@ -101,7 +101,7 @@ class CombatPanel extends Base
       }
 
       var space:Space = cast(scene.collidePoint("space", mouse_x, mouse_y), Space);
-      if(space != null && space.encounter != null) {
+      if(space != null) {
         if(playAction(heldCard, space)) {
           heldCard.move(discard_pile.x + 5, discard_pile.y + 5);
           heldCard.playable = false;
@@ -113,6 +113,11 @@ class CombatPanel extends Base
       heldCard = null;
       _didCardAction = true;
       player.updateGraphic();
+    } else {
+      var card:CardView = cast(scene.collidePoint("card", mouse_x, mouse_y), CardView);
+      if(card != null) {
+	player.setExplain(card.card.getExplainText());
+      }
     }
   }
 

@@ -17,6 +17,8 @@ class PlayerResources extends Base
   public var science_icon:Base;
   public var science_text:TextBase;
 
+  public var explainText:TextBase;
+
   public function new()
   {
     super();
@@ -25,7 +27,7 @@ class PlayerResources extends Base
                         Constants.STARTING_SHIELDS,
                         Constants.STARTING_CARGO,
                         Constants.STARTING_SCIENCE);
-    this.x = 400;
+    this.x = 520;
 
     fuel_icon = new Base(0, 0, Assets.getImage("icon_fuel"));
     fuel_text = new TextBase(25, 1, 0, 0, ""+inv.fuel);
@@ -51,6 +53,10 @@ class PlayerResources extends Base
     science_icon.layer = Constants.RESOURCE_LAYER;
     science_text.layer = Constants.RESOURCE_LAYER;
 
+    explainText = new TextBase(0, 30, 280, 0);
+    explainText.textObj.wordWrap = true;
+    explainText.size = 16;
+
     addChild(fuel_icon);
     addChild(fuel_text);
     addChild(shields_icon);
@@ -59,6 +65,7 @@ class PlayerResources extends Base
     addChild(cargo_text);
     addChild(science_icon);
     addChild(science_text);
+    addChild(explainText);
   }
 
   public override function added()
@@ -79,5 +86,10 @@ class PlayerResources extends Base
     shields_text.text = ""+inv.shields;
     cargo_text.text = ""+inv.cargo;
     science_text.text = ""+inv.science;
+  }
+
+  public function setExplain(text:String):Void
+  {
+    explainText.text = text;
   }
 }
