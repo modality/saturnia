@@ -1,0 +1,84 @@
+- name: Crew
+  cards:
+  - id: Crew - Captain
+    rules:
+    - name: Captain
+      text: Stun any enemy for 1 turn.
+      type: action
+      rule: (addStatus opponent stun 1)
+    count: 1
+  - id: Crew - Navigator
+    rules:
+    - name: Navigator
+      text: Gain 1 fuel.
+      type: action
+      rule: (effect self fuel gain 1)
+    - name: Deep Space Exploration
+      text: Higher % of rare finds in explore deck.
+      type: strategy
+      rule: (trigger (explore) (exploreNavigator) true false)
+    count: 1
+  - id: Crew - Comm Officer
+    rules:
+    - name: Comm Officer
+      text: Gain influence with a faction.
+      type: action
+      rule: (effect opponent influence gain 5)
+    - name: Diplomatic Mission
+      text: Gain 1 cargo for each friendly placed
+      type: strategy
+      rule: (trigger (explore friendly) (effect self cargo gain 1) false false)
+    count: 1
+  - id: Crew - Engineer
+    rules:
+    - name: Engineer
+      text: Gain 1 shield.
+      type: action
+      rule: (effect self shield gain 1)
+    - name: Engineer
+      text: Prevent 1 ship damage.
+      type: reaction
+      rule: (trigger (effect self damage gain) (noRule) true true)
+    count: 1
+  - id: Crew - Science Officer
+    rules: 
+    - name: Science Officer
+      text: Gain 1 science.
+      type: action
+      rule: (effect self science gain 1)
+    - name: Scientific Operation
+      text: Gaine 1 science for each planet placed.
+      type: strategy
+      rule: (trigger (explore planet) (effect self science gain 1) false false)
+    count: 1
+- name: Ship Damage
+  cards:
+  - id: Ship Damage
+    rules:
+    - name: Ship Damage
+      text: Lose 1 random resource.
+      type: action
+      rule: (effect self random lose 1)
+    count: 1
+- name: Bell Ward
+  cards:
+  - id: Shield - Bell Ward
+    rules:
+    - name: Resonance
+      text: When you lose X shields, gain X shields instead.
+      type: reaction
+      rule: (trigger (effect self shield lose @X) (effect self shield gain @X) true true)
+    - name: Careful
+      text: Discard a card to gain 1 shield.
+      type: strategy
+      rule: (trigger (play discard) (effect self shield gain 1) false false)
+    count: 2
+- name: Pepper Ray
+  cards:
+  - id: Guns - Pepper Ray
+    rules:
+    - name: Pepper Ray
+      text: Deal 1 damage.
+      type: action
+      rule: (effect opponent shield lose 1)
+    count: 3

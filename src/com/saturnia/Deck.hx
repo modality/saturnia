@@ -4,44 +4,20 @@ import com.modality.AugRandom;
 
 class Deck
 {
-  public var cards:Array<Card>;
+  public var cards:Array<CardView>;
 
-  public var drawPile:Array<Card>;
-  public var hand:Array<Card>;
-  public var discardPile:Array<Card>;
+  public var drawPile:Array<CardView>;
+  public var hand:Array<CardView>;
+  public var discardPile:Array<CardView>;
 
   public function new()
   {
     cards = [];
-
-    var c:Card;
-
-    c = new Card();
-    c.card_name = "Pepper\nRay";
-    c.has_action = true;
-    c.action_effect = "effect(opponent, shields, loss, 1)";
-    c.updateGraphic();
-
-    cards.push(c);
-
-    c = new Card();
-    c.card_name = "Pepper\nRay";
-    c.has_action = true;
-    c.action_effect = "effect(opponent, shields, loss, 1)";
-    c.updateGraphic();
-
-    cards.push(c);
-
-    c = new Card();
-    c.card_name = "Shield\nResonance";
-    c.has_strategy = true;
-    c.strategy_trigger = "play(self, discard)";
-    c.strategy_effect = "effect(self, shields, gain, 1)";
-    c.reaction_trigger = "effect(self, shields, lose, *)";
-    c.reaction_effect = "effect(self, shields, gain, 1)";
-    c.updateGraphic();
-
-    cards.push(c);
+    var part = CardDatabase.getPart("Crew");
+    for(card in part.cards) {
+      var cv = new CardView(card);
+      cards.push(cv);
+    }
 
     reset();
   }

@@ -4,11 +4,15 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.utils.Input;
 import com.modality.Base;
 import com.modality.TextBase;
+import com.modality.cards.Invoker;
+import com.modality.cards.Message;
 
 class CombatPanel extends Base
 {
   public var player:PlayerResources;
   public var deck:Deck;
+  public var invoker:Invoker;
+  public var cgr:CardGameReceiver;
 
   public var draw_pile:CardPile;
   public var strategy_pile:CardPile;
@@ -17,20 +21,20 @@ class CombatPanel extends Base
 
   public var mouseOffsetX:Int;
   public var mouseOffsetY:Int;
-  public var heldCard:Card;
+  public var heldCard:CardView;
   public var _didCardAction:Bool;
 
-  public var strategyCard:Card;
-  public var strategyTrigger:CombatTrigger;
+  public var strategyCard:CardView;
+  public var reactionCard:CardView;
 
-  public var reactionCard:Card;
-  public var reactionTrigger:CombatTrigger;
+  public var actionCards:Array<CardView>;
 
-  public var actionCards:Array<Card>;
-
-  public function new(_player:PlayerResources)
+  public function new(_player:PlayerResources, _invoker:Invoker, _cgr:CardGameReceiver)
   {
     super(0, 0);
+
+    cgr = _cgr;
+    invoker = _invoker;
 
     player = _player;
     deck = player.inv.deck;
@@ -42,19 +46,19 @@ class CombatPanel extends Base
 
     draw_pile = new CardPile(0, 0);
     addChild(draw_pile);
-    addChild(new TextBase(0, -20, "Draw Deck"));
+    addChild(new TextBase(0, -20, 0, 0, "Draw Deck"));
 
     strategy_pile = new CardPile(400, 0, playStrategy);
     addChild(strategy_pile);
-    addChild(new TextBase(400, -20, "Strategy"));
+    addChild(new TextBase(400, -20, 0, 0, "Strategy"));
 
     reaction_pile = new CardPile(500, 0, playReaction);
     addChild(reaction_pile);
-    addChild(new TextBase(500, -20, "Reaction"));
+    addChild(new TextBase(500, -20, 0, 0, "Reaction"));
 
-    discard_pile = new CardPile(600, 0, discardCard);
+    discard_pile = new CardPile(600, 0, playDiscard);
     addChild(discard_pile);
-    addChild(new TextBase(600, -20, "Discard"));
+    addChild(new TextBase(600, -20, 0, 0, "Discard"));
     deal();
   }
 
@@ -65,7 +69,7 @@ class CombatPanel extends Base
     _didCardAction = false;
 
     if(Input.mousePressed && heldCard == null) {
-      var card:Card = cast(scene.collidePoint("card", mouse_x, mouse_y), Card);
+      var card:CardView = cast(scene.collidePoint("card", mouse_x, mouse_y), CardView);
       if(card != null && card.playable) {
         heldCard = card;
         heldCard.pickUp();
@@ -98,7 +102,7 @@ class CombatPanel extends Base
 
       var space:Space = cast(scene.collidePoint("space", mouse_x, mouse_y), Space);
       if(space != null && space.encounter != null) {
-        if(playAction(heldCard, space.encounter.inventory)) {
+        if(playAction(heldCard, space)) {
           heldCard.move(discard_pile.x + 5, discard_pile.y + 5);
           heldCard.playable = false;
         }
@@ -130,61 +134,37 @@ class CombatPanel extends Base
     }
   }
 
-  public function checkTriggerAction(ct:CombatTrigger, action:String, opponent:Inventory = null):Bool {
-    var interrupt = false;
-    if(ct != null && ct.actionWillTrigger(action)) {
-      if(ct.apply(player.inv, opponent)) {
-        if(ct.trigger_interrupt) interrupt = true;
-        if(ct.trigger_expire) ct = null;
-      } else {
-        trace("Could not apply trigger! "+ct.trigger);
-      }
-    }
-    return interrupt;
-  }
-  
-  public function playStrategy(card:Card):Bool
+  public function playStrategy(cv:CardView):Bool
   {
-    if(!card.has_strategy) return false;
-
-    if(checkTriggerAction(reactionTrigger, "strategy")) return true;
-    if(checkTriggerAction(strategyTrigger, "strategy")) return true;
-
-    strategyCard = card;
-    strategyTrigger = new CombatTrigger(card.strategy_trigger, card.strategy_effect);
-
-    return true;
+    if(!cv.card.hasRule("strategy")) return false;
+    invoker.execute(msg("(play strategy)"));
+    return invoker.execute(cv.card.getRule("strategy"));
   }
 
-  public function playAction(card:Card, opponent:Inventory):Bool
+  public function playReaction(cv:CardView):Bool
   {
-    if(!card.has_action) return false;
-
-    if(checkTriggerAction(reactionTrigger, "action", opponent)) return true;
-    if(checkTriggerAction(strategyTrigger, "action", opponent)) return true;
-
-    var ce = new CombatEffect(card.action_effect);
-    return ce.apply(player.inv, opponent);
+    if(!cv.card.hasRule("reaction")) return false;
+    invoker.execute(msg("(play reaction)"));
+    return invoker.execute(cv.card.getRule("reaction"));
   }
 
-  public function playReaction(card:Card):Bool
+  public function playDiscard(cv:CardView):Bool
   {
-    if(!card.has_reaction) return false;
-
-    if(checkTriggerAction(reactionTrigger, "reaction")) return true;
-    if(checkTriggerAction(strategyTrigger, "reaction")) return true;
-
-    reactionCard = card;
-    reactionTrigger = new CombatTrigger(card.reaction_trigger, card.reaction_effect);
-
-    return true;
+    return invoker.execute(msg("(play discard)"));
   }
 
-  public function discardCard(card:Card):Bool
+  public function playAction(cv:CardView, space:Space):Bool
   {
-    if(checkTriggerAction(reactionTrigger, "discard")) return true;
-    if(checkTriggerAction(strategyTrigger, "discard")) return true;
+    if(!cv.card.hasRule("action")) return false;
+    invoker.execute(msg("(play action)"));
+    cgr.setTarget(space);
+    var response = invoker.execute(cv.card.getRule("action"));
+    cgr.clearTarget();
+    return response;
+  }
 
-    return true;
+  public function msg(str:String):Message
+  {
+    return Message.read(str);
   }
 }

@@ -6,6 +6,9 @@ import com.modality.ElasticGrid;
 import com.modality.TextBase;
 import com.modality.Controller;
 
+import com.modality.cards.Invoker;
+import com.modality.cards.Message;
+
 class GameController extends Controller
 {
   public var player:PlayerResources;
@@ -18,6 +21,9 @@ class GameController extends Controller
   public var regainFocus:Bool;
   public var sectorName:TextBase;
   
+  public var invoker:Invoker;
+  public var cgr:CardGameReceiver;
+
   public var combatPanel:CombatPanel;
   public var merchantPanel:MerchantPanel;
 
@@ -32,6 +38,9 @@ class GameController extends Controller
     inCombat = false;
     inMerchant = false;
     regainFocus = false;
+
+    cgr = new CardGameReceiver(player.inv);
+    invoker = new Invoker(cgr);
 
     add(player);
 
@@ -48,7 +57,7 @@ class GameController extends Controller
     nextExplore.y = 500;
     add(nextExplore);
 
-    combatPanel = new CombatPanel(player);
+    combatPanel = new CombatPanel(player, invoker, cgr);
     combatPanel.x = 0;
     combatPanel.y = 500;
     add(combatPanel);
@@ -70,6 +79,14 @@ class GameController extends Controller
         if(space != null) {
           if(canExplore(space)) {
             space.explore(nextExplore.spaceType);
+            var spaceStr = switch nextExplore.spaceType {
+	      case Voidness: "void";
+	      case Planet: "planet";
+	      case Pirate: "hostile";
+	      case Star: "star";
+	      case Merchant: "friendly";
+            }
+	    invoker.execute(Message.read("(explore "+spaceStr+")"));
             nextExplore.getNextSpace();
             player.useFuel(1);
             if(space.spaceType == SpaceType.Pirate) {
@@ -78,6 +95,7 @@ class GameController extends Controller
           } else if(space.explored && space.spaceType == SpaceType.Merchant) {
             enterMerchant(space);
           }
+          player.updateGraphic();
         }
 
         var btn:TextBase = cast(collidePoint("next_btn", mouse_x, mouse_y), TextBase);

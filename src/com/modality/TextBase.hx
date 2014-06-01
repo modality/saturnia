@@ -4,18 +4,20 @@ import com.haxepunk.graphics.Text;
 
 class TextBase extends Base
 {
+  public var textObj(get, null):Text;
   public var color(get, set):Int;
   public var size(get, set):Int;
   public var text(get, set):String;
 
   private var _text:Text;
 
-  public function new(_x:Int = 0, _y:Int = 0, _str:String = "")
+  public function new(_x:Int = 0, _y:Int = 0, _w:Int = 0, _h:Int = 0, _str:String = "")
   {
     super(_x, _y);
-    _text = new Text(_str, 0, 0, 0, 0, {
+    _text = new Text(_str, 0, 0, _w, _h, {
       size: 16,
-      color: 0xFFFFFF
+      color: 0xFFFFFF,
+      font: Assets.get("font")
     });
     this.graphic = _text;
     updateHitbox();
@@ -55,5 +57,9 @@ class TextBase extends Base
     updateHitbox();
     return _text.text;
   }
-}
 
+  public function get_textObj()
+  {
+    return _text;
+  }
+}

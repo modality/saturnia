@@ -4,6 +4,7 @@ import com.haxepunk.HXP;
 import com.saturnia.GameController;
 import com.saturnia.Generator;
 import com.saturnia.MerchantGoods;
+import com.saturnia.CardDatabase;
 
 class Main extends Engine
 {
@@ -13,6 +14,7 @@ class Main extends Engine
 	  Assets.init();
 	  Generator.init();
 	  MerchantGoods.init();
+	  CardDatabase.init();
 
 #if debug
 		HXP.console.enable();

@@ -1,4 +1,5 @@
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.Text;
 
 class Assets
 {
@@ -35,7 +36,8 @@ class Assets
     assetDictionary.set("ui_pile", "graphics/ui/card_pile.png");
     assetDictionary.set("ui_card", "graphics/ui/test_card.png");
 
-    assetDictionary.set("equipment", "data/equipment.yml");
+    assetDictionary.set("cards", "data/cards.yml");
+    assetDictionary.set("font", "font/magic_forest.ttf");
   }
 
   public static function get(asset:String):String
