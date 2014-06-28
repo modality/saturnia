@@ -33,8 +33,9 @@ class CardPile extends Base
     return false;
   }
 
-  public function updateGraphic()
+  public override function updateGraphic()
   {
-    setHitboxTo(this.graphic);
+    super.update();
+    updateHitbox();
   }
 }

@@ -56,6 +56,10 @@ class PlayerResources extends Base
     explainText = new TextBase(0, 30, 280, 0);
     explainText.textObj.wordWrap = true;
     explainText.size = 16;
+    explainText.textObj.addStyle("col_strategy", {color: 0x00FFCC});
+    explainText.textObj.addStyle("col_action", {color: 0xFF00CC});
+    explainText.textObj.addStyle("col_reaction", {color: 0xFFCC00});
+    explainText.textObj.addStyle("rule", {size: 12, color:0xCCCCCC});
 
     addChild(fuel_icon);
     addChild(fuel_text);
@@ -80,8 +84,9 @@ class PlayerResources extends Base
     fuel_text.text = ""+inv.fuel;
   }
 
-  public function updateGraphic()
+  public override function updateGraphic()
   {
+    super.updateGraphic();
     fuel_text.text = ""+inv.fuel;
     shields_text.text = ""+inv.shields;
     cargo_text.text = ""+inv.cargo;
@@ -90,6 +95,6 @@ class PlayerResources extends Base
 
   public function setExplain(text:String):Void
   {
-    explainText.text = text;
+    explainText.richText = text;
   }
 }

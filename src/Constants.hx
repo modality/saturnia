@@ -11,10 +11,11 @@ class Constants
   public static var GRID_Y:Int = 64;
   public static var GRID_W:Int = 8;
   public static var GRID_H:Int = 6;
-  public static var BLOCK_W:Int = 64;
-  public static var BLOCK_H:Int = 64;
+  public static var BLOCK_W:Int = 100;
+  public static var BLOCK_H:Int = 100;
 
-  public static var UNEXPLORED_LAYER:Int = 5;
+  public static var UNEXPLORED_LAYER:Int = 6;
+  public static var GRID_BG_LAYER:Int = 5;
   public static var EXPLORED_LAYER:Int = 4;
   public static var EFFECTS_LAYER:Int = 3;
   public static var OVERLAY_LAYER:Int = 2;

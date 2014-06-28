@@ -66,6 +66,7 @@ class CombatPanel extends Base
   {
     var mouse_x = Input.mouseX;
     var mouse_y = Input.mouseY;
+
     _didCardAction = false;
 
     if(Input.mousePressed && heldCard == null) {
@@ -116,7 +117,7 @@ class CombatPanel extends Base
     } else {
       var card:CardView = cast(scene.collidePoint("card", mouse_x, mouse_y), CardView);
       if(card != null) {
-	player.setExplain(card.card.getExplainText());
+        player.setExplain(card.card.getExplainText());
       }
     }
   }
@@ -143,14 +144,14 @@ class CombatPanel extends Base
   {
     if(!cv.card.hasRule("strategy")) return false;
     invoker.execute(msg("(play strategy)"));
-    return invoker.execute(cv.card.getRule("strategy"));
+    return invoker.execute(cv.card.getMessage("strategy"));
   }
 
   public function playReaction(cv:CardView):Bool
   {
     if(!cv.card.hasRule("reaction")) return false;
     invoker.execute(msg("(play reaction)"));
-    return invoker.execute(cv.card.getRule("reaction"));
+    return invoker.execute(cv.card.getMessage("reaction"));
   }
 
   public function playDiscard(cv:CardView):Bool
@@ -163,7 +164,7 @@ class CombatPanel extends Base
     if(!cv.card.hasRule("action")) return false;
     invoker.execute(msg("(play action)"));
     cgr.setTarget(space);
-    var response = invoker.execute(cv.card.getRule("action"));
+    var response = invoker.execute(cv.card.getMessage("action"));
     cgr.clearTarget();
     return response;
   }

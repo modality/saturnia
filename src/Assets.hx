@@ -29,12 +29,24 @@ class Assets
     assetDictionary.set("space_locked", "graphics/spaces/locked.png");
     assetDictionary.set("space_void", "graphics/spaces/void.png");
 
+    assetDictionary.set("space_tex", "graphics/spaces/spaces.png");
+
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_spread", "graphics/ui/tarot_spread.png");
     assetDictionary.set("ui_arrow", "graphics/ui/tarot_pointer.png");
 
     assetDictionary.set("ui_pile", "graphics/ui/card_pile.png");
     assetDictionary.set("ui_card", "graphics/ui/test_card.png");
+
+    assetDictionary.set("card_action", "graphics/ui/card_action.png");
+    assetDictionary.set("card_reaction", "graphics/ui/card_reaction.png");
+    assetDictionary.set("card_strategy", "graphics/ui/card_strategy.png");
+
+    assetDictionary.set("card_action_strategy", "graphics/ui/card_action_strategy.png");
+    assetDictionary.set("card_action_reaction", "graphics/ui/card_action_reaction.png");
+    assetDictionary.set("card_reaction_strategy", "graphics/ui/card_reaction_strategy.png");
+
+    assetDictionary.set("card_back", "graphics/ui/card_back.png");
 
     assetDictionary.set("cards", "data/cards.yml");
     assetDictionary.set("font", "font/magic_forest.ttf");

@@ -1,6 +1,7 @@
 package com.saturnia;
 
 import com.haxepunk.utils.Input;
+import com.modality.Base;
 import com.modality.Grid;
 import com.modality.ElasticGrid;
 import com.modality.TextBase;
@@ -12,7 +13,7 @@ import com.modality.cards.Message;
 class GameController extends Controller
 {
   public var player:PlayerResources;
-  public var grid:Grid<Space>;
+  public var grid:SpaceGrid;
   public var sectorType:SectorType;
   public var name:String;
   public var anyExplored:Bool;
@@ -20,6 +21,12 @@ class GameController extends Controller
   public var inMerchant:Bool;
   public var regainFocus:Bool;
   public var sectorName:TextBase;
+
+  public var draggingGrid:Bool;
+  public var mouseOffsetX:Int;
+  public var mouseOffsetY:Int;
+  public var sectorScrollX:Int;
+  public var sectorScrollY:Int;
   
   public var invoker:Invoker;
   public var cgr:CardGameReceiver;
@@ -38,6 +45,8 @@ class GameController extends Controller
     inCombat = false;
     inMerchant = false;
     regainFocus = false;
+
+    draggingGrid = false;
 
     cgr = new CardGameReceiver(player.inv);
     invoker = new Invoker(cgr);
@@ -66,27 +75,53 @@ class GameController extends Controller
   public override function update():Void
   {
     super.update();
+    var mouse_x = Input.mouseX;
+    var mouse_y = Input.mouseY;
+
     if(regainFocus || combatPanel.doingCardAction()) {
       regainFocus = false;
       return;
     }
+
+    if(Input.mousePressed) {
+      var gbg:Base = cast(collidePoint("grid_bg", mouse_x, mouse_y), Base);
+      if(gbg != null) {
+        draggingGrid = true;
+        mouseOffsetX = mouse_x;
+        mouseOffsetY = mouse_y;
+        return;
+      }
+    } else if(Input.mouseDown && draggingGrid) {
+      sectorScrollX = mouse_x - mouseOffsetX; 
+      sectorScrollY = mouse_y - mouseOffsetY; 
+
+      grid.setOffset(sectorScrollX, sectorScrollY);
+    } else if(Input.mouseReleased && draggingGrid) {
+      grid.setOffset(sectorScrollX, sectorScrollY);
+      sectorScrollX = 0;
+      sectorScrollY = 0;
+
+
+      grid.finishDrag();
+      draggingGrid = false;
+      return;
+    }
+
     if(!inCombat && !inMerchant) {
       if(Input.mouseReleased) {
-        var mouse_x = Input.mouseX;
-        var mouse_y = Input.mouseY;
 
         var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
         if(space != null) {
           if(canExplore(space)) {
             space.explore(nextExplore.spaceType);
             var spaceStr = switch nextExplore.spaceType {
-	      case Voidness: "void";
-	      case Planet: "planet";
-	      case Pirate: "hostile";
-	      case Star: "star";
-	      case Merchant: "friendly";
+              case Voidness: "void";
+              case Planet: "planet";
+              case Pirate: "hostile";
+              case Star: "star";
+              case Merchant: "friendly";
             }
-	    invoker.execute(Message.read("(explore "+spaceStr+")"));
+            invoker.execute(Message.read("(explore "+spaceStr+")"));
             nextExplore.getNextSpace();
             player.useFuel(1);
             if(space.spaceType == SpaceType.Pirate) {
@@ -133,9 +168,10 @@ class GameController extends Controller
     name = Generator.generateSectorName();
     sectorName.text = name;
 
-    var egrid = new ElasticGrid<Space>(0, 0);
+    //var egrid = new ElasticGrid<Space>(0, 0);
 
-    grid = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
+    grid = new SpaceGrid(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
+    grid.initBackground();
     grid.init(function(i:Int, j:Int):Space {
       var space:Space = new Space();
       space.spaceType = SpaceType.Voidness;
@@ -146,6 +182,7 @@ class GameController extends Controller
       add(space);
       return space;
     });
+    add(grid.grid_bg);
   }
 
   public function nextLevel():Void

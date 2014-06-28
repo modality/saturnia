@@ -21,15 +21,16 @@ class NextExploreView extends Base
     spaceType = AugRandom.weightedChoice([
       SpaceType.Planet => 20,
       SpaceType.Star => 20,
-      SpaceType.Pirate => 20,
-      SpaceType.Voidness => 20,
-      SpaceType.Merchant => 20
+      SpaceType.Pirate => 0,
+      SpaceType.Voidness => 0,
+      SpaceType.Merchant => 0
     ]);
     updateGraphic();
   }
 
-  public function updateGraphic():Void
+  public override function updateGraphic():Void
   {
+    super.updateGraphic();
     switch(spaceType) {
       case Star:
         graphic = Assets.getImage("space_star");

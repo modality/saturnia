@@ -101,6 +101,14 @@ class Base extends Entity implements IEventDispatcher
     setHitboxTo(graphic);
   }
 
+  public function updateGraphic()
+  {
+    if(this.graphic != null) {
+      this.graphic.scrollX = 0;
+      this.graphic.scrollY = 0;
+    }
+  }
+
   public function get_alpha():Float
   {
     return image.alpha;

@@ -1,6 +1,7 @@
 package com.saturnia;
 
 import com.modality.AugRandom;
+import com.haxepunk.graphics.TiledImage;
 
 class Generator
 {
@@ -85,6 +86,22 @@ class Generator
     } else if(space.spaceType == SpaceType.Merchant) {
       space.encounter = new MerchantEncounter(space);
     }
+  }
+
+  public static function randomPlanetImage():TiledImage
+  {
+    var ti = new TiledImage(Assets.get("space_tex"), 100, 100);
+    ti.setOffset(-100 * AugRandom.range(0, 5), -100 * AugRandom.range(3, 5));
+    //ti.scale = 0.8;
+    return ti;
+  }
+
+  public static function randomStarImage():TiledImage
+  {
+    var ti = new TiledImage(Assets.get("space_tex"), 100, 100);
+    ti.setOffset(-100 * AugRandom.range(0, 5), -100 * AugRandom.range(0, 3));
+    //ti.scale = 0.8;
+    return ti;
   }
 }
 

@@ -7,6 +7,7 @@ class CardView extends Base
 {
   public var card:Card;
   public var nameText:TextBase;
+  public var nameText2:TextBase;
 
   public var playable:Bool;
 
@@ -16,18 +17,57 @@ class CardView extends Base
     card = _card;
     type = "card";
     playable = false;
-    this.graphic = Assets.getImage("ui_card");
-    nameText = new TextBase(0, 0, 80);
+
+    nameText = new TextBase(0, 0, 76);
     nameText.size = 12;
     nameText.textObj.wordWrap = true;
+
+    nameText2 = new TextBase(0, 0, 76);
+    nameText2.size = 12;
+    nameText2.textObj.wordWrap = true;
+/*
+#if (flash || js)
+    nameText2.textObj.align = flash.text.TextFormatAlign.RIGHT;
+#else
+    nameText2.textObj.align = "right";
+#end
+*/
     addChild(nameText);
+    addChild(nameText2);
+
     updateGraphic();
   }
 
-  public function updateGraphic()
+  public override function updateGraphic()
   {
+    super.updateGraphic();
+    if(card.hasRule("action")) {
+      nameText.text = this.card.getRule("action").name;
+      if(card.rules.length == 1) {
+        this.graphic = Assets.getImage("card_action");
+      } else if(card.hasRule("reaction")) {
+        nameText2.text = this.card.getRule("reaction").name;
+        this.graphic = Assets.getImage("card_action_reaction");
+      } else if(card.hasRule("strategy")) {
+        nameText2.text = this.card.getRule("strategy").name;
+        this.graphic = Assets.getImage("card_action_strategy");
+      }
+    } else if(card.hasRule("reaction")) {
+      nameText.text = this.card.getRule("reaction").name;
+      if(card.rules.length == 1) {
+        this.graphic = Assets.getImage("card_reaction");
+      } else if(card.hasRule("strategy")) {
+        nameText2.text = this.card.getRule("strategy").name;
+        this.graphic = Assets.getImage("card_reaction_strategy");
+      }
+    } else if(card.hasRule("strategy")) {
+      nameText.text = this.card.getRule("strategy").name;
+      this.graphic = Assets.getImage("card_strategy");
+    }
+
+    nameText2.textObj.x = 78 - nameText2.textObj.textWidth;
+    nameText2.textObj.y = 98 - nameText2.textObj.textHeight;
     setHitboxTo(this.graphic);
-    nameText.text = this.card.rules[0].name;
   }
 
   public function moveGraphic(_x:Float, _y:Float)
@@ -36,6 +76,8 @@ class CardView extends Base
     graphic.y = _y;
     nameText.graphic.x = _x;
     nameText.graphic.y = _y;
+    nameText2.graphic.x = _x;
+    nameText2.graphic.y = _y;
   }
 
   public function move(_x:Float, _y:Float)

@@ -5,7 +5,7 @@ import com.modality.Block;
 
 class Space extends Block
 {
-  public var grid:Grid<Space>;
+  public var grid:SpaceGrid;
   public var explored:Bool = false;
   public var locked:Bool = false;
   public var encounter:Encounter;
@@ -60,14 +60,15 @@ class Space extends Block
     objects = [];
   }
 
-  public function updateGraphic():Void
+  public override function updateGraphic():Void
   {
+    super.update();
     if(explored) {
       switch(spaceType) {
         case Star:
-          graphic = Assets.getImage("space_star");
+          graphic = Generator.randomStarImage();
         case Planet:
-          graphic = Assets.getImage("space_planet");
+          graphic = Generator.randomPlanetImage();
         default:
           graphic = null;
       }
