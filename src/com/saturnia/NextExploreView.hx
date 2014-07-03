@@ -18,30 +18,13 @@ class NextExploreView extends Base
 
   public function getNextSpace():Void
   {
-    spaceType = AugRandom.weightedChoice([
-      SpaceType.Planet => 20,
-      SpaceType.Star => 20,
-      SpaceType.Pirate => 0,
-      SpaceType.Voidness => 0,
-      SpaceType.Merchant => 0
-    ]);
+    spaceType = Generator.randomSpace();
     updateGraphic();
   }
 
   public override function updateGraphic():Void
   {
     super.updateGraphic();
-    switch(spaceType) {
-      case Star:
-        graphic = Assets.getImage("space_star");
-      case Planet:
-        graphic = Assets.getImage("space_planet");
-      case Pirate:
-        graphic = Assets.getImage("space_raider");
-      case Merchant:
-        graphic = Assets.getImage("space_merchant");
-      default:
-        graphic = Assets.getImage("space_void");
-    }
+    graphic = Generator.spaceImage(spaceType);
   }
 }

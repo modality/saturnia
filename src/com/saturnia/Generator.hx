@@ -1,7 +1,16 @@
 package com.saturnia;
 
 import com.modality.AugRandom;
+import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.TiledImage;
+
+import com.saturnia.enums.StarSize;
+import com.saturnia.enums.StarColor;
+import com.saturnia.enums.PlanetSize;
+import com.saturnia.enums.PlanetMatter;
+import com.saturnia.enums.DebrisMatter;
+import com.saturnia.enums.FactionType;
+import com.saturnia.enums.StationShape;
 
 class Generator
 {
@@ -54,54 +63,151 @@ class Generator
     return name;
   }
 
-  public static function generateSectorSpaces(sectorType:SectorType):Array<Space>
+  public static function randomSpace():SpaceType
   {
-    var spaces:Array<Space>;
-    spaces = new Array<Space>();
-    for(i in 0...(Constants.GRID_W * Constants.GRID_H)) {
-      spaces.push(createSpace());
-    }
-    return spaces; 
+    return AugRandom.weightedChoice([
+      SpaceType.Voidness => 20,
+      randomStar() => 20,
+      randomPlanet() => 20,
+      randomDebris() => 20,
+      SpaceType.Hostile => 10,
+      SpaceType.Friendly => 10
+    ]);
   }
 
-  public static function createSpace():Space
+  public static function randomPlanet():SpaceType
   {
-    var space:Space = new Space();
-    fillSpace(space);
-    return space;
-  }
-
-  public static function fillSpace(space:Space)
-  {
-    space.spaceType = AugRandom.weightedChoice([
-      SpaceType.Planet => 20,
-      SpaceType.Star => 20,
-      SpaceType.Pirate => 35,
-      SpaceType.Voidness => 10,
-      SpaceType.Merchant => 15
+    var size:PlanetSize = AugRandom.weightedChoice([
+      PlanetSize.Terrestrial => 50,
+      PlanetSize.Giant => 50
     ]);
 
-    if(space.spaceType == SpaceType.Pirate) {
-      space.encounter = new PirateEncounter(space);
-    } else if(space.spaceType == SpaceType.Merchant) {
-      space.encounter = new MerchantEncounter(space);
-    }
+    return switch(size) {
+      case Terrestrial:
+        Planet(size, AugRandom.weightedChoice([
+          Iron => 20,
+          Desert => 20,
+          Carbon => 20,
+          Ocean => 20,
+          Ice => 20,
+        ]));
+      case Giant:
+        Planet(size, AugRandom.weightedChoice([
+          Hydrogen => 20,
+          Helium => 20,
+          Puffy => 20,
+          Gas => 20,
+          Ice => 20
+        ]));
+    };
   }
 
-  public static function randomPlanetImage():TiledImage
+  public static function randomStar():SpaceType
+  {
+    var size:StarSize = AugRandom.weightedChoice([
+      StarSize.Giant => 50,
+      StarSize.Main => 50,
+      StarSize.Dwarf => 50
+    ]);
+
+    return switch(size) {
+      case Giant:
+        Star(size, AugRandom.weightedChoice([
+          Blue => 25,
+          White => 25,
+          Orange => 25,
+          Red => 25
+        ]));
+      case Main:
+        Star(size, AugRandom.weightedChoice([
+          Blue => 25,
+          White => 25,
+          Yellow => 25,
+          Orange => 25
+        ]));
+      case Dwarf:
+        Star(size, AugRandom.weightedChoice([
+          Red => 50,
+          White => 50,
+          Brown => 50
+        ]));
+    };
+  }
+
+  public static function randomDebris():SpaceType
+  {
+    return AugRandom.weightedChoice([
+      Debris(Gas) => 50,
+      Debris(Rock) => 50,
+      Debris(Ice) => 50
+    ]);
+  }
+
+  public static function randomSpaceStation():SpaceType
+  {
+    return SpaceStation(Sphere);
+  }
+
+  public static function spaceImage(spaceType:SpaceType):Image
+  {
+    return switch(spaceType) {
+      case Voidness: Assets.getImage("space_void");
+
+      case Star(size, color): starImage(size, color);
+      case Planet(size, matter): planetImage(size, matter);
+      case Debris(matter): debrisImage(matter);
+
+      case Hostile: Assets.getImage("space_raider");
+      case Friendly: Assets.getImage("space_merchant");
+      case SpaceStation(shape): Assets.getImage("space_station");
+      default: return null;
+    };
+  }
+
+  public static function planetImage(size:PlanetSize, matter:PlanetMatter):TiledImage
   {
     var ti = new TiledImage(Assets.get("space_tex"), 100, 100);
-    ti.setOffset(-100 * AugRandom.range(0, 5), -100 * AugRandom.range(3, 5));
-    //ti.scale = 0.8;
+    var x_offset = switch(matter) {
+      case Iron, Hydrogen: 0;
+      case Desert, Helium: 100;
+      case Carbon, Puffy: 200;
+      case Ocean, Gas: 300;
+      case Ice: 400;
+    };
+    var y_offset = switch(size) {
+      case Terrestrial: 300;
+      case Giant: 400;
+    };
+    ti.setOffset(x_offset, y_offset);
     return ti;
   }
 
-  public static function randomStarImage():TiledImage
+  public static function starImage(size:StarSize, color:StarColor):TiledImage
   {
     var ti = new TiledImage(Assets.get("space_tex"), 100, 100);
-    ti.setOffset(-100 * AugRandom.range(0, 5), -100 * AugRandom.range(0, 3));
-    //ti.scale = 0.8;
+    var x_offset = switch(color) {
+      case Blue: 0;
+      case White: 100;
+      case Yellow: 200;
+      case Orange, Brown: 300;
+      case Red: 400;
+    };
+    var y_offset = switch(size) {
+      case Giant: 0;
+      case Main: 100;
+      case Dwarf: 200;
+    };
+    ti.setOffset(x_offset, y_offset);
     return ti;
+  }
+
+  public static function debrisImage(matter:DebrisMatter):Image
+  {
+    return switch(matter) {
+      case Gas: Assets.getImage("space_debris_gas");
+      case Rock: Assets.getImage("space_debris_rock");
+      case Ice: Assets.getImage("space_debris_ice");
+    };
   }
 }
 

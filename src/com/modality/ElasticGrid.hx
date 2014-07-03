@@ -55,6 +55,25 @@ class ElasticGrid<T:(Block)>
     return null;
   }
 
+  public function neighbors(block:T, diagonal:Bool = false):Array<T>
+  {
+    var match:Array<T> = [];
+
+    match.push(get(block.x_index-1, block.y_index));
+    match.push(get(block.x_index+1, block.y_index));
+    match.push(get(block.x_index, block.y_index-1));
+    match.push(get(block.x_index, block.y_index+1));
+
+    if(diagonal) {
+      match.push(get(block.x_index-1, block.y_index-1));
+      match.push(get(block.x_index+1, block.y_index-1));
+      match.push(get(block.x_index-1, block.y_index+1));
+      match.push(get(block.x_index+1, block.y_index+1));
+    }
+
+    return match.filter(function(x:T) { return x != null; });
+  }
+
   public function each(fn:T->Int->Int->Void):Void
   {
     for(block in blocks) {

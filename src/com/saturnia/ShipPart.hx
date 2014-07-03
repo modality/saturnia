@@ -17,7 +17,7 @@ class ShipPart
     part.name = obj.name;
     for(card in cast(obj.cards, Array<Dynamic>)) {
       for(i in 0...Std.parseInt(card.count)) {
-	part.cards.push(Card.fromYamlObj(card));
+        part.cards.push(Card.fromYamlObj(card));
       }
     }
 

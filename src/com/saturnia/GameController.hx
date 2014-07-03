@@ -116,18 +116,21 @@ class GameController extends Controller
             space.explore(nextExplore.spaceType);
             var spaceStr = switch nextExplore.spaceType {
               case Voidness: "void";
-              case Planet: "planet";
-              case Pirate: "hostile";
-              case Star: "star";
-              case Merchant: "friendly";
+              case Star(size, color): "star";
+              case Planet(size, matter): "planet";
+              case Debris(matter): "debris";
+              case Hostile: "hostile";
+              case Friendly: "friendly";
+              case Faction(type): "faction";
+              case SpaceStation(shape): "space_station";
             }
             invoker.execute(Message.read("(explore "+spaceStr+")"));
             nextExplore.getNextSpace();
             player.useFuel(1);
-            if(space.spaceType == SpaceType.Pirate) {
+            if(space.spaceType == SpaceType.Hostile) {
               checkLocked();
             }
-          } else if(space.explored && space.spaceType == SpaceType.Merchant) {
+          } else if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
           }
           player.updateGraphic();
@@ -170,8 +173,8 @@ class GameController extends Controller
 
     //var egrid = new ElasticGrid<Space>(0, 0);
 
-    grid = new SpaceGrid(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
-    grid.initBackground();
+    grid = new SpaceGrid(this);
+    /*
     grid.init(function(i:Int, j:Int):Space {
       var space:Space = new Space();
       space.spaceType = SpaceType.Voidness;
@@ -182,7 +185,16 @@ class GameController extends Controller
       add(space);
       return space;
     });
+    */
     add(grid.grid_bg);
+    var space = new Space();
+    space.spaceType = Generator.randomSpaceStation();
+    space.explored = true;
+    space.layer = Constants.EXPLORED_LAYER;
+    grid.add(0, 0, space);
+    grid.findExplorables();
+    add(space);
+    grid.centerOn(0, 0);
   }
 
   public function nextLevel():Void

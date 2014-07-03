@@ -1,4 +1,5 @@
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.TiledImage;
 import com.haxepunk.graphics.Text;
 
 class Assets
@@ -28,8 +29,14 @@ class Assets
     assetDictionary.set("space_unexplored", "graphics/spaces/unexplored.png");
     assetDictionary.set("space_locked", "graphics/spaces/locked.png");
     assetDictionary.set("space_void", "graphics/spaces/void.png");
+    assetDictionary.set("space_station", "graphics/spaces/space_station_sphere.png");
+
+    assetDictionary.set("space_debris_gas", "graphics/spaces/debris_gas.png");
+    assetDictionary.set("space_debris_rock", "graphics/spaces/debris_rock.png");
+    assetDictionary.set("space_debris_ice", "graphics/spaces/debris_ice_2.png");
 
     assetDictionary.set("space_tex", "graphics/spaces/spaces.png");
+    assetDictionary.set("tile_tex", "graphics/spaces/empty_spaces.png");
 
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_spread", "graphics/ui/tarot_spread.png");
@@ -60,6 +67,13 @@ class Assets
   public static function getImage(asset:String):Image
   {
     return new Image(get(asset));
+  }
+
+  public static function getSprite(asset:String, x:Int, y:Int, w:Int, h:Int):TiledImage
+  {
+    var ti = new TiledImage(get(asset), w, h);
+    ti.setOffset(x, y);
+    return ti;
   }
 }
 

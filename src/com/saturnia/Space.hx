@@ -33,9 +33,9 @@ class Space extends Block
       layer = Constants.EXPLORED_LAYER;
 
       spaceType = _st;
-      if(spaceType == SpaceType.Pirate) {
+      if(spaceType == SpaceType.Hostile) {
         encounter = new PirateEncounter(this);
-      } else if(spaceType == SpaceType.Merchant) {
+      } else if(spaceType == SpaceType.Friendly) {
         encounter = new MerchantEncounter(this);
       }
       
@@ -64,19 +64,12 @@ class Space extends Block
   {
     super.update();
     if(explored) {
-      switch(spaceType) {
-        case Star:
-          graphic = Generator.randomStarImage();
-        case Planet:
-          graphic = Generator.randomPlanetImage();
-        default:
-          graphic = null;
-      }
+      graphic = Generator.spaceImage(spaceType);
     } else {
       if(!locked) {
-        graphic = Assets.getImage("space_unexplored");
+        graphic = Assets.getSprite("tile_tex", 0, 0, 100, 100);
       } else {
-        graphic = Assets.getImage("space_locked");
+        graphic = Assets.getSprite("tile_tex", 300, 0, 100, 100);
       }
     }
 
