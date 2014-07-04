@@ -166,7 +166,6 @@ class Generator
 
   public static function planetImage(size:PlanetSize, matter:PlanetMatter):TiledImage
   {
-    var ti = new TiledImage(Assets.get("space_tex"), 100, 100);
     var x_offset = switch(matter) {
       case Iron, Hydrogen: 0;
       case Desert, Helium: 100;
@@ -178,13 +177,11 @@ class Generator
       case Terrestrial: 300;
       case Giant: 400;
     };
-    ti.setOffset(x_offset, y_offset);
-    return ti;
+    return Assets.getSprite("space_tex", x_offset, y_offset, 100, 100);
   }
 
   public static function starImage(size:StarSize, color:StarColor):TiledImage
   {
-    var ti = new TiledImage(Assets.get("space_tex"), 100, 100);
     var x_offset = switch(color) {
       case Blue: 0;
       case White: 100;
@@ -197,8 +194,7 @@ class Generator
       case Main: 100;
       case Dwarf: 200;
     };
-    ti.setOffset(x_offset, y_offset);
-    return ti;
+    return Assets.getSprite("space_tex", x_offset, y_offset, 100, 100);
   }
 
   public static function debrisImage(matter:DebrisMatter):Image

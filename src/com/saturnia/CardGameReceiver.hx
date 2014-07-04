@@ -27,25 +27,25 @@ class CardGameReceiver implements Receiver {
   {
     switch(message.type()) {
       case "effect":
-	var ce = new CombatEffect(message);
+        var ce = new CombatEffect(message);
 
-	if(target != null && target.encounter != null) {
-	  if(ce.apply(self, target.encounter.inventory)) {
-	    return message;
-	  }
-	} else if(ce.apply(self)) {
-	  return message;
-	}
+        if(target != null && target.encounter != null) {
+          if(ce.apply(self, target.encounter.inventory)) {
+            return message;
+          }
+        } else if(ce.apply(self)) {
+          return message;
+        }
 
-	return noRule;
+        return noRule;
       case "explore":
-	return message;
+        return message;
       case "exploreNavigator":
-	return message;
+        return message;
       case "play":
-	return message;
+        return message;
       default:
-	return noRule;
+        return noRule;
     }
   }
 }

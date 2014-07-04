@@ -1,5 +1,6 @@
 package com.saturnia;
 
+import com.haxepunk.graphics.Image;
 import com.haxepunk.utils.Input;
 import com.modality.Base;
 import com.modality.Grid;
@@ -22,6 +23,7 @@ class GameController extends Controller
   public var regainFocus:Bool;
   public var sectorName:TextBase;
 
+  public var canDragGrid:Bool;
   public var draggingGrid:Bool;
   public var mouseOffsetX:Int;
   public var mouseOffsetY:Int;
@@ -46,6 +48,7 @@ class GameController extends Controller
     inMerchant = false;
     regainFocus = false;
 
+    canDragGrid = false;
     draggingGrid = false;
 
     cgr = new CardGameReceiver(player.inv);
@@ -70,6 +73,40 @@ class GameController extends Controller
     combatPanel.x = 0;
     combatPanel.y = 500;
     add(combatPanel);
+
+    var panel:Base;
+    var grayBg = new flash.display.BitmapData(1, 1, false, 0x111111);
+    var img:Image;
+
+    img = new Image(grayBg);
+    img.scaleX = Constants.SCREEN_W;
+    img.scaleY = Constants.GRID_Y;
+    var panel = new Base(0, 0, img);
+    panel.layer = Constants.MAP_PANEL_LAYER;
+    add(panel);
+
+    if(Constants.GRID_X > 0) {
+      img = new Image(grayBg);
+      img.scaleX = Constants.GRID_X;
+      img.scaleY = Constants.GRID_H;
+      var panel = new Base(0, Constants.GRID_Y, img);
+      panel.layer = Constants.MAP_PANEL_LAYER;
+      add(panel);
+    }
+
+    img = new Image(grayBg);
+    img.scaleX = Constants.SCREEN_W - Constants.GRID_X - Constants.GRID_W;
+    img.scaleY = Constants.GRID_H;
+    var panel = new Base(Constants.GRID_X+Constants.GRID_W, Constants.GRID_Y, img);
+    panel.layer = Constants.MAP_PANEL_LAYER;
+    add(panel);
+
+    img = new Image(grayBg);
+    img.scaleX = Constants.SCREEN_W;
+    img.scaleY = Constants.SCREEN_H - Constants.GRID_Y - Constants.GRID_H;
+    var panel = new Base(0, Constants.GRID_Y+Constants.GRID_H, img);
+    panel.layer = Constants.MAP_PANEL_LAYER;
+    add(panel);
   }
 
   public override function update():Void
@@ -88,31 +125,34 @@ class GameController extends Controller
       if(gbg != null) {
         mouseOffsetX = mouse_x;
         mouseOffsetY = mouse_y;
+        canDragGrid = true;
         return;
       }
     } else if(Input.mouseDown) {
       sectorScrollX = mouse_x - mouseOffsetX; 
       sectorScrollY = mouse_y - mouseOffsetY; 
 
-      if(draggingGrid || Math.sqrt(sectorScrollX*sectorScrollX + sectorScrollY*sectorScrollY) > 3) {
+      if(canDragGrid && (draggingGrid || Math.sqrt(sectorScrollX*sectorScrollX + sectorScrollY*sectorScrollY) > 3)) {
         draggingGrid = true;
         grid.setOffset(sectorScrollX, sectorScrollY);
       }
-    } else if(Input.mouseReleased && draggingGrid) {
+    } else if(Input.mouseReleased && canDragGrid && draggingGrid) {
       grid.setOffset(sectorScrollX, sectorScrollY);
       sectorScrollX = 0;
       sectorScrollY = 0;
 
       grid.finishDrag();
+      canDragGrid = false;
       draggingGrid = false;
       return;
     }
 
     if(!inCombat && !inMerchant) {
       if(Input.mouseReleased) {
+        var gbg:Base = cast(collidePoint("grid_bg", mouse_x, mouse_y), Base);
         var marker:Base = cast(collidePoint("explorable", mouse_x, mouse_y), Base);
-        if(marker != null) {
-          grid.explore(marker, nextExplore.spaceType);
+        if(gbg != null && marker != null) {
+          var coord = grid.explore(marker, nextExplore.spaceType);
 
           var spaceStr = switch nextExplore.spaceType {
             case Voidness: "void";
@@ -124,10 +164,10 @@ class GameController extends Controller
             case Faction(type): "faction";
             case SpaceStation(shape): "space_station";
           }
-          invoker.execute(Message.read("(explore "+spaceStr+")"));
+          invoker.execute(new Message(["explore", spaceStr, coord.x, coord.y]));
           nextExplore.getNextSpace();
           player.useFuel(1);
-
+          player.updateGraphic();
           return;
         }
 
@@ -136,6 +176,7 @@ class GameController extends Controller
           if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
           }
+
           player.updateGraphic();
         }
 
@@ -143,6 +184,7 @@ class GameController extends Controller
         if(btn != null) {
           nextLevel();
         }
+
       }
     }
   }

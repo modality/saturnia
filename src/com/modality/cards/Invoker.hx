@@ -26,32 +26,32 @@ class Invoker implements Receiver {
   {
     switch(message.type()) {
       case "noRule":
-	return message;
+        return message;
       case "trigger":
-	var t = new Message(message.tokens[1]);
-	var r = new Message(message.tokens[2]);
-	var i = message.tokens[3] == "true";
-	var e = message.tokens[4] == "true";
+        var t = new Message(message.tokens[1]);
+        var r = new Message(message.tokens[2]);
+        var i = message.tokens[3] == "true";
+        var e = message.tokens[4] == "true";
 
-	triggers.push(new Trigger(t, r, i, e));
+        triggers.push(new Trigger(t, r, i, e));
         return Message.read("(addedTrigger ("+message.toString()+"))");
       default:
-	var interrupt = false;
-	var matched = triggers.filter(function(t) { return t.match(message); });
+        var interrupt = false;
+        var matched = triggers.filter(function(t) { return t.match(message); });
 
-	for(trigger in matched) {
-	  interrupt = interrupt || trigger.interrupt;
-	  if(trigger.expire) {
-	    triggers.remove(trigger);
-	  }
-	  execute(trigger.response);
-	}
+        for(trigger in matched) {
+          interrupt = interrupt || trigger.interrupt;
+          if(trigger.expire) {
+            triggers.remove(trigger);
+          }
+          execute(trigger.response);
+        }
 
-	if(interrupt) {
-	  return Message.read("(interrupt ("+message.toString()+"))");
-	}
+        if(interrupt) {
+          return Message.read("(interrupt ("+message.toString()+"))");
+        }
 
-	return game.eval(message);
+        return game.eval(message);
     }
     return Message.read("(error)");
   }

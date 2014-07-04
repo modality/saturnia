@@ -55,7 +55,7 @@ class SpaceGrid extends ElasticGrid<Space>
     space.updateGraphic();
   }
 
-  public function explore(marker:Base, spaceType:SpaceType)
+  public function explore(marker:Base, spaceType:SpaceType):Point
   {
     for(e in explorable) {
       if(e.marker == marker) {
@@ -65,8 +65,10 @@ class SpaceGrid extends ElasticGrid<Space>
         add(e.x, e.y, space);
         findExplorables();
         centerOn(e.x, e.y);
+        return new Point(e.x, e.y);
       }
     }
+    return null;
   }
 
   public function centerOn(x:Int, y:Int)
@@ -124,6 +126,7 @@ class SpaceGrid extends ElasticGrid<Space>
     for(point in candidates.keys()) {
       if(candidates.get(point)) {
         var marker:Base = new Base(0, 0, Assets.getSprite("tile_tex", 0, 0, 100, 100));
+        marker.layer = Constants.UNEXPLORED_LAYER;
         marker.type = "explorable";
         marker.updateHitbox();
         scene.add(marker);

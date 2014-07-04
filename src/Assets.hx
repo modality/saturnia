@@ -29,7 +29,7 @@ class Assets
     assetDictionary.set("space_unexplored", "graphics/spaces/unexplored.png");
     assetDictionary.set("space_locked", "graphics/spaces/locked.png");
     assetDictionary.set("space_void", "graphics/spaces/void.png");
-    assetDictionary.set("space_station", "graphics/spaces/space_station_sphere.png");
+    assetDictionary.set("space_station", "graphics/spaces/space_base.png");
 
     assetDictionary.set("space_debris_gas", "graphics/spaces/debris_gas.png");
     assetDictionary.set("space_debris_rock", "graphics/spaces/debris_rock.png");
@@ -72,8 +72,7 @@ class Assets
   public static function getSprite(asset:String, x:Int, y:Int, w:Int, h:Int):TiledImage
   {
     var ti = new TiledImage(get(asset), w, h);
-    ti.setOffset(x, y);
+    ti.setOffset(-x, -y);
     return ti;
   }
 }
-
