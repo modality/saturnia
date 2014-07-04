@@ -86,21 +86,22 @@ class GameController extends Controller
     if(Input.mousePressed) {
       var gbg:Base = cast(collidePoint("grid_bg", mouse_x, mouse_y), Base);
       if(gbg != null) {
-        draggingGrid = true;
         mouseOffsetX = mouse_x;
         mouseOffsetY = mouse_y;
         return;
       }
-    } else if(Input.mouseDown && draggingGrid) {
+    } else if(Input.mouseDown) {
       sectorScrollX = mouse_x - mouseOffsetX; 
       sectorScrollY = mouse_y - mouseOffsetY; 
 
-      grid.setOffset(sectorScrollX, sectorScrollY);
+      if(draggingGrid || Math.sqrt(sectorScrollX*sectorScrollX + sectorScrollY*sectorScrollY) > 3) {
+        draggingGrid = true;
+        grid.setOffset(sectorScrollX, sectorScrollY);
+      }
     } else if(Input.mouseReleased && draggingGrid) {
       grid.setOffset(sectorScrollX, sectorScrollY);
       sectorScrollX = 0;
       sectorScrollY = 0;
-
 
       grid.finishDrag();
       draggingGrid = false;
@@ -109,28 +110,30 @@ class GameController extends Controller
 
     if(!inCombat && !inMerchant) {
       if(Input.mouseReleased) {
+        var marker:Base = cast(collidePoint("explorable", mouse_x, mouse_y), Base);
+        if(marker != null) {
+          grid.explore(marker, nextExplore.spaceType);
+
+          var spaceStr = switch nextExplore.spaceType {
+            case Voidness: "void";
+            case Star(size, color): "star";
+            case Planet(size, matter): "planet";
+            case Debris(matter): "debris";
+            case Hostile: "hostile";
+            case Friendly: "friendly";
+            case Faction(type): "faction";
+            case SpaceStation(shape): "space_station";
+          }
+          invoker.execute(Message.read("(explore "+spaceStr+")"));
+          nextExplore.getNextSpace();
+          player.useFuel(1);
+
+          return;
+        }
 
         var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
         if(space != null) {
-          if(canExplore(space)) {
-            space.explore(nextExplore.spaceType);
-            var spaceStr = switch nextExplore.spaceType {
-              case Voidness: "void";
-              case Star(size, color): "star";
-              case Planet(size, matter): "planet";
-              case Debris(matter): "debris";
-              case Hostile: "hostile";
-              case Friendly: "friendly";
-              case Faction(type): "faction";
-              case SpaceStation(shape): "space_station";
-            }
-            invoker.execute(Message.read("(explore "+spaceStr+")"));
-            nextExplore.getNextSpace();
-            player.useFuel(1);
-            if(space.spaceType == SpaceType.Hostile) {
-              checkLocked();
-            }
-          } else if(space.explored && space.spaceType == SpaceType.Friendly) {
+          if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
           }
           player.updateGraphic();
@@ -171,30 +174,8 @@ class GameController extends Controller
     name = Generator.generateSectorName();
     sectorName.text = name;
 
-    //var egrid = new ElasticGrid<Space>(0, 0);
-
     grid = new SpaceGrid(this);
-    /*
-    grid.init(function(i:Int, j:Int):Space {
-      var space:Space = new Space();
-      space.spaceType = SpaceType.Voidness;
-      space.grid = grid;
-      space.x = Constants.GRID_X+(i*Constants.BLOCK_W);
-      space.y = Constants.GRID_Y+(j*Constants.BLOCK_H);
-      space.updateGraphic();
-      add(space);
-      return space;
-    });
-    */
     add(grid.grid_bg);
-    var space = new Space();
-    space.spaceType = Generator.randomSpaceStation();
-    space.explored = true;
-    space.layer = Constants.EXPLORED_LAYER;
-    grid.add(0, 0, space);
-    grid.findExplorables();
-    add(space);
-    grid.centerOn(0, 0);
   }
 
   public function nextLevel():Void

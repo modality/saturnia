@@ -38,15 +38,14 @@ class Space extends Block
       } else if(spaceType == SpaceType.Friendly) {
         encounter = new MerchantEncounter(this);
       }
-      
+
       updateGraphic();
       if(encounter != null) {
         encounter.activate();
-
         encounter.x = x;
         encounter.y = y;
         encounter.layer = Constants.EXPLORED_LAYER;
-        scene.add(encounter);
+        addChild(encounter);
       }
     }
   }
@@ -54,7 +53,7 @@ class Space extends Block
   public function removeEncounter():Void
   {
     spaceType = SpaceType.Voidness;
-    scene.remove(encounter);
+    removeChild(encounter);
     encounter = null;
     updateGraphic();
     objects = [];

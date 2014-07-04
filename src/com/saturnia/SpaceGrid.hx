@@ -31,14 +31,23 @@ class SpaceGrid extends ElasticGrid<Space>
     super();
     this.scene = _scene;
     explorable = [];
+
     grid_bg = new Base(Constants.GRID_X, Constants.GRID_Y);
     grid_bg.graphic = new TiledImage(Assets.get("space_void"), GRID_BG_W, GRID_BG_H);
     grid_bg.layer = Constants.GRID_BG_LAYER;
     grid_bg.type = "grid_bg";
     grid_bg.updateHitbox();
+
+    var space = new Space();
+    space.explore(Generator.randomSpaceStation());
+    scene.add(space);
+    add(0, 0, space);
+    findExplorables();
+    centerOn(0, 0);
   }
 
-  public override function add(i:Int, j:Int, space:Space) {
+  public override function add(i:Int, j:Int, space:Space)
+  {
     super.add(i, j, space);
     space.grid = this;
     space.x = Constants.GRID_X+(i*Constants.BLOCK_W) + offsetX;
@@ -46,47 +55,77 @@ class SpaceGrid extends ElasticGrid<Space>
     space.updateGraphic();
   }
 
+  public function explore(marker:Base, spaceType:SpaceType)
+  {
+    for(e in explorable) {
+      if(e.marker == marker) {
+        var space = new Space();
+        space.explore(spaceType);
+        scene.add(space);
+        add(e.x, e.y, space);
+        findExplorables();
+        centerOn(e.x, e.y);
+      }
+    }
+  }
+
   public function centerOn(x:Int, y:Int)
   {
-    setOffset((GRID_BG_W - Constants.BLOCK_W)/2 - x*Constants.BLOCK_W,
-              (GRID_BG_H - Constants.BLOCK_H)/2 - y*Constants.BLOCK_H);
+    absoluteX = (GRID_BG_W - Constants.BLOCK_W)/2 - x*Constants.BLOCK_W;
+    absoluteY = (GRID_BG_H - Constants.BLOCK_H)/2 - y*Constants.BLOCK_H;
     finishDrag();
   }
 
   public function findExplorables()
   {
     var candidates:Map<Point, Bool> = new Map<Point, Bool>();
+    var cKey = function(point:Point) {
+      for(p in candidates.keys()) {
+        if(p.equals(point)) return p;
+      }
+      return null;
+    }
+
     each(function(s:Space, x:Int, y:Int):Void {
-      var n = new Point(x, y-1),
+      var c = new Point(x, y),
+          n = new Point(x, y-1),
           s = new Point(x, y+1),
           e = new Point(x+1, y),
           w = new Point(x-1, y);
 
-      candidates.set(new Point(x, y), false);
-      if(!candidates.exists(n)) candidates.set(n, true);
-      if(!candidates.exists(s)) candidates.set(s, true);
-      if(!candidates.exists(e)) candidates.set(e, true);
-      if(!candidates.exists(w)) candidates.set(w, true);
+      if(cKey(c) != null) {
+        candidates.set(cKey(c), false);
+      } else {
+        candidates.set(c, false);
+      }
+      if(cKey(n) == null) candidates.set(n, true);
+      if(cKey(s) == null) candidates.set(s, true);
+      if(cKey(e) == null) candidates.set(e, true);
+      if(cKey(w) == null) candidates.set(w, true);
     });
 
     for(spot in explorable) {
-      var coord = new Point(spot.x, spot.y);
-      if(candidates.exists(coord) && candidates.get(coord)) {
+      var key = cKey(new Point(spot.x, spot.y));
+      if(key != null && candidates.get(key)) {
         spot.valid = true;
-        candidates.remove(coord);
+        candidates.remove(key);
       } else {
         spot.valid = false;
       }
     }
 
     explorable = Lambda.array(Lambda.filter(explorable, function(e) {
-      if(!e.valid) scene.remove(e.marker);
+      if(!e.valid) {
+        scene.remove(e.marker);
+      }
       return e.valid;
     }));
 
     for(point in candidates.keys()) {
       if(candidates.get(point)) {
         var marker:Base = new Base(0, 0, Assets.getSprite("tile_tex", 0, 0, 100, 100));
+        marker.type = "explorable";
+        marker.updateHitbox();
         scene.add(marker);
         explorable.push({
           x: Std.int(point.x),
