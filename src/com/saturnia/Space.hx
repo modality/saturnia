@@ -33,13 +33,13 @@ class Space extends Block
       layer = Constants.EXPLORED_LAYER;
 
       spaceType = _st;
+      /*
       if(spaceType == SpaceType.Hostile) {
         encounter = new PirateEncounter(this);
       } else if(spaceType == SpaceType.Friendly) {
         encounter = new MerchantEncounter(this);
       }
 
-      updateGraphic();
       if(encounter != null) {
         encounter.activate();
         encounter.x = x;
@@ -47,6 +47,8 @@ class Space extends Block
         encounter.layer = Constants.EXPLORED_LAYER;
         addChild(encounter);
       }
+      */
+      updateGraphic();
     }
   }
 
@@ -73,6 +75,28 @@ class Space extends Block
     }
 
     setHitbox(Constants.BLOCK_W, Constants.BLOCK_H, 0, 0);
+  }
+
+  public function getExplainText():String
+  {
+    return switch(spaceType) {
+      case Voidness: "Void";
+      case Star(size, color):
+        switch(size) {
+          case Giant, Dwarf: color + " " + size;
+          default: color + " Star";
+        }
+      case Planet(size, matter):
+        switch(size) {
+          case Giant: matter + " Giant";
+          default: matter + " Planet";
+        }
+      case Debris(matter): "Debris - "+matter;
+      case Hostile: "Space Pirate";
+      case Friendly: "Merchant";
+      case SpaceStation(shape): "Space Station";
+      default: "";
+    };
   }
 
 }

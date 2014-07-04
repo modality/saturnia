@@ -8,11 +8,16 @@ class Constants
   public static var SCREEN_W:Int = 1024;
   public static var SCREEN_H:Int = 768;
   public static var GRID_X:Int = 0;
-  public static var GRID_Y:Int = 64;
-  public static var GRID_W:Int = 512;
-  public static var GRID_H:Int = 384;
+  public static var GRID_Y:Int = 0;
+  public static var GRID_W:Int = 768;
+  public static var GRID_H:Int = 512;
   public static var BLOCK_W:Int = 100;
   public static var BLOCK_H:Int = 100;
+
+  public static var INSPECTOR_X = 768;
+  public static var INSPECTOR_Y = 0;
+  public static var COMBAT_PANEL_X = 0;
+  public static var COMBAT_PANEL_Y = 512;
 
   public static var GRID_BG_LAYER:Int = 8;
   public static var UNEXPLORED_LAYER:Int = 7;

@@ -174,8 +174,8 @@ class Generator
       case Ice: 400;
     };
     var y_offset = switch(size) {
-      case Terrestrial: 300;
-      case Giant: 400;
+      case Terrestrial: 400;
+      case Giant: 300;
     };
     return Assets.getSprite("space_tex", x_offset, y_offset, 100, 100);
   }

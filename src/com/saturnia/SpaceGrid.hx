@@ -16,8 +16,6 @@ typedef Explorable = {
 class SpaceGrid extends ElasticGrid<Space>
 {
   public var scene:Controller;
-  public var GRID_BG_W:Int = 512;
-  public var GRID_BG_H:Int = 384;
   public var grid_bg:Base;
   public var absoluteX:Float = 0;
   public var absoluteY:Float = 0;
@@ -33,7 +31,7 @@ class SpaceGrid extends ElasticGrid<Space>
     explorable = [];
 
     grid_bg = new Base(Constants.GRID_X, Constants.GRID_Y);
-    grid_bg.graphic = new TiledImage(Assets.get("space_void"), GRID_BG_W, GRID_BG_H);
+    grid_bg.graphic = new TiledImage(Assets.get("space_void"), Constants.GRID_W, Constants.GRID_H);
     grid_bg.layer = Constants.GRID_BG_LAYER;
     grid_bg.type = "grid_bg";
     grid_bg.updateHitbox();
@@ -64,7 +62,8 @@ class SpaceGrid extends ElasticGrid<Space>
         scene.add(space);
         add(e.x, e.y, space);
         findExplorables();
-        centerOn(e.x, e.y);
+        //centerOn(e.x, e.y);
+        finishDrag();
         return new Point(e.x, e.y);
       }
     }
@@ -73,8 +72,8 @@ class SpaceGrid extends ElasticGrid<Space>
 
   public function centerOn(x:Int, y:Int)
   {
-    absoluteX = (GRID_BG_W - Constants.BLOCK_W)/2 - x*Constants.BLOCK_W;
-    absoluteY = (GRID_BG_H - Constants.BLOCK_H)/2 - y*Constants.BLOCK_H;
+    absoluteX = (Constants.GRID_W - Constants.BLOCK_W)/2 - x*Constants.BLOCK_W;
+    absoluteY = (Constants.GRID_H - Constants.BLOCK_H)/2 - y*Constants.BLOCK_H;
     finishDrag();
   }
 
@@ -125,7 +124,7 @@ class SpaceGrid extends ElasticGrid<Space>
 
     for(point in candidates.keys()) {
       if(candidates.get(point)) {
-        var marker:Base = new Base(0, 0, Assets.getSprite("tile_tex", 0, 0, 100, 100));
+        var marker:Base = new Base(0, 0, Assets.getSprite("tile_tex", 0, 0, Constants.BLOCK_W, Constants.BLOCK_H));
         marker.layer = Constants.UNEXPLORED_LAYER;
         marker.type = "explorable";
         marker.updateHitbox();
@@ -172,13 +171,13 @@ class SpaceGrid extends ElasticGrid<Space>
 
   public function setVisibility() {
     eachWithMarkers(function(b:Base, x:Int, y:Int) {
-      if(b.graphic.x + b.x > grid_bg.x + 512) {
+      if(b.graphic.x + b.x > grid_bg.x + Constants.GRID_W) {
         b.graphic.visible = false;
-      } else if(b.graphic.y + b.y > grid_bg.y + 384) {
+      } else if(b.graphic.y + b.y > grid_bg.y + Constants.GRID_H) {
         b.graphic.visible = false;
-      } else if(b.graphic.y + b.y < grid_bg.y - 100) {
+      } else if(b.graphic.y + b.y < grid_bg.y - Constants.BLOCK_H) {
         b.graphic.visible = false;
-      } else if(b.graphic.x + b.x < grid_bg.x - 100) {
+      } else if(b.graphic.x + b.x < grid_bg.x - Constants.BLOCK_W) {
         b.graphic.visible = false;
       } else {
         b.graphic.visible = true;
