@@ -4,7 +4,9 @@ import flash.events.Event;
 import com.modality.Base;
 import com.modality.TextBase;
 
-class PlayerResources extends Base
+import com.saturnia.inventory.Inventory;
+
+class Inspector extends Base
 {
   public var inv:Inventory;
 
@@ -20,14 +22,12 @@ class PlayerResources extends Base
 
   public var explainText:TextBase;
 
-  public function new()
+  public function new(_inv:Inventory)
   {
     super();
 
-    inv = new Inventory(Constants.STARTING_FUEL,
-                        Constants.STARTING_SHIELDS,
-                        Constants.STARTING_CARGO,
-                        Constants.STARTING_SCIENCE);
+    inv = _inv;
+
     this.x = Constants.INSPECTOR_X;
     this.y = Constants.INSPECTOR_Y;
 
@@ -84,12 +84,6 @@ class PlayerResources extends Base
   {
     super.added();
     updateGraphic();
-  }
-
-  public function useFuel(amount:Int)
-  {
-    inv.fuel -= amount;
-    fuel_text.text = ""+inv.fuel;
   }
 
   public override function updateGraphic()

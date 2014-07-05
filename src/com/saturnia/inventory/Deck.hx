@@ -1,11 +1,11 @@
-package com.saturnia;
+package com.saturnia.inventory;
 
 import com.modality.AugRandom;
+import com.saturnia.combat.CardView;
 
 class Deck
 {
   public var cards:Array<CardView>;
-
   public var drawPile:Array<CardView>;
   public var hand:Array<CardView>;
   public var discardPile:Array<CardView>;
@@ -13,7 +13,7 @@ class Deck
   public function new()
   {
     cards = [];
-    var part = CardDatabase.getPart("Crew");
+    var part = CardDatabase.getPartData("Crew");
     for(card in part.cards) {
       var cv = new CardView(card);
       cards.push(cv);

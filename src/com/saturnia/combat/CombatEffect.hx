@@ -1,6 +1,7 @@
-package com.saturnia;
+package com.saturnia.combat;
 
 import com.modality.cards.Message;
+import com.saturnia.inventory.Inventory;
 
 class CombatEffect
 {

@@ -8,11 +8,6 @@ class Message {
     tokens = _tokens;
   }
 
-  public function eval(r:Receiver):Message
-  {
-    return r.eval(this);
-  }
-
   public function type():String
   {
     return Std.string(tokens[0]);

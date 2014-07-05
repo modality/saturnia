@@ -1,8 +1,8 @@
-package com.saturnia;
+package com.saturnia.combat;
 
 import com.modality.Base;
 
-class CardPile extends Base
+class CardPileView extends Base
 {
   public var playFn:CardView->Bool;
 

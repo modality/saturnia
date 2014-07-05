@@ -2,6 +2,7 @@ package com.saturnia;
 
 import com.haxepunk.graphics.Image;
 import com.modality.Base;
+import com.saturnia.inventory.Inventory;
 
 class Encounter extends Base
 {

@@ -1,23 +1,20 @@
-package com.saturnia;
+package com.saturnia.data;
 
 import com.modality.cards.Message;
 
-class CardRule
+class CardRuleData
 {
   public var name:String;
   public var text:String;
   public var type:String;
   public var rule:Message;
 
-  public function new()
-  {
+  public function new() { }
 
-  }
-
-  public static function fromYamlObj(obj:Dynamic):CardRule
+  public static function fromYamlObj(obj:Dynamic):CardRuleData
   {
     //trace("Building rule: "+obj.name);
-    var rule = new CardRule();
+    var rule = new CardRuleData();
 
     rule.name = obj.name;
     rule.text = obj.text;

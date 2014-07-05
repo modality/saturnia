@@ -1,4 +1,4 @@
-package com.saturnia;
+package com.saturnia.inventory;
 
 import flash.events.Event;
 import com.modality.Base;
@@ -20,8 +20,6 @@ class Inventory extends Base
 
   public var deck:Deck;
 
-  public var items:Array<Item>;
-
   public function new(_fuel:Int, _shields:Int, _cargo:Int, _science:Int)
   {
     super();
@@ -31,7 +29,11 @@ class Inventory extends Base
     this._science = _science;
 
     deck = new Deck();
-    items = [];
+  }
+
+  public function useFuel(amount:Int)
+  {
+    fuel -= amount;
   }
 
   public function get_fuel():Int

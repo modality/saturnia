@@ -1,4 +1,4 @@
-package com.saturnia;
+package com.saturnia.combat;
 
 import com.haxepunk.graphics.Image;
 import com.haxepunk.utils.Input;
@@ -9,15 +9,14 @@ import com.modality.cards.Message;
 
 class CombatPanel extends Base
 {
-  public var player:PlayerResources;
-  public var deck:Deck;
+  public var inspector:Inspector;
   public var invoker:Invoker;
-  public var cgr:CardGameReceiver;
+  public var cr:CombatReceiver;
 
-  public var draw_pile:CardPile;
-  public var strategy_pile:CardPile;
-  public var reaction_pile:CardPile;
-  public var discard_pile:CardPile;
+  public var draw_pile:CardPileView;
+  public var strategy_pile:CardPileView;
+  public var reaction_pile:CardPileView;
+  public var discard_pile:CardPileView;
 
   public var mouseOffsetX:Int;
   public var mouseOffsetY:Int;
@@ -29,34 +28,35 @@ class CombatPanel extends Base
 
   public var actionCards:Array<CardView>;
 
-  public function new(_player:PlayerResources, _invoker:Invoker, _cgr:CardGameReceiver)
+  public function new(_inspector:Inspector, _invoker:Invoker)
   {
     super(0, 0);
 
-    cgr = _cgr;
+    inspector = _inspector;
     invoker = _invoker;
+ 
+    cr = new CombatReceiver(inspector.inv);
+    invoker.addReceiver(cr);
 
-    player = _player;
-    deck = player.inv.deck;
     _didCardAction = false;
 
     layer = Constants.OVERLAY_LAYER;
 
     actionCards = [];
 
-    draw_pile = new CardPile(0, 0);
+    draw_pile = new CardPileView(0, 0);
     addChild(draw_pile);
     addChild(new TextBase(0, -20, 0, 0, "Draw Deck"));
 
-    strategy_pile = new CardPile(400, 0, playStrategy);
+    strategy_pile = new CardPileView(400, 0, playStrategy);
     addChild(strategy_pile);
     addChild(new TextBase(400, -20, 0, 0, "Strategy"));
 
-    reaction_pile = new CardPile(500, 0, playReaction);
+    reaction_pile = new CardPileView(500, 0, playReaction);
     addChild(reaction_pile);
     addChild(new TextBase(500, -20, 0, 0, "Reaction"));
 
-    discard_pile = new CardPile(600, 0, playDiscard);
+    discard_pile = new CardPileView(600, 0, playDiscard);
     addChild(discard_pile);
     addChild(new TextBase(600, -20, 0, 0, "Discard"));
     deal();
@@ -78,7 +78,7 @@ class CombatPanel extends Base
         mouseOffsetY = mouse_y;
       }
     } else if(Input.mouseDown && heldCard != null) {
-      var card_pile:CardPile = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPile);
+      var card_pile:CardPileView = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPileView);
 
       heldCard.moveGraphic(mouse_x-mouseOffsetX, mouse_y-mouseOffsetY);
 
@@ -91,7 +91,7 @@ class CombatPanel extends Base
         card_pile.focus();
       }
     } else if(Input.mouseReleased && heldCard != null) {
-      var card_pile:CardPile = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPile);
+      var card_pile:CardPileView = cast(scene.collidePoint("cardPile", mouse_x, mouse_y), CardPileView);
 
       if(card_pile != null) {
         if(card_pile.playCard(heldCard)) {
@@ -113,11 +113,11 @@ class CombatPanel extends Base
       heldCard.moveGraphic(0, 0);
       heldCard = null;
       _didCardAction = true;
-      player.updateGraphic();
+      inspector.updateGraphic();
     } else {
       var card:CardView = cast(scene.collidePoint("card", mouse_x, mouse_y), CardView);
       if(card != null) {
-        player.setExplain(card.card.getExplainText());
+        inspector.setExplain(card.card.getExplainText());
       }
     }
   }
@@ -129,10 +129,10 @@ class CombatPanel extends Base
 
   public function deal()
   {
-    deck.draw(3);
+    inspector.inv.deck.draw(3);
 
     var count = 0;
-    for(card in deck.hand) {
+    for(card in inspector.inv.deck.hand) {
       card.x = (count * 90) + 120;
       card.y = 0;
       count++;
@@ -163,9 +163,9 @@ class CombatPanel extends Base
   {
     if(!cv.card.hasRule("action")) return false;
     invoker.execute(msg("(play action)"));
-    cgr.setTarget(space);
+    cr.setTarget(space);
     var response = invoker.execute(cv.card.getMessage("action"));
-    cgr.clearTarget();
+    cr.clearTarget();
     return response;
   }
 

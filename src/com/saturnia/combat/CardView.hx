@@ -1,17 +1,18 @@
-package com.saturnia;
+package com.saturnia.combat;
 
 import com.modality.Base;
 import com.modality.TextBase;
+import com.saturnia.data.CardData;
 
 class CardView extends Base
 {
-  public var card:Card;
+  public var card:CardData;
   public var nameText:TextBase;
   public var nameText2:TextBase;
 
   public var playable:Bool;
 
-  public function new(_card:Card)
+  public function new(_card:CardData)
   {
     super();
     card = _card;

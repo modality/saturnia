@@ -1,9 +1,11 @@
-package com.saturnia;
+package com.saturnia.combat;
 
 import com.modality.cards.Message;
 import com.modality.cards.Receiver;
 
-class CardGameReceiver implements Receiver {
+import com.saturnia.inventory.Inventory;
+
+class CombatReceiver implements Receiver {
   public var target:Space;
   public var noRule:Message;
   public var self:Inventory;

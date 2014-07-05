@@ -1,32 +1,43 @@
 package com.modality.cards;
 
-using Lambda;
-
-class Invoker implements Receiver {
-  public var game:Receiver;
+class Invoker {
+  public var receivers:Array<Receiver>;
   public var triggers:Array<Trigger>; // specify what happens when events are fired
   public var history:Array<Message>;
 
-  public function new(_game:Receiver)
+  public function new()
   {
-    game = _game;
+    receivers = [];
     triggers = [];
     history = [];
   }
 
-  public function execute(message:Message):Bool
+  public function addReceiver(r:Receiver)
   {
-    var msg = message.eval(this);
-    //trace(msg);
-    history.push(msg);
-    return msg.type() != "noRule";
+    receivers.push(r);
   }
 
-  public function eval(message:Message):Message
+  public function execute(message:Message):Bool
+  {
+    var msgs:Array<Message> = eval(message);
+
+    msgs = msgs.filter(function(msg:Message):Bool {
+      return msg.type() != "noRule";
+    });
+
+    if(msgs.length > 0) {
+      history = history.concat(msgs);
+      return true;
+    }
+
+    return false;
+  }
+
+  public function eval(message:Message):Array<Message>
   {
     switch(message.type()) {
       case "noRule":
-        return message;
+        return [message];
       case "trigger":
         var t = new Message(message.tokens[1]);
         var r = new Message(message.tokens[2]);
@@ -34,7 +45,7 @@ class Invoker implements Receiver {
         var e = message.tokens[4] == "true";
 
         triggers.push(new Trigger(t, r, i, e));
-        return Message.read("(addedTrigger ("+message.toString()+"))");
+        return [Message.read("(addedTrigger ("+message.toString()+"))")];
       default:
         var interrupt = false;
         var matched = triggers.filter(function(t) { return t.match(message); });
@@ -48,11 +59,15 @@ class Invoker implements Receiver {
         }
 
         if(interrupt) {
-          return Message.read("(interrupt ("+message.toString()+"))");
+          return [Message.read("(interrupt ("+message.toString()+"))")];
         }
 
-        return game.eval(message);
+        var responses = [];
+        for(receiver in receivers) {
+          responses.push(receiver.eval(message));
+        }
+        return responses;
     }
-    return Message.read("(error)");
+    return [Message.read("(error)")];
   }
 }

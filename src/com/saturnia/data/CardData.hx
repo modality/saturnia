@@ -1,18 +1,18 @@
-package com.saturnia;
+package com.saturnia.data;
 
 import com.modality.cards.Message;
 
-class Card
+class CardData
 {
   public var id:String;
-  public var rules:Array<CardRule>;
+  public var rules:Array<CardRuleData>;
 
   public function new()
   {
     rules = [];
   }
 
-  public function getRule(type:String):CardRule
+  public function getRule(type:String):CardRuleData
   {
     for(rule in rules) {
       if(rule.type == type) {
@@ -60,14 +60,14 @@ class Card
     return explain;
   }
 
-  public static function fromYamlObj(obj:Dynamic):Card
+  public static function fromYamlObj(obj:Dynamic):CardData
   {
     //trace("Building card: "+obj.id);
-    var card = new Card();
+    var card = new CardData();
     card.id = obj.id;
 
     for(rule in cast(obj.rules, Array<Dynamic>)) {
-      card.rules.push(CardRule.fromYamlObj(rule));
+      card.rules.push(CardRuleData.fromYamlObj(rule));
     }
 
     return card;

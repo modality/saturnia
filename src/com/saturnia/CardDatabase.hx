@@ -3,9 +3,11 @@ package com.saturnia;
 import yaml.Yaml;
 import yaml.Parser;
 
+import com.saturnia.data.ShipPartData;
+
 class CardDatabase
 {
-  public static var parts:Array<ShipPart>;
+  public static var parts:Array<ShipPartData>;
 
   public static function init()
   {
@@ -13,15 +15,15 @@ class CardDatabase
 
     var partlist = Yaml.parse(openfl.Assets.getText(Assets.get("cards")), Parser.options().useObjects());
     for(part in cast(partlist, Array<Dynamic>)) {
-      parts.push(ShipPart.fromYamlObj(part));
+      parts.push(ShipPartData.fromYamlObj(part));
     }
   }
 
-  public static function getPart(name:String):ShipPart
+  public static function getPartData(name:String):ShipPartData
   {
     for(part in parts) {
       if(part.name == name) {
-	return part;
+        return part;
       }
     }
     return null;

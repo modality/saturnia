@@ -12,11 +12,15 @@ import com.modality.Controller;
 import com.modality.cards.Invoker;
 import com.modality.cards.Message;
 
+import com.saturnia.combat.CombatPanel;
+
+import com.saturnia.inventory.Inventory;
+
 class GameController extends Controller
 {
-  public var player:PlayerResources;
+  public var player:Inventory;
+  public var inspector:Inspector;
   public var grid:SpaceGrid;
-  public var sectorType:SectorType;
   public var name:String;
   public var anyExplored:Bool;
   public var inCombat:Bool;
@@ -30,7 +34,6 @@ class GameController extends Controller
   public var sectorScrollY:Int;
   
   public var invoker:Invoker;
-  public var cgr:CardGameReceiver;
 
   public var combatPanel:CombatPanel;
 
@@ -39,8 +42,12 @@ class GameController extends Controller
   public function new()
   {
     super();
-    player = new PlayerResources();
-    sectorType = SectorType.Peaceful;
+    player = new Inventory(Constants.STARTING_FUEL,
+                           Constants.STARTING_SHIELDS,
+                           Constants.STARTING_CARGO,
+                           Constants.STARTING_SCIENCE);
+
+    inspector = new Inspector(player);
     anyExplored = false;
     inCombat = false;
     regainFocus = false;
@@ -48,10 +55,9 @@ class GameController extends Controller
     canDragGrid = false;
     draggingGrid = false;
 
-    cgr = new CardGameReceiver(player.inv);
-    invoker = new Invoker(cgr);
+    invoker = new Invoker();
 
-    add(player);
+    add(inspector);
 
     startLevel();
 
@@ -60,7 +66,7 @@ class GameController extends Controller
     nextExplore.y = Constants.COMBAT_PANEL_Y;
     add(nextExplore);
 
-    combatPanel = new CombatPanel(player, invoker, cgr);
+    combatPanel = new CombatPanel(inspector, invoker);
     combatPanel.x = Constants.COMBAT_PANEL_X;
     combatPanel.y = Constants.COMBAT_PANEL_Y;
     add(combatPanel);
@@ -104,12 +110,12 @@ class GameController extends Controller
     DC.init();
     DC.registerObject(combatPanel, "combatPanel");
     DC.registerObject(grid, "grid");
-    DC.registerObject(player, "player");
+    DC.registerObject(inspector, "inspector");
   }
 
   public override function update():Void
   {
-    player.setExplain("");
+    inspector.setExplain("");
     super.update();
     var mouse_x = Input.mouseX;
     var mouse_y = Input.mouseY;
@@ -120,9 +126,12 @@ class GameController extends Controller
     }
 
     var gbg:Base = cast(collidePoint("grid_bg", mouse_x, mouse_y), Base);
-    var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
-    if(space != null && gbg != null) {
-      player.setExplain(space.getExplainText());
+
+    if(!Input.mouseDown) {
+      var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
+      if(space != null && gbg != null) {
+        inspector.setExplain(Generator.getExplainText(space.spaceType));
+      }
     }
 
     if(Input.mousePressed) {
@@ -171,7 +180,7 @@ class GameController extends Controller
           invoker.execute(new Message(["explore", spaceStr, coord.x, coord.y]));
           nextExplore.getNextSpace();
           player.useFuel(1);
-          player.updateGraphic();
+          inspector.updateGraphic();
           return;
         }
       }
@@ -185,7 +194,7 @@ class GameController extends Controller
     regainFocus = false;
 
     name = Generator.generateSectorName();
-    player.sectorName.text = name;
+    inspector.sectorName.text = name;
 
     grid = new SpaceGrid(this);
     add(grid.grid_bg);

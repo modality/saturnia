@@ -205,5 +205,27 @@ class Generator
       case Ice: Assets.getImage("space_debris_ice");
     };
   }
-}
 
+  public static function getExplainText(spaceType:SpaceType):String
+  {
+    return switch(spaceType) {
+      case Voidness: "Void";
+      case Star(size, color):
+        switch(size) {
+          case Giant, Dwarf: color + " " + size;
+          default: color + " Star";
+        }
+      case Planet(size, matter):
+        switch(size) {
+          case Giant: matter + " Giant";
+          default: matter + " Planet";
+        }
+      case Debris(matter): "Debris - "+matter;
+      case Hostile: "Space Pirate";
+      case Friendly: "Merchant";
+      case SpaceStation(shape): "Space Station";
+      default: "";
+    };
+  }
+
+}
