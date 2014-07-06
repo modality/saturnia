@@ -45,6 +45,8 @@ class Assets
     assetDictionary.set("ui_pile", "graphics/ui/card_pile.png");
     assetDictionary.set("ui_card", "graphics/ui/test_card.png");
 
+    assetDictionary.set("card_spread", "graphics/ui/card_spread.png");
+
     assetDictionary.set("card_action", "graphics/ui/card_action.png");
     assetDictionary.set("card_reaction", "graphics/ui/card_reaction.png");
     assetDictionary.set("card_strategy", "graphics/ui/card_strategy.png");

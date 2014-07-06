@@ -62,7 +62,7 @@ class GameController extends Controller
     startLevel();
 
     nextExplore = new NextExploreView();
-    nextExplore.x = Constants.COMBAT_PANEL_X + 700;
+    nextExplore.x = Constants.COMBAT_PANEL_X + 690;
     nextExplore.y = Constants.COMBAT_PANEL_Y;
     add(nextExplore);
 

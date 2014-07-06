@@ -13,7 +13,8 @@ class CombatPanel extends Base
   public var invoker:Invoker;
   public var cr:CombatReceiver;
 
-  public var draw_pile:CardPileView;
+  public var deck_text:TextBase;
+
   public var strategy_pile:CardPileView;
   public var reaction_pile:CardPileView;
   public var discard_pile:CardPileView;
@@ -30,7 +31,7 @@ class CombatPanel extends Base
 
   public function new(_inspector:Inspector, _invoker:Invoker)
   {
-    super(0, 0);
+    super(0, 0, Assets.getImage("card_spread"));
 
     inspector = _inspector;
     invoker = _invoker;
@@ -44,21 +45,17 @@ class CombatPanel extends Base
 
     actionCards = [];
 
-    draw_pile = new CardPileView(0, 0);
-    addChild(draw_pile);
-    addChild(new TextBase(0, -20, 0, 0, "Draw Deck"));
+    deck_text = new TextBase(10, 20, 0, 0, "D\nE\nC\nK");
+    addChild(deck_text);
 
-    strategy_pile = new CardPileView(400, 0, playStrategy);
+    strategy_pile = new CardPileView(530, 20, playStrategy);
     addChild(strategy_pile);
-    addChild(new TextBase(400, -20, 0, 0, "Strategy"));
 
-    reaction_pile = new CardPileView(500, 0, playReaction);
+    reaction_pile = new CardPileView(530, 140, playReaction);
     addChild(reaction_pile);
-    addChild(new TextBase(500, -20, 0, 0, "Reaction"));
 
-    discard_pile = new CardPileView(600, 0, playDiscard);
+    discard_pile = new CardPileView(700, 140, playDiscard);
     addChild(discard_pile);
-    addChild(new TextBase(600, -20, 0, 0, "Discard"));
     deal();
   }
 
@@ -82,7 +79,6 @@ class CombatPanel extends Base
 
       heldCard.moveGraphic(mouse_x-mouseOffsetX, mouse_y-mouseOffsetY);
 
-      draw_pile.blur();
       strategy_pile.blur();
       reaction_pile.blur();
       discard_pile.blur();
@@ -101,11 +97,19 @@ class CombatPanel extends Base
         card_pile.blur();
       }
 
+      var gbg:Base = cast(scene.collidePoint("grid_bg", mouse_x, mouse_y), Base);
       var space:Space = cast(scene.collidePoint("space", mouse_x, mouse_y), Space);
-      if(space != null) {
-        if(playAction(heldCard, space)) {
-          heldCard.move(discard_pile.x + 5, discard_pile.y + 5);
-          heldCard.playable = false;
+      if(gbg != null) {
+        if(space != null) {
+          if(playActionTarget(heldCard, space)) {
+            heldCard.move(discard_pile.x + 5, discard_pile.y + 5);
+            heldCard.playable = false;
+          }
+        } else {
+          if(playAction(heldCard)) {
+            heldCard.move(discard_pile.x + 5, discard_pile.y + 5);
+            heldCard.playable = false;
+          }
         }
       }
 
@@ -133,11 +137,18 @@ class CombatPanel extends Base
 
     var count = 0;
     for(card in inspector.inv.deck.hand) {
-      card.x = (count * 90) + 120;
-      card.y = 0;
+      card.x = (count * 160) + 50;
+      card.y = 10;
       count++;
       addChild(card);
     }
+
+    updateDeckText();
+  }
+
+  public function updateDeckText()
+  {
+    deck_text.text = "D\nE\nC\nK\n\n"+inspector.inv.deck.drawPile.length;
   }
 
   public function playStrategy(cv:CardView):Bool
@@ -159,10 +170,18 @@ class CombatPanel extends Base
     return invoker.execute(msg("(play discard)"));
   }
 
-  public function playAction(cv:CardView, space:Space):Bool
+  public function playAction(cv:CardView):Bool
   {
     if(!cv.card.hasRule("action")) return false;
     invoker.execute(msg("(play action)"));
+    var response = invoker.execute(cv.card.getMessage("action"));
+    return response;
+  }
+
+  public function playActionTarget(cv:CardView, space:Space):Bool
+  {
+    if(!cv.card.hasRule("action")) return false;
+    invoker.execute(msg("(play actionTarget)"));
     cr.setTarget(space);
     var response = invoker.execute(cv.card.getMessage("action"));
     cr.clearTarget();

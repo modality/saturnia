@@ -77,8 +77,8 @@ class CardView extends Base
     graphic.y = _y;
     nameText.graphic.x = _x;
     nameText.graphic.y = _y;
-    nameText2.graphic.x = _x;
-    nameText2.graphic.y = _y;
+    nameText2.textObj.x = _x + 78 - nameText2.textObj.textWidth;
+    nameText2.textObj.y = _y + 98 - nameText2.textObj.textHeight;
   }
 
   public function move(_x:Float, _y:Float)
@@ -87,6 +87,8 @@ class CardView extends Base
     y = _y;
     nameText.x = _x;
     nameText.y = _y;
+    nameText2.x = _x;
+    nameText2.y = _y;
     moveGraphic(0, 0);
   }
 

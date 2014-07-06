@@ -31,6 +31,14 @@ class CombatReceiver implements Receiver {
       case "effect":
         var ce = new CombatEffect(message);
 
+        if(ce.apply(self)) {
+          return message;
+        }
+
+        return noRule;
+      case "effectTarget":
+        var ce = new CombatEffect(message);
+
         if(target != null && target.encounter != null) {
           if(ce.apply(self, target.encounter.inventory)) {
             return message;

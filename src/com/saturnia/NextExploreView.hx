@@ -11,8 +11,7 @@ class NextExploreView extends Base
   public function new()
   {
     super();
-    addChild(new TextBase(0, -20, 0, 0, "Next Tile:"));
-    addChild(new TextBase(0, 70, 0, 0, "-1 Fuel"));
+    addChild(new TextBase(0, 105, 0, 0, "-1 Fuel"));
     getNextSpace();
   }
 
@@ -26,5 +25,6 @@ class NextExploreView extends Base
   {
     super.updateGraphic();
     graphic = Generator.spaceImage(spaceType);
+    graphic.y = 5;
   }
 }
