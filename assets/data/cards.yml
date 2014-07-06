@@ -23,7 +23,7 @@
     - name: Comm Officer
       text: Gain influence with a faction.
       type: action
-      rule: (effect opponent influence gain 5)
+      rule: (effectTarget opponent influence gain 5)
     - name: Diplomatic Mission
       text: Gain 1 cargo for each friendly placed
       type: strategy
@@ -80,5 +80,5 @@
     - name: Pepper Ray
       text: Deal 1 damage.
       type: action
-      rule: (effect opponent shield lose 1)
+      rule: (effectTarget opponent shield lose 1)
     count: 3
