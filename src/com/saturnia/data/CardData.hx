@@ -16,7 +16,7 @@ class CardData
   {
     for(rule in rules) {
       if(rule.type == type) {
-	return rule;
+        return rule;
       }
     }
     return null;
@@ -35,7 +35,7 @@ class CardData
   {
     for(rule in rules) {
       if(rule.type == type) {
-	return true;
+        return true;
       }
     }
     return false;

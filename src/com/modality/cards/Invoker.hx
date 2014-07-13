@@ -21,6 +21,14 @@ class Invoker {
   {
     var msgs:Array<Message> = eval(message);
 
+    trace(message.toString());
+
+    /*
+    for(msg in msgs) {
+      trace(">> "+msg.toString());
+    }
+    */
+
     msgs = msgs.filter(function(msg:Message):Bool {
       return msg.type() != "noRule";
     });

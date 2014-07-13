@@ -148,6 +148,20 @@ class Generator
     return SpaceStation(Sphere);
   }
 
+  public static function spaceString(spaceType:SpaceType):String
+  {
+    return switch spaceType {
+      case Voidness: "void";
+      case Star(size, color): "star";
+      case Planet(size, matter): "planet";
+      case Debris(matter): "debris";
+      case Hostile: "hostile";
+      case Friendly: "friendly";
+      case Faction(type): "faction";
+      case SpaceStation(shape): "space_station";
+    }
+  }
+
   public static function spaceImage(spaceType:SpaceType):Image
   {
     return switch(spaceType) {

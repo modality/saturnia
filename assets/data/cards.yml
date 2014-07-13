@@ -51,6 +51,55 @@
       type: strategy
       rule: (trigger (explore planet) (effect self science gain 1) false false)
     count: 1
+- name: Smuggler
+  cards:
+  - id: Smuggler - Bad
+    rules:
+    - name: We Have A History
+      text: Pirates deal more damage.
+      type: ambient
+      rule: (trigger (effect self shield lose @X) (effect self shield lose 1) false false)
+- name: Diplomat
+  cards:
+  - id: Diplomat - Bad
+    rules:
+    - name: Let's Try Talking
+      text: Can't attack this turn.
+      type: ambient
+      rule: (trigger (effectTarget opponent shield lose) (noRule) true false)
+- name: Merchant
+  cards:
+  - id: Merchant - Bad
+    rules:
+    - name: Import Tax
+      text: Docking at the space station costs 5 cargo
+      type: ambient
+      rule: (trigger (interact space_station) (effect self cargo lose 5) false false)
+- name: Engineer
+  cards:
+  - id: Engineer - Bad
+    rules:
+    - name: Obsessed
+      text: Your engineer demands the best. Prices increased.
+      type: ambient
+      rule: (trigger (interact merchant) (interact merchantInflated) true false)
+- name: Scientist
+  cards:
+  - id: Scientist - Bad
+    rules:
+    - name: That's Odd...
+      text: Increased anomalies
+      type: ambient
+      rule: (trigger (effect) (effectRandom) true false)
+- name: Navigator
+  cards:
+  - id: Navigator - Bad
+    rules:
+    - name: Miscalculation
+      text: 
+      type: ambient
+      rule: (trigger (explore) (exploreRandom) true false)
+
 - name: Ship Damage
   cards:
   - id: Ship Damage
@@ -81,4 +130,4 @@
       text: Deal 1 damage.
       type: action
       rule: (effectTarget opponent shield lose 1)
-    count: 3
+    count: 4

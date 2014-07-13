@@ -34,9 +34,11 @@ class Assets
     assetDictionary.set("space_debris_gas", "graphics/spaces/debris_gas.png");
     assetDictionary.set("space_debris_rock", "graphics/spaces/debris_rock.png");
     assetDictionary.set("space_debris_ice", "graphics/spaces/debris_ice_2.png");
+    assetDictionary.set("space_debris_basic", "graphics/spaces/debris_basic.png");
 
     assetDictionary.set("space_tex", "graphics/spaces/spaces.png");
     assetDictionary.set("tile_tex", "graphics/spaces/empty_spaces.png");
+    assetDictionary.set("planet_basic", "graphics/spaces/planet_basic.png");
 
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_spread", "graphics/ui/tarot_spread.png");
@@ -46,6 +48,11 @@ class Assets
     assetDictionary.set("ui_card", "graphics/ui/test_card.png");
 
     assetDictionary.set("card_spread", "graphics/ui/card_spread.png");
+    assetDictionary.set("nebula_bg_1", "graphics/ui/nebula_bg_1.png");
+    assetDictionary.set("nebula_bg_2", "graphics/ui/nebula_bg_2.png");
+    assetDictionary.set("nebula_bg_3", "graphics/ui/nebula_bg_3.png");
+    assetDictionary.set("nebula_bg_4", "graphics/ui/nebula_bg_4.png");
+    assetDictionary.set("nebula_bg_5", "graphics/ui/nebula_bg_5.png");
 
     assetDictionary.set("card_action", "graphics/ui/card_action.png");
     assetDictionary.set("card_reaction", "graphics/ui/card_reaction.png");

@@ -16,6 +16,7 @@
 	<haxelib name="openfl-bitfive" if="html5" />
 	<haxelib name="HaxePunk" />
 	<haxelib name="DConsole" />
+	<haxelib name="mconsole" />
 
   <assets path="assets/data" rename="data" include="*.yml|*.yaml" />
 	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" />

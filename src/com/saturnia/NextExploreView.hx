@@ -1,6 +1,5 @@
 package com.saturnia;
 
-import com.modality.AugRandom;
 import com.modality.Base;
 import com.modality.TextBase;
 

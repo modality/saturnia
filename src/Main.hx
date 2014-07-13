@@ -14,6 +14,7 @@ class Main extends Engine
 	  Generator.init();
 	  CardDatabase.init();
 
+
 #if debug
 		HXP.console.enable();
 #end

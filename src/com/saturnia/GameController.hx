@@ -38,6 +38,7 @@ class GameController extends Controller
   public var combatPanel:CombatPanel;
 
   public var nextExplore:NextExploreView;
+  public var nextTurn:NextTurnView;
 
   public function new()
   {
@@ -65,6 +66,11 @@ class GameController extends Controller
     nextExplore.x = Constants.COMBAT_PANEL_X + 690;
     nextExplore.y = Constants.COMBAT_PANEL_Y;
     add(nextExplore);
+
+    nextTurn = new NextTurnView();
+    nextTurn.x = Constants.COMBAT_PANEL_X + 850;
+    nextTurn.y = Constants.COMBAT_PANEL_Y;
+    add(nextTurn);
 
     combatPanel = new CombatPanel(inspector, invoker);
     combatPanel.x = Constants.COMBAT_PANEL_X;
@@ -111,6 +117,17 @@ class GameController extends Controller
     DC.registerObject(combatPanel, "combatPanel");
     DC.registerObject(grid, "grid");
     DC.registerObject(inspector, "inspector");
+    haxe.Log.trace = GameController.newTrace;
+  }
+
+  public static function newTrace( v : Dynamic, ?inf : haxe.PosInfos ):Void
+  {
+    DC.log(v, 0xFFFFFF);
+    /*
+    if(inf != null) {
+      DC.log(inf.className+"#"+inf.methodName+":"+inf.lineNumber, 0xCCCCCC);
+    }
+    */
   }
 
   public override function update():Void
@@ -162,26 +179,22 @@ class GameController extends Controller
 
     if(!inCombat) {
       if(Input.mouseReleased) {
-        var gbg:Base = cast(collidePoint("grid_bg", mouse_x, mouse_y), Base);
         var marker:Base = cast(collidePoint("explorable", mouse_x, mouse_y), Base);
+        var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
+
         if(gbg != null && marker != null) {
           var coord = grid.explore(marker, nextExplore.spaceType);
+          var spaceStr = Generator.spaceString(nextExplore.spaceType);
 
-          var spaceStr = switch nextExplore.spaceType {
-            case Voidness: "void";
-            case Star(size, color): "star";
-            case Planet(size, matter): "planet";
-            case Debris(matter): "debris";
-            case Hostile: "hostile";
-            case Friendly: "friendly";
-            case Faction(type): "faction";
-            case SpaceStation(shape): "space_station";
-          }
           invoker.execute(new Message(["explore", spaceStr, coord.x, coord.y]));
+
           nextExplore.getNextSpace();
           player.useFuel(1);
           inspector.updateGraphic();
           return;
+        } else if(gbg != null && space != null) {
+          var spaceStr = Generator.spaceString(space.spaceType); 
+          invoker.execute(new Message(["interact", spaceStr]));
         }
       }
     }

@@ -52,6 +52,8 @@ class CombatReceiver implements Receiver {
         return message;
       case "exploreNavigator":
         return message;
+      case "interact":
+        return message;
       case "play":
         return message;
       default:

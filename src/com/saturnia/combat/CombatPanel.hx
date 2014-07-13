@@ -141,6 +141,7 @@ class CombatPanel extends Base
       card.y = 10;
       count++;
       addChild(card);
+      if(card.card.hasRule("ambient")) playAmbient(card);
     }
 
     updateDeckText();
@@ -149,6 +150,13 @@ class CombatPanel extends Base
   public function updateDeckText()
   {
     deck_text.text = "D\nE\nC\nK\n\n"+inspector.inv.deck.drawPile.length;
+  }
+
+  public function playAmbient(cv:CardView):Bool
+  {
+    if(!cv.card.hasRule("ambient")) return false;  
+    invoker.execute(msg("(play ambient)"));
+    return invoker.execute(cv.card.getMessage("ambient"));
   }
 
   public function playStrategy(cv:CardView):Bool

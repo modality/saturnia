@@ -2,7 +2,6 @@ package com.saturnia;
 
 import flash.geom.Point;
 import com.modality.ElasticGrid;
-import com.haxepunk.graphics.TiledImage;
 import com.modality.Base;
 import com.modality.Controller;
 
@@ -31,7 +30,7 @@ class SpaceGrid extends ElasticGrid<Space>
     explorable = [];
 
     grid_bg = new Base(Constants.GRID_X, Constants.GRID_Y);
-    grid_bg.graphic = new TiledImage(Assets.get("space_void"), Constants.GRID_W, Constants.GRID_H);
+    grid_bg.graphic = Assets.getImage("nebula_bg_"+(Math.floor(Math.random() * 5)+1));
     grid_bg.layer = Constants.GRID_BG_LAYER;
     grid_bg.type = "grid_bg";
     grid_bg.updateHitbox();
