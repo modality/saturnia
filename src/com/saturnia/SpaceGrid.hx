@@ -5,13 +5,6 @@ import com.modality.ElasticGrid;
 import com.modality.Base;
 import com.modality.Controller;
 
-typedef Explorable = {
-  var marker:Base;
-  var x:Int;
-  var y:Int;
-  var valid:Bool;
-}
-
 class SpaceGrid extends ElasticGrid<Space>
 {
   public var scene:Controller;
@@ -21,13 +14,10 @@ class SpaceGrid extends ElasticGrid<Space>
   public var offsetX:Float = 0;
   public var offsetY:Float = 0;
 
-  public var explorable:Array<Explorable>;
-
   public function new(_scene:Controller)
   {
     super();
     this.scene = _scene;
-    explorable = [];
 
     grid_bg = new Base(Constants.GRID_X, Constants.GRID_Y);
     grid_bg.graphic = Assets.getImage("nebula_bg_"+(Math.floor(Math.random() * 5)+1));
@@ -39,7 +29,6 @@ class SpaceGrid extends ElasticGrid<Space>
     space.explore(Generator.randomSpaceStation());
     scene.add(space);
     add(0, 0, space);
-    findExplorables();
     centerOn(0, 0);
   }
 
@@ -52,90 +41,11 @@ class SpaceGrid extends ElasticGrid<Space>
     space.updateGraphic();
   }
 
-  public function explore(marker:Base, spaceType:SpaceType):Point
-  {
-    for(e in explorable) {
-      if(e.marker == marker) {
-        var space = new Space();
-        space.explore(spaceType);
-        scene.add(space);
-        add(e.x, e.y, space);
-        findExplorables();
-        //centerOn(e.x, e.y);
-        finishDrag();
-        return new Point(e.x, e.y);
-      }
-    }
-    return null;
-  }
-
   public function centerOn(x:Int, y:Int)
   {
     absoluteX = (Constants.GRID_W - Constants.BLOCK_W)/2 - x*Constants.BLOCK_W;
     absoluteY = (Constants.GRID_H - Constants.BLOCK_H)/2 - y*Constants.BLOCK_H;
     finishDrag();
-  }
-
-  public function findExplorables()
-  {
-    var candidates:Map<Point, Bool> = new Map<Point, Bool>();
-    var cKey = function(point:Point) {
-      for(p in candidates.keys()) {
-        if(p.equals(point)) return p;
-      }
-      return null;
-    }
-
-    each(function(s:Space, x:Int, y:Int):Void {
-      var c = new Point(x, y),
-          n = new Point(x, y-1),
-          s = new Point(x, y+1),
-          e = new Point(x+1, y),
-          w = new Point(x-1, y);
-
-      if(cKey(c) != null) {
-        candidates.set(cKey(c), false);
-      } else {
-        candidates.set(c, false);
-      }
-      if(cKey(n) == null) candidates.set(n, true);
-      if(cKey(s) == null) candidates.set(s, true);
-      if(cKey(e) == null) candidates.set(e, true);
-      if(cKey(w) == null) candidates.set(w, true);
-    });
-
-    for(spot in explorable) {
-      var key = cKey(new Point(spot.x, spot.y));
-      if(key != null && candidates.get(key)) {
-        spot.valid = true;
-        candidates.remove(key);
-      } else {
-        spot.valid = false;
-      }
-    }
-
-    explorable = Lambda.array(Lambda.filter(explorable, function(e) {
-      if(!e.valid) {
-        scene.remove(e.marker);
-      }
-      return e.valid;
-    }));
-
-    for(point in candidates.keys()) {
-      if(candidates.get(point)) {
-        var marker:Base = new Base(0, 0, Assets.getSprite("tile_tex", 0, 0, Constants.BLOCK_W, Constants.BLOCK_H));
-        marker.layer = Constants.UNEXPLORED_LAYER;
-        marker.type = "explorable";
-        marker.updateHitbox();
-        scene.add(marker);
-        explorable.push({
-          x: Std.int(point.x),
-          y: Std.int(point.y),
-          valid: true,
-          marker: marker
-        });
-      }
-    }
   }
 
   public function setOffset(x:Float, y:Float)
@@ -169,7 +79,7 @@ class SpaceGrid extends ElasticGrid<Space>
   }
 
   public function setVisibility() {
-    eachWithMarkers(function(b:Base, x:Int, y:Int) {
+    each(function(b:Base, x:Int, y:Int) {
       if(b.graphic.x + b.x > grid_bg.x + Constants.GRID_W) {
         b.graphic.visible = false;
       } else if(b.graphic.y + b.y > grid_bg.y + Constants.GRID_H) {
@@ -182,13 +92,6 @@ class SpaceGrid extends ElasticGrid<Space>
         b.graphic.visible = true;
       }
     });
-  }
-
-  private function eachWithMarkers(fn:Base->Int->Int->Void) {
-    each(fn);
-    for(spot in explorable) {
-      fn(spot.marker, spot.x, spot.y);
-    }
   }
 
 }

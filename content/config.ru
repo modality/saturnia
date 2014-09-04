@@ -1,0 +1,2 @@
+require './moons'
+run Moons
