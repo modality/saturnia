@@ -18,7 +18,6 @@ class GameController extends Scene
   public var regainFocus:Bool;
   public var sectorName:TextBase;
   
-  public var combatPanel:CombatPanel;
   public var merchantPanel:MerchantPanel;
 
   public var nextBtn:TextBase;
@@ -44,7 +43,7 @@ class GameController extends Scene
 
     startLevel();
 
-    nextBtn = new TextBase(60, 400, "Next Level >>");
+    nextBtn = new TextBase(60, 400, 10, 10, "Next Level >>");
     nextBtn.size = Constants.FONT_SIZE_MD;
     nextBtn.type = "next_btn";
   }
@@ -87,14 +86,10 @@ class GameController extends Scene
   public function enterCombat(space:Space):Void
   {
     inCombat = true;
-    combatPanel = new CombatPanel(space, player, tarot);
-    add(combatPanel);
   }
 
   public function exitCombat(space:Space):Void
   {
-    remove(combatPanel);
-    combatPanel = null;
     inCombat = false;
     space.removeEncounter();
     checkLocked();
@@ -140,7 +135,8 @@ class GameController extends Scene
     sectorName.text = name;
 
     var spaces:Array<Space> = Generator.generateSectorSpaces(sectorType);
-    grid = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H, function(i:Int, j:Int):Space {
+    grid = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
+    grid.init(function(i:Int, j:Int):Space {
       var space:Space = spaces.shift();
       space.grid = grid;
       space.x = Constants.GRID_X+(i*Constants.BLOCK_W);

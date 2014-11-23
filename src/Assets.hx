@@ -30,6 +30,8 @@ class Assets
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_spread", "graphics/ui/tarot_spread.png");
     assetDictionary.set("ui_arrow", "graphics/ui/tarot_pointer.png");
+
+    assetDictionary.set("font", "font/magic_forest.ttf");
   }
 
   public static function get(asset:String):String

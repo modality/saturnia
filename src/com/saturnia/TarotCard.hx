@@ -22,10 +22,11 @@ class TarotCard extends Base
     reset();
   }
 
-  public function updateGraphic()
+  public override function updateGraphic()
   {
+    super.updateGraphic();
     this.graphic = Assets.getImage("tarot_"+number);
-    setHitboxTo(this.graphic);
+    updateHitbox();
   }
 
   public function reset()

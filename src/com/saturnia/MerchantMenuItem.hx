@@ -19,26 +19,26 @@ class MerchantMenuItem extends TextBase
 
   public function new(_x:Int, _y:Int, _item:Item)
   {
-    super(_x, _y, _item.name);
+    super(_x, _y, 50, 20, _item.name);
     item = _item;
     type = "merchant_menu_item";
 
     var tb:TextBase;
 
     if(item.scienceCost > 0) {
-      tb = new TextBase(225, 0, ""+item.scienceCost);
+      tb = new TextBase(225, 0, 30, 10, ""+item.scienceCost);
       tb.color = Constants.SCIENCE_COLOR;
       addChild(tb);
       addChild(new Base(200, -1, Assets.getImage("icon_science")));
     } else if (item.cargoCost > 0) {
-      tb = new TextBase(225, 0, ""+item.cargoCost);
+      tb = new TextBase(225, 0, 30, 10, ""+item.cargoCost);
       tb.color = Constants.CARGO_COLOR;
       addChild(tb);
       addChild(new Base(200, -1, Assets.getImage("icon_cargo")));
     }
-    addChild(new TextBase(270, 0, "BUY"));
+    addChild(new TextBase(270, 0, 10, 10, "BUY"));
 
-    tb = new TextBase(0, 25, item.description);
+    tb = new TextBase(0, 25, 100, 20, item.description);
     tb.size = Constants.FONT_SIZE_XS;
     addChild(tb);
 

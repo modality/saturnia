@@ -34,7 +34,7 @@ class MerchantPanel extends Base
       pos++;
     }
 
-    ok_btn = new TextBase(140, 300, "OK");
+    ok_btn = new TextBase(140, 300, 50, 50, "OK");
     ok_btn.type = "ok_btn";
     ok_btn.size = Constants.FONT_SIZE_MD;
     ok_btn.layer = Constants.OVERLAY_LAYER;

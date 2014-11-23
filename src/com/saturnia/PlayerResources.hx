@@ -40,25 +40,25 @@ class PlayerResources extends Base
     items = [];
 
     fuel_icon = new Base(0, 0, Assets.getImage("icon_fuel"));
-    fuel_text = new TextBase(25, 1, ""+fuel);
+    fuel_text = new TextBase(25, 1, 45, 20, ""+fuel);
     fuel_text.color = Constants.FUEL_COLOR;
     fuel_icon.layer = Constants.RESOURCE_LAYER;
     fuel_text.layer = Constants.RESOURCE_LAYER;
 
     shields_icon = new Base(70, 0, Assets.getImage("icon_shields"));
-    shields_text = new TextBase(95, 1, ""+shields);
+    shields_text = new TextBase(95, 1, 45, 20, ""+shields);
     shields_text.color = Constants.SHIELDS_COLOR;
     shields_icon.layer = Constants.RESOURCE_LAYER;
     shields_text.layer = Constants.RESOURCE_LAYER;
 
     cargo_icon = new Base(140, 0, Assets.getImage("icon_cargo"));
-    cargo_text = new TextBase(165, 1, ""+cargo);
+    cargo_text = new TextBase(165, 1, 45, 20, ""+cargo);
     cargo_text.color = Constants.CARGO_COLOR;
     cargo_icon.layer = Constants.RESOURCE_LAYER;
     cargo_text.layer = Constants.RESOURCE_LAYER;
 
     science_icon = new Base(210, 0, Assets.getImage("icon_science"));
-    science_text = new TextBase(235, 1, ""+science);
+    science_text = new TextBase(235, 1, 45, 20, ""+science);
     science_text.color = Constants.SCIENCE_COLOR;
     science_icon.layer = Constants.RESOURCE_LAYER;
     science_text.layer = Constants.RESOURCE_LAYER;
@@ -142,8 +142,9 @@ class PlayerResources extends Base
     }
   }
 
-  public function updateGraphic()
+  public override function updateGraphic()
   {
+    super.updateGraphic();
     fuel_text.text = ""+fuel;
     shields_text.text = ""+shields;
     cargo_text.text = ""+cargo;

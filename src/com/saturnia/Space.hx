@@ -52,8 +52,9 @@ class Space extends Block
     objects = [];
   }
 
-  public function updateGraphic():Void
+  public override function updateGraphic():Void
   {
+    super.updateGraphic();
     if(explored) {
       switch(spaceType) {
         case Star:
