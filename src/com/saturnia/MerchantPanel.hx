@@ -11,6 +11,8 @@ class MerchantPanel extends Base
   public var player:PlayerResources;
 
   public var ok_btn:TextBase;
+  public var sellGood:GoodsMenuItem;
+  public var buyGood:GoodsMenuItem;
 
   public function new(_space:Space, _player:PlayerResources)
   {
@@ -19,20 +21,51 @@ class MerchantPanel extends Base
     space = _space;
     player = _player;
 
+    x = 50;
+    y = 50;
+
     var modal = Assets.getImage("ui_modal");
-    modal.scaleX = 320;
-    modal.scaleY = 480;
+    modal.scaleX = 700;
+    modal.scaleY = 500;
     this.graphic = modal;
     this.layer = Constants.OVERLAY_LAYER;
 
+    var tb:TextBase;
+
+    tb = new TextBase(10, 20, 300, 50, "Items");
+    tb.size = Constants.FONT_SIZE_MD;
+    addChild(tb);
+
+    tb = new TextBase(360, 20, 300, 50, "Trade Goods");
+    tb.size = Constants.FONT_SIZE_MD;
+    addChild(tb);
+
+    var merchant = cast(space.encounter, MerchantEncounter);
+
     var pos = 0;
-    for(good in cast(space.encounter, MerchantEncounter).goods) {
+    for(good in merchant.goods) {
       var mmi = new MerchantMenuItem(10, (50 * pos) + 50, good);
       mmi.addEventListener(MerchantMenuItem.CLICKED, clickedItem);
       mmi.addEventListener(MerchantMenuItem.REMOVED, removedItem);
       addChild(mmi);
       pos++;
     }
+
+
+    sellGood = new GoodsMenuItem(360, 50,
+                                 merchant.goodSold,
+                                 merchant.goodInventory,
+                                 merchant.sellRate,
+                                 true);
+
+    buyGood = new GoodsMenuItem(360, 100,
+                                merchant.goodBought,
+                                0,
+                                merchant.buyRate,
+                                false);
+
+    addChild(sellGood);
+    addChild(buyGood);
 
     ok_btn = new TextBase(140, 300, 50, 50, "OK");
     ok_btn.type = "ok_btn";
@@ -52,7 +85,7 @@ class MerchantPanel extends Base
 
       var btn:TextBase = cast(scene.collidePoint("ok_btn", Input.mouseX, Input.mouseY), TextBase);
       if(btn != null) {
-        cast(scene, GameController).exitMerchant(space, true);
+        cast(scene, GameController).exitMerchant();
       }
     }
   }

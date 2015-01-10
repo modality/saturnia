@@ -8,10 +8,9 @@ import com.modality.TextBase;
 class GameController extends Scene
 {
   public var player:PlayerResources;
-  public var tarot:TarotDeck;
+  public var galaxy:Galaxy;
+  public var sector:Sector;
   public var grid:Grid<Space>;
-  public var sectorType:SectorType;
-  public var name:String;
   public var anyExplored:Bool;
   public var inCombat:Bool;
   public var inMerchant:Bool;
@@ -26,8 +25,6 @@ class GameController extends Scene
   {
     super();
     player = new PlayerResources();
-    tarot = new TarotDeck();
-    sectorType = SectorType.Peaceful;
     anyExplored = false;
     inCombat = false;
     inMerchant = false;
@@ -39,6 +36,7 @@ class GameController extends Scene
     sectorName.size = Constants.FONT_SIZE_MD;
     sectorName.x = Constants.GRID_X;
     sectorName.y = 30;
+    sectorName.layer = Constants.MAP_LAYER;
     add(sectorName);
 
     startLevel();
@@ -65,12 +63,10 @@ class GameController extends Scene
           if(canExplore(space)) {
             space.explore();
             player.useFuel(1);
-            if(space.spaceType == SpaceType.Pirate) {
+            if(space.spaceType == SpaceType.Hostile) {
               checkLocked();
             }
-          } else if(space.explored && space.spaceType == SpaceType.Pirate) {
-            enterCombat(space);
-          } else if(space.explored && space.spaceType == SpaceType.Merchant) {
+          } else if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
           }
         }
@@ -83,30 +79,6 @@ class GameController extends Scene
     }
   }
 
-  public function enterCombat(space:Space):Void
-  {
-    inCombat = true;
-  }
-
-  public function exitCombat(space:Space):Void
-  {
-    inCombat = false;
-    space.removeEncounter();
-    checkLocked();
-    regainFocus = true;
-
-    var enemiesDestroyed = true;
-    grid.each(function(space:Space, i:Int, j:Int) {
-      if(space.hasObject("pirate") || (!space.explored && space.spaceType == SpaceType.Pirate)) {
-        enemiesDestroyed = false;
-      }
-    });
-
-    if(enemiesDestroyed) {
-      add(nextBtn);
-    }
-  }
-
   public function enterMerchant(space:Space):Void
   {
     inMerchant = true;
@@ -114,14 +86,11 @@ class GameController extends Scene
     add(merchantPanel);
   }
 
-  public function exitMerchant(space:Space, removeMerchant:Bool):Void
+  public function exitMerchant():Void
   {
     remove(merchantPanel);
     merchantPanel = null;
     inMerchant = false;
-    if(removeMerchant) {
-      space.removeEncounter();
-    }
     regainFocus = true;
   }
 
@@ -131,22 +100,14 @@ class GameController extends Scene
     inCombat = false;
     regainFocus = false;
 
-    name = Generator.generateSectorName();
-    sectorName.text = name;
+    galaxy = Generator.generateGalaxy();
+    sector = galaxy.sectors.get(0, 0);
+    grid = sector.spaces;
+    sectorName.text = sector.title;
 
-    var spaces:Array<Space> = Generator.generateSectorSpaces(sectorType);
-    grid = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
-    grid.init(function(i:Int, j:Int):Space {
-      var space:Space = spaces.shift();
-      space.grid = grid;
-      space.x = Constants.GRID_X+(i*Constants.BLOCK_W);
-      space.y = Constants.GRID_Y+(j*Constants.BLOCK_H);
+    grid.each(function(space:Space, i:Int, j:Int) {
       space.updateGraphic();
       add(space);
-      return space;
-    });
-    grid.each(function(space:Space, i:Int, j:Int) {
-      space.grid = grid;
     });
   }
 

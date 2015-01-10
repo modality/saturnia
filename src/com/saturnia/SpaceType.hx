@@ -1,10 +1,15 @@
 package com.saturnia;
 
 enum SpaceType {
-  Voidness;
-  Planet;
+  Start;
+  Exit;
   Star;
-  Pirate;
-  Merchant;
+  Planet;
+  Friendly;
+  Hostile;
+  Debris;
+  Quest;
+  Anomaly;
+  Voidness;
 }
 
