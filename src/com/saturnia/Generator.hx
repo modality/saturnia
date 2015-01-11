@@ -124,10 +124,13 @@ class Generator
   {
     var spaceTypes:Array<SpaceType> = [Start, Exit];
     var sectorType:SectorType = AugRandom.weightedChoice([
+      SectorType.Peaceful => 30
+      /*
       SectorType.Peaceful => 30,
       SectorType.Nebula => 25,
       SectorType.Asteroid => 25,
       SectorType.Anomaly => 20
+      */
     ]);
 
     for(element in sectorMakeup[sectorType].keys()) {

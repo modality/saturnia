@@ -15,11 +15,9 @@ class GameController extends Scene
   public var inCombat:Bool;
   public var inMerchant:Bool;
   public var regainFocus:Bool;
-  public var sectorName:TextBase;
   
+  public var infoPanel:InfoPanel;
   public var merchantPanel:MerchantPanel;
-
-  public var nextBtn:TextBase;
 
   public function new()
   {
@@ -30,20 +28,10 @@ class GameController extends Scene
     inMerchant = false;
     regainFocus = false;
 
-    add(player);
-
-    sectorName = new TextBase();
-    sectorName.size = Constants.FONT_SIZE_MD;
-    sectorName.x = Constants.GRID_X;
-    sectorName.y = 30;
-    sectorName.layer = Constants.MAP_LAYER;
-    add(sectorName);
-
     startLevel();
+    infoPanel = new InfoPanel(sector, player);
 
-    nextBtn = new TextBase(60, 400, 10, 10, "Next Level >>");
-    nextBtn.size = Constants.FONT_SIZE_MD;
-    nextBtn.type = "next_btn";
+    add(infoPanel);
   }
 
   public override function update():Void
@@ -63,11 +51,16 @@ class GameController extends Scene
           if(canExplore(space)) {
             space.explore();
             player.useFuel(1);
+            infoPanel.updateGraphic();
             if(space.spaceType == SpaceType.Hostile) {
               checkLocked();
             }
+            galaxy.pulse();
           } else if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
+          } else if(space.explored && space.spaceType == SpaceType.Hostile) {
+            playerAttacks(space);
+            galaxy.pulse();
           }
         }
 
@@ -103,7 +96,6 @@ class GameController extends Scene
     galaxy = Generator.generateGalaxy();
     sector = galaxy.sectors.get(0, 0);
     grid = sector.spaces;
-    sectorName.text = sector.title;
 
     grid.each(function(space:Space, i:Int, j:Int) {
       space.updateGraphic();
@@ -113,11 +105,33 @@ class GameController extends Scene
 
   public function nextLevel():Void
   {
-    remove(nextBtn);
     grid.each(function(space:Space, i:Int, j:Int) {
       remove(space);
     });
     startLevel();
+  }
+
+  public function playerAttacks(space:Space):Void
+  {
+    if(space.encounter != null) {
+      var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
+      if(pe.stats.firstStrike) {
+        player.stats.takeDamage(pe.stats.attack());
+        pe.stats.takeDamage(player.stats.attack());
+      } else {
+        pe.stats.takeDamage(player.stats.attack());
+        if(!pe.stats.isDead()) {
+          player.stats.takeDamage(pe.stats.attack());
+        }
+      }
+
+      player.shields = player.stats.hitPoints;
+      infoPanel.updateGraphic();
+      if(pe.stats.isDead()) {
+        space.removeEncounter();
+        checkLocked();
+      }
+    }
   }
 
   public function checkLocked():Void

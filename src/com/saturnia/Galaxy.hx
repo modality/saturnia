@@ -16,4 +16,17 @@ class Galaxy
     cardLocations = [];
     sectors = new Grid<Sector>(0, 0, 5, 5);
   }
+
+  public function pulse()
+  {
+    sectors.each(function(sector:Sector, u:Int, v:Int) {
+      sector.spaces.each(function(space:Space, i:Int, j:Int) {
+        if(space.spaceType == Friendly) {
+          cast(space.encounter, MerchantEncounter).pulse();
+        }
+      });
+    });
+  }
+
+  
 }

@@ -29,6 +29,11 @@ class Assets
     assetDictionary.set("space_locked", "graphics/spaces/locked_2.png");
 
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
+    assetDictionary.set("ui_coffee", "graphics/ui/hot_coffee.png");
+    assetDictionary.set("sector_anomaly", "graphics/ui/anomaly_spread.png");
+    assetDictionary.set("sector_system", "graphics/ui/system_spread.png");
+    assetDictionary.set("sector_asteroid", "graphics/ui/asteroid_spread.png");
+    assetDictionary.set("sector_nebula", "graphics/ui/nebula_spread.png");
 
     assetDictionary.set("font", "font/magic_forest.ttf");
   }
