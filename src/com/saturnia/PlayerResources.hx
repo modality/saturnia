@@ -16,6 +16,7 @@ class PlayerResources
   public var maxFuel:Int;
   public var maxShields:Int;
 
+  public var cards:Array<MajorArcana>;
   public var items:Array<Item>;
 
   public var stats:CombatStats;
@@ -30,6 +31,7 @@ class PlayerResources
     maxFuel = fuel;
     maxShields = shields;
 
+    cards = [];
     items = [];
 
     stats = new CombatStats();

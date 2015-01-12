@@ -21,9 +21,13 @@ class InfoPanel extends Base
   public var science_icon:Base;
   public var science_text:TextBase;
 
+  public var enemy_text:TextBase;
+
   public var coffeeGfx:Base;
   public var sectorGfx:Base;
   public var sectorName:TextBase;
+
+  public var cards:Array<Base>;
 
   public function new(_sector:Sector, _player:PlayerResources)
   {
@@ -31,6 +35,16 @@ class InfoPanel extends Base
 
     sector = _sector;
     player = _player;
+
+    cards = [for (c in player.cards) new Base(0, 0, Assets.getImage(Generator.tarotGraphics.get(c)))];
+
+    var ci = 0;
+    for(c in cards) {
+      c.x = 0 + (ci * 40);
+      c.y = 200 + Std.random(10);
+      addChild(c);
+      ci++;
+    }
 
     var bmd:BitmapData;
     var img:Image;
@@ -96,6 +110,9 @@ class InfoPanel extends Base
     science_icon.layer = Constants.RESOURCE_LAYER;
     science_text.layer = Constants.RESOURCE_LAYER;
 
+    enemy_text = new TextBase(0, 350, 300, 50, "");
+    enemy_text.size = Constants.FONT_SIZE_XS;
+
     addChild(sectorGfx);
     addChild(sectorName);
     addChild(fuel_icon);
@@ -108,7 +125,42 @@ class InfoPanel extends Base
     addChild(cargo_text);
     addChild(science_icon);
     addChild(science_text);
+    addChild(enemy_text);
+
     addChild(coffeeGfx);
+  }
+
+  public function displayEnemy(pe:PirateEncounter)
+  {
+    var enemyInfo = "The \""+pe.name + "\"\n";
+
+    enemyInfo += "HP: "+pe.stats.hitPoints+"/"+pe.stats.maxHitPoints+"\n";
+    enemyInfo += "Attack: "+(pe.stats.attackPower+pe.stats.stackingDamage)+"\n";
+    if(pe.stats.numAttacks > 1) {
+      enemyInfo += "Multi-Attack ("+pe.stats.numAttacks+")\n";
+    }
+    if(pe.stats.attackType == Energy) {
+      enemyInfo += "Energy Attack\n";
+    } else if(pe.stats.attackType == Physical) {
+      enemyInfo += "Physical Attack\n";
+    }
+    if(pe.stats.useCharge) enemyInfo += "Charge Attack\n";
+    if(pe.stats.useStacking) enemyInfo += "Stacking Attack ("+pe.stats.stackingStep+")\n";
+    if(pe.stats.firstStrike) enemyInfo += "First Strike\n";
+    if(pe.stats.alwaysHit) enemyInfo += "Always Hit\n";
+    if(pe.stats.damageReduction > 0) enemyInfo += "Damage Reduction "+pe.stats.damageReduction+"\n";
+    if(pe.stats.thornDamage > 0) enemyInfo += "Counter "+pe.stats.thornDamage+"\n";
+    if(pe.stats.overloadRating > 0) enemyInfo += "Overload "+pe.stats.overloadRating+"\n";
+    if(pe.stats.evadeChance > 0) enemyInfo += "Evasion "+pe.stats.evadeChance+"%\n";
+    if(pe.stats.resistEnergy > 0) enemyInfo += "Resist Energy "+pe.stats.resistEnergy+"%\n";
+    if(pe.stats.resistPhysical > 0) enemyInfo += "Resist Physical "+pe.stats.resistPhysical+"%\n";
+
+    enemy_text.text = enemyInfo;
+  }
+
+  public function clearEnemy()
+  {
+    enemy_text.text = "";
   }
 
   public override function updateGraphic()

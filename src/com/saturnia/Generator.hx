@@ -32,6 +32,7 @@ class Generator
 
   public static var sector_2:Array<String> = ["Expanse", "Rift", "Arm", "Belt", "Region", "Zone", "Field", "Triangle", "Reach", "Verge", "Cluster", "Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta", "Eta", "Theta", "Iota", "Kappa", "Lambda", "Mu", "Nu", "Xi", "Omicron", "Pi", "Rho", "Sigma", "Tau", "Upsilon", "Phi", "Chi", "Psi", "Omega"];
 
+
   public static var sectorNames:Array<String>;
   public static var itemNames:Array<String>;
 
@@ -70,6 +71,15 @@ class Generator
     ]
   ];
 
+  public static var tarotGraphics:Map<MajorArcana, String> = [
+    TheFool => "tarot_0",
+    TheMagician => "tarot_1",
+    TheHighPriestess => "tarot_2",
+    TheEmpress => "tarot_3",
+    TheEmperor => "tarot_4",
+    TheHierophant => "tarot_5"
+  ];
+
   public static function init():Void
   {
     sectorNames = [];
@@ -80,23 +90,11 @@ class Generator
   {
     var galaxy = new Galaxy();
 
-    galaxy.cards = AugRandom.sample(EnumTools.createAll(MajorArcana), 5);
+    galaxy.cards = AugRandom.sample([for (k in tarotGraphics.keys()) k], 5);
 
     for(i in 0...5) {
       galaxy.goods.push(generateItem());
     }
-
-    galaxy.sectors.init(function(i:Int, j:Int):Sector {
-      var sector:Sector = new Sector();
-
-      var goodsList = AugRandom.shuffle(galaxy.goods);
-      sector.tarot_x = galaxy.cards[i];
-      sector.tarot_y = galaxy.cards[j];
-      sector.goodsBought = goodsList.slice(0, 3);
-      sector.goodsSold = goodsList.slice(3);
-
-      return fillSector(sector);
-    });
 
     // choose locations for keys
     for(i in 2...galaxy.cards.length) {
@@ -116,7 +114,24 @@ class Generator
     }
 
     // decorate sectors
+    galaxy.sectors.init(function(i:Int, j:Int):Sector {
+      var sector:Sector = new Sector();
 
+      var goodsList = AugRandom.shuffle(galaxy.goods);
+      sector.tarot_x = galaxy.cards[i];
+      sector.tarot_y = galaxy.cards[j];
+      if(i == j) {
+        sector.level = 5;
+      } else {
+        sector.level = i > j ? i : j;
+      }
+      sector.goodsBought = goodsList.slice(0, 3);
+      sector.goodsSold = goodsList.slice(3);
+
+      return fillSector(sector);
+    });
+
+    galaxy.setupPlayer();
     return galaxy;
   }
 
@@ -124,13 +139,10 @@ class Generator
   {
     var spaceTypes:Array<SpaceType> = [Start, Exit];
     var sectorType:SectorType = AugRandom.weightedChoice([
-      SectorType.Peaceful => 30
-      /*
       SectorType.Peaceful => 30,
       SectorType.Nebula => 25,
       SectorType.Asteroid => 25,
       SectorType.Anomaly => 20
-      */
     ]);
 
     for(element in sectorMakeup[sectorType].keys()) {
@@ -167,8 +179,7 @@ class Generator
     if(space.spaceType == Friendly) {
       space.encounter = generateMerchant(space, sector);
     } else if(space.spaceType == Hostile) {
-      var raider = new PirateEncounter(space);
-      space.encounter = raider;
+      space.encounter = EnemyGenerator.generateEnemy(space, sector.level * 10);
     }
     return space;
   }

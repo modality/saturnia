@@ -7,29 +7,26 @@ import com.modality.TextBase;
 
 class GameController extends Scene
 {
-  public var player:PlayerResources;
   public var galaxy:Galaxy;
   public var sector:Sector;
   public var grid:Grid<Space>;
-  public var anyExplored:Bool;
-  public var inCombat:Bool;
   public var inMerchant:Bool;
+  public var inNavigation:Bool;
   public var regainFocus:Bool;
   
   public var infoPanel:InfoPanel;
   public var merchantPanel:MerchantPanel;
+  public var navigationPanel:NavigationPanel;
 
   public function new()
   {
     super();
-    player = new PlayerResources();
-    anyExplored = false;
-    inCombat = false;
     inMerchant = false;
+    inNavigation = false;
     regainFocus = false;
 
     startLevel();
-    infoPanel = new InfoPanel(sector, player);
+    infoPanel = new InfoPanel(sector, galaxy.player);
 
     add(infoPanel);
   }
@@ -41,16 +38,16 @@ class GameController extends Scene
       regainFocus = false;
       return;
     }
-    if(!inCombat && !inMerchant) {
-      if(Input.mouseReleased) {
-        var mouse_x = Input.mouseX;
-        var mouse_y = Input.mouseY;
+    if(!inMerchant && !inNavigation) {
+      var mouse_x = Input.mouseX;
+      var mouse_y = Input.mouseY;
+      var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
 
-        var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
+      if(Input.mouseReleased) {
         if(space != null) {
           if(canExplore(space)) {
             space.explore();
-            player.useFuel(1);
+            galaxy.player.useFuel(1);
             infoPanel.updateGraphic();
             if(space.spaceType == SpaceType.Hostile) {
               checkLocked();
@@ -58,15 +55,19 @@ class GameController extends Scene
             galaxy.pulse();
           } else if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
+          } else if(space.explored && space.spaceType == SpaceType.Exit) {
+            enterNavigation();
           } else if(space.explored && space.spaceType == SpaceType.Hostile) {
             playerAttacks(space);
             galaxy.pulse();
           }
         }
-
-        var btn:TextBase = cast(collidePoint("next_btn", mouse_x, mouse_y), TextBase);
-        if(btn != null) {
-          nextLevel();
+      } else {
+        infoPanel.clearEnemy();
+        if(space != null) {
+          if(space.explored && space.spaceType == SpaceType.Hostile) {
+            infoPanel.displayEnemy(cast(space.encounter, PirateEncounter));
+          }
         }
       }
     }
@@ -75,7 +76,7 @@ class GameController extends Scene
   public function enterMerchant(space:Space):Void
   {
     inMerchant = true;
-    merchantPanel = new MerchantPanel(space, player);
+    merchantPanel = new MerchantPanel(space, galaxy.player);
     add(merchantPanel);
   }
 
@@ -87,18 +88,34 @@ class GameController extends Scene
     regainFocus = true;
   }
 
+  public function enterNavigation():Void
+  {
+    inNavigation = true;
+    navigationPanel = new NavigationPanel(galaxy.player);
+    add(navigationPanel);
+  }
+
+  public function exitNavigation():Void
+  {
+    remove(navigationPanel);
+    navigationPanel = null;
+    inNavigation = false;
+    regainFocus = true;
+  }
+
   public function startLevel():Void
   {
-    anyExplored = false;
-    inCombat = false;
     regainFocus = false;
 
     galaxy = Generator.generateGalaxy();
-    sector = galaxy.sectors.get(0, 0);
+    sector = galaxy.getStartSector();
     grid = sector.spaces;
 
     grid.each(function(space:Space, i:Int, j:Int) {
       space.updateGraphic();
+      if(space.spaceType == Start) {
+        space.explore();
+      }
       add(space);
     });
   }
@@ -116,16 +133,16 @@ class GameController extends Scene
     if(space.encounter != null) {
       var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
       if(pe.stats.firstStrike) {
-        player.stats.takeDamage(pe.stats.attack());
-        pe.stats.takeDamage(player.stats.attack());
+        galaxy.player.stats.takeDamage(pe.stats.attack());
+        pe.stats.takeDamage(galaxy.player.stats.attack());
       } else {
-        pe.stats.takeDamage(player.stats.attack());
+        pe.stats.takeDamage(galaxy.player.stats.attack());
         if(!pe.stats.isDead()) {
-          player.stats.takeDamage(pe.stats.attack());
+          galaxy.player.stats.takeDamage(pe.stats.attack());
         }
       }
 
-      player.shields = player.stats.hitPoints;
+      galaxy.player.shields = galaxy.player.stats.hitPoints;
       infoPanel.updateGraphic();
       if(pe.stats.isDead()) {
         space.removeEncounter();
@@ -151,10 +168,6 @@ class GameController extends Scene
 
   public function canExplore(space:Space):Bool
   {
-    if(!anyExplored) {
-      anyExplored = true;
-      return true;
-    }
     if(space.explored) return false;
     if(space.locked) return false;
 
@@ -171,5 +184,4 @@ class GameController extends Scene
 
     return false;
   }
-
 }

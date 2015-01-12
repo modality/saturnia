@@ -6,7 +6,7 @@ enum MajorArcana {
   TheHighPriestess;
   TheEmpress;
   TheEmperor;
-  TheHeirophant;
+  TheHierophant;
   TheLovers;
   TheChariot;
   Justice;

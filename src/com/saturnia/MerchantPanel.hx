@@ -16,13 +16,10 @@ class MerchantPanel extends Base
 
   public function new(_space:Space, _player:PlayerResources)
   {
-    super();
+    super(50, 50);
 
     space = _space;
     player = _player;
-
-    x = 50;
-    y = 50;
 
     var modal = Assets.getImage("ui_modal");
     modal.scaleX = 700;
@@ -70,7 +67,6 @@ class MerchantPanel extends Base
     ok_btn = new TextBase(140, 300, 50, 50, "OK");
     ok_btn.type = "ok_btn";
     ok_btn.size = Constants.FONT_SIZE_MD;
-    ok_btn.layer = Constants.OVERLAY_LAYER;
     addChild(ok_btn);
   }
 

@@ -4,8 +4,8 @@ import com.modality.AugRandom;
 
 class CombatStats
 {
-  public var hitPoints:Int = 10;
-  public var maxHitPoints:Int = 10;
+  public var hitPoints:Int = 3;
+  public var maxHitPoints:Int = 3;
 
   public var attackPower:Int = 1;
   public var attackType:AttackType = AttackType.Basic;
@@ -86,7 +86,7 @@ class CombatStats
   public function takeDamage(crs:Array<CombatResult>):Void {
     for(cr in crs) {
       if(!cr.forcedHit) {
-        if(AugRandom.range(0, evadeChance) < evadeChance) {
+        if(AugRandom.range(0, 100) < evadeChance) {
           continue;
         }
       }

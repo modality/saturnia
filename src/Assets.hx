@@ -35,6 +35,13 @@ class Assets
     assetDictionary.set("sector_asteroid", "graphics/ui/asteroid_spread.png");
     assetDictionary.set("sector_nebula", "graphics/ui/nebula_spread.png");
 
+    assetDictionary.set("tarot_0", "graphics/tarot/0_fool.png");
+    assetDictionary.set("tarot_1", "graphics/tarot/1_magician.png");
+    assetDictionary.set("tarot_2", "graphics/tarot/2_priestess.png");
+    assetDictionary.set("tarot_3", "graphics/tarot/3_empress.png");
+    assetDictionary.set("tarot_4", "graphics/tarot/4_emperor.png");
+    assetDictionary.set("tarot_5", "graphics/tarot/5_hierophant.png");
+
     assetDictionary.set("font", "font/magic_forest.ttf");
   }
 

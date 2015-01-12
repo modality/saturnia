@@ -8,6 +8,7 @@ class Sector extends Block
   public var spaces:Grid<Space>;
   public var sectorType:SectorType;
   public var title:String;
+  public var level:Int;
   public var tarot_x:MajorArcana;
   public var tarot_y:MajorArcana;
   public var goodsBought:Array<String>;
