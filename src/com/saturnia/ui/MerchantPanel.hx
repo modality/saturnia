@@ -1,4 +1,4 @@
-package com.saturnia;
+package com.saturnia.ui;
 
 import flash.events.Event;
 import com.haxepunk.utils.Input;

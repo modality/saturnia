@@ -5,6 +5,10 @@ import com.haxepunk.Scene;
 import com.modality.Grid;
 import com.modality.TextBase;
 
+import com.saturnia.ui.InfoPanel;
+import com.saturnia.ui.MerchantPanel;
+import com.saturnia.ui.NavigationPanel;
+
 class GameController extends Scene
 {
   public var galaxy:Galaxy;

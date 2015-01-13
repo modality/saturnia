@@ -1,4 +1,4 @@
-package com.saturnia;
+package com.saturnia.ui;
 
 import com.haxepunk.utils.Input;
 import com.modality.Base;

@@ -1,4 +1,4 @@
-package com.saturnia;
+package com.saturnia.ui;
 
 import flash.display.BitmapData;
 import com.haxepunk.graphics.Image;
