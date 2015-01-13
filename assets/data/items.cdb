@@ -1,0 +1,66 @@
+{
+	"sheets": [
+		{
+			"name": "shipParts",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id"
+				},
+				{
+					"typeStr": "1",
+					"name": "name"
+				},
+				{
+					"typeStr": "1",
+					"name": "description",
+					"display": null
+				},
+				{
+					"typeStr": "2",
+					"name": "activeEffect"
+				},
+				{
+					"typeStr": "3",
+					"name": "scienceCost",
+					"display": null
+				},
+				{
+					"typeStr": "3",
+					"name": "cargoCost",
+					"display": null
+				},
+				{
+					"typeStr": "3",
+					"name": "refreshRate",
+					"display": null
+				},
+				{
+					"typeStr": "3",
+					"name": "refreshLevels",
+					"display": null
+				},
+				{
+					"typeStr": "1",
+					"name": "effects"
+				}
+			],
+			"lines": [
+				{
+					"name": "Shield Battery",
+					"description": "Restores shields",
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"refreshRate": 3,
+					"refreshLevels": 5,
+					"id": "ShieldBattery",
+					"activeEffect": true,
+					"effects": "((heal 1) (heal 3) (heal 6) (heal 10) (heal 15))"
+				}
+			],
+			"separators": [],
+			"props": {}
+		}
+	],
+	"customTypes": []
+}

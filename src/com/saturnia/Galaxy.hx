@@ -34,6 +34,7 @@ class Galaxy
 
   public function pulse()
   {
+    player.pulse();
     sectors.each(function(sector:Sector, u:Int, v:Int) {
       sector.spaces.each(function(space:Space, i:Int, j:Int) {
         if(space.spaceType == Friendly) {

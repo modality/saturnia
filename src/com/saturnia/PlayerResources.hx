@@ -18,6 +18,7 @@ class PlayerResources
 
   public var cards:Array<MajorArcana>;
   public var items:Array<Item>;
+  public var shipParts:Array<ShipPart>;
 
   public var stats:CombatStats;
 
@@ -33,10 +34,20 @@ class PlayerResources
 
     cards = [];
     items = [];
+    shipParts = [];
+
+    shipParts.push(ShipPartManager.getPart("ShieldBattery"));
 
     stats = new CombatStats();
     stats.maxHitPoints = maxShields;
     stats.reset();
+  }
+
+  public function pulse():Void
+  {
+    for(sp in shipParts) {
+      sp.pulse();
+    }
   }
 
   public function useFuel(amount:Int)

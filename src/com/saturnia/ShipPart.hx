@@ -1,41 +1,48 @@
 package com.saturnia;
 
 import com.modality.Base;
+import com.modality.cards.Message;
 
-class ShipPart extends Base
+class ShipPart
 {
+  public var name:String;
   public var description:String;
   public var scienceCost:Int;
   public var cargoCost:Int;
+  public var activeEffect:Bool;
+  public var refreshRate:Int = 1;
+  public var refreshLevels:Int = 1;
+  public var effects:Message;
 
   public var refresh:Int = 0;
   public var refreshLevel:Int = 1;
-  public var refreshRate:Int = 1;
-  public var refreshMaxLevel:Int = 1;
 
-  public function new(_name:String, _description:String, _sc:Int, _cc:Int)
+  public function new()
   {
-    super();
-    name = _name;
-    description = _description;
-    scienceCost = _sc;
-    cargoCost = _cc;
+  }
+
+  public function reset():Void
+  {
+    refresh = 0;
+    refreshLevel = refreshLevels;
   }
 
   public function ready():Bool
   {
-    return refreshLevel > 0;
+    return activeEffect && refreshLevel > 0;
   }
 
   public function use():Void
   {
+    if(!activeEffect) return;
     refresh = 0;
     refreshLevel = 0;
   }
 
   public function pulse():Void
   {
-    if(refreshLevel < refreshMaxLevel) {
+    if(!activeEffect) return;
+    if(refreshLevel < refreshLevels) {
       refresh++;
       if(refresh >= refreshRate) {
         refresh = 0;

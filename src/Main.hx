@@ -8,20 +8,21 @@ import com.saturnia.MerchantGoods;
 class Main extends Engine
 {
 
-	override public function init()
-	{
-	  Assets.init();
-	  Generator.init();
-	  MerchantGoods.init();
+  override public function init()
+  {
+    Data.load(openfl.Assets.getText("data/items.cdb"));
+    Assets.init();
+    Generator.init();
+    MerchantGoods.init();
 
 #if debug
-		HXP.console.enable();
+    HXP.console.enable();
 #end
-		HXP.scene = new GameController();
-	}
+    HXP.scene = new GameController();
+  }
 
-	public static function main()
-	{
-	  new Main();
-	}
+  public static function main()
+  {
+    new Main();
+  }
 }
