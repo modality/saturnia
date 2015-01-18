@@ -52,10 +52,15 @@ class PlayerResources extends Base
     }
   }
 
+  public function updated():Void
+  {
+    dispatchEvent(new Event(UPDATED));
+  }
+
   public function useFuel(amount:Int)
   {
     fuel -= amount;
-    dispatchEvent(new Event(UPDATED));
+    updated();
   }
 
   public function addShipPart(shipPart:ShipPart)
@@ -89,7 +94,7 @@ class PlayerResources extends Base
         shields = stats.hitPoints;
       default:
     }
-    dispatchEvent(new Event(UPDATED));
+    updated();
   }
 
   public function applyItem(item:Item)

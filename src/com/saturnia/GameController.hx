@@ -52,7 +52,6 @@ class GameController extends Scene
           if(canExplore(space)) {
             space.explore();
             galaxy.player.useFuel(1);
-            infoPanel.updateGraphic();
             switch(space.spaceType) {
               case Planet:
                 galaxy.player.cargo += 1;
@@ -159,7 +158,7 @@ class GameController extends Scene
       }
 
       galaxy.player.shields = galaxy.player.stats.hitPoints;
-      infoPanel.updateGraphic();
+      galaxy.player.updated();
       if(pe.stats.isDead()) {
         space.removeEncounter();
         checkLocked();
