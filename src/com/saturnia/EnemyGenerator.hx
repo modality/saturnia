@@ -101,10 +101,37 @@ class EnemyGenerator
 
     if(s.attackPower < 1) s.attackPower = 1;
     s.reset();
-    raider.stats = s;
-    return raider;
+    raider.description = buildDescription(raider);
 
     return raider;
+  }
+
+  public static function buildDescription(pe:PirateEncounter):String
+  {
+    var enemyInfo = "The \""+pe.name + "\"\n";
+
+    enemyInfo += "HP: "+pe.stats.hitPoints+"/"+pe.stats.maxHitPoints+"\n";
+    enemyInfo += "Attack: "+(pe.stats.attackPower+pe.stats.stackingDamage)+"\n";
+    if(pe.stats.numAttacks > 1) {
+      enemyInfo += "Multi-Attack ("+pe.stats.numAttacks+")\n";
+    }
+    if(pe.stats.attackType == Energy) {
+      enemyInfo += "Energy Attack\n";
+    } else if(pe.stats.attackType == Physical) {
+      enemyInfo += "Physical Attack\n";
+    }
+    if(pe.stats.useCharge) enemyInfo += "Charge Attack\n";
+    if(pe.stats.useStacking) enemyInfo += "Stacking Attack ("+pe.stats.stackingStep+")\n";
+    if(pe.stats.firstStrike) enemyInfo += "First Strike\n";
+    if(pe.stats.alwaysHit) enemyInfo += "Always Hit\n";
+    if(pe.stats.damageReduction > 0) enemyInfo += "Damage Reduction "+pe.stats.damageReduction+"\n";
+    if(pe.stats.thornDamage > 0) enemyInfo += "Counter "+pe.stats.thornDamage+"\n";
+    if(pe.stats.overloadRating > 0) enemyInfo += "Overload "+pe.stats.overloadRating+"\n";
+    if(pe.stats.evadeChance > 0) enemyInfo += "Evasion "+pe.stats.evadeChance+"%\n";
+    if(pe.stats.resistEnergy > 0) enemyInfo += "Resist Energy "+pe.stats.resistEnergy+"%\n";
+    if(pe.stats.resistPhysical > 0) enemyInfo += "Resist Physical "+pe.stats.resistPhysical+"%\n";
+
+    return enemyInfo;
   }
 
   public static function buildPowerList(target:Int):Array<String>

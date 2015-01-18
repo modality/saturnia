@@ -12,6 +12,7 @@ class Assets
     assetDictionary.set("icon_fuel", "graphics/icons/fuel.png");
     assetDictionary.set("icon_science", "graphics/icons/science.png");
     assetDictionary.set("icon_shields", "graphics/icons/shields.png");
+    assetDictionary.set("icon_gear", "graphics/icons/gear.png");
 
     assetDictionary.set("space_star_blue", "graphics/spaces/star_blue.png");
     assetDictionary.set("space_star_yellow", "graphics/spaces/star_yellow.png");

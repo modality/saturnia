@@ -1,6 +1,6 @@
 package com.modality;
 
-import flash.display.BitmapData;
+import openfl.display.BitmapData;
 
 class PerlinNoise
 {

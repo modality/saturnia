@@ -56,6 +56,17 @@
 					"id": "ShieldBattery",
 					"activeEffect": true,
 					"effects": "((heal 1) (heal 3) (heal 6) (heal 10) (heal 15))"
+				},
+				{
+					"id": "MagneticShield",
+					"name": "Magnetic Shield",
+					"description": "Resists physical attacs",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": ""
 				}
 			],
 			"separators": [],

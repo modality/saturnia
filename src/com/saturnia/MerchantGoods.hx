@@ -1,7 +1,7 @@
 package com.saturnia;
 
 import haxe.EnumTools;
-import flash.events.Event;
+import openfl.events.Event;
 import com.modality.AugRandom;
 
 class MerchantGoods

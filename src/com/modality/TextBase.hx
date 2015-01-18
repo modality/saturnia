@@ -12,7 +12,7 @@ class TextBase extends Base
 
   private var _text:Text;
 
-  public function new(_x:Int = 0, _y:Int = 0, _w:Int = 0, _h:Int = 0, _str:String = "")
+  public function new(_x:Float = 0, _y:Float = 0, _w:Int = 0, _h:Int = 0, _str:String = "")
   {
     super(_x, _y);
     _text = new Text(_str, 0, 0, _w, _h, {

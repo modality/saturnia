@@ -1,13 +1,16 @@
 package com.saturnia;
 
-import flash.events.Event;
-import flash.display.BitmapData;
+import openfl.display.BitmapData;
 import com.haxepunk.graphics.Image;
 import com.modality.Base;
 import com.modality.TextBase;
+import com.saturnia.ui.ShipPartEvent;
 
-class PlayerResources
+class PlayerResources extends Base
 {
+  public static var SHIP_PART_ADDED:String = "ship part added";
+  public static var SHIP_PART_USED:String = "ship part used";
+
   public var fuel:Int;
   public var shields:Int;
   public var cargo:Int;
@@ -24,6 +27,7 @@ class PlayerResources
 
   public function new()
   {
+    super();
     fuel = Constants.STARTING_FUEL;
     shields = Constants.STARTING_SHIELDS;
     cargo = Constants.STARTING_CARGO;
@@ -35,8 +39,6 @@ class PlayerResources
     cards = [];
     items = [];
     shipParts = [];
-
-    shipParts.push(ShipPartManager.getPart("ShieldBattery"));
 
     stats = new CombatStats();
     stats.maxHitPoints = maxShields;
@@ -55,6 +57,13 @@ class PlayerResources
     fuel -= amount;
   }
 
+  public function addShipPart(shipPart:ShipPart)
+  {
+    shipParts.push(shipPart);
+    var ev = new ShipPartEvent(SHIP_PART_ADDED, shipPart);
+    dispatchEvent(ev);
+  }
+
   public function buyItem(item:Item)
   {
     if(cargo >= item.cargoCost && science >= item.scienceCost) {
@@ -62,7 +71,7 @@ class PlayerResources
       science -= item.scienceCost;
       items.push(item);
 
-      item.dispatchEvent(new Event(Item.PURCHASED));
+      //item.dispatchEvent(new Event(Item.PURCHASED));
       applyItem(item);
     }
   }

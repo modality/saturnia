@@ -53,8 +53,20 @@ class GameController extends Scene
             space.explore();
             galaxy.player.useFuel(1);
             infoPanel.updateGraphic();
-            if(space.spaceType == SpaceType.Hostile) {
-              checkLocked();
+            switch(space.spaceType) {
+              case Planet:
+                galaxy.player.cargo += 1;
+                galaxy.player.science += 1;
+                infoPanel.gainResource(space);
+              case Star, Start:
+                galaxy.player.science += 2;
+                infoPanel.gainResource(space);
+              case Debris:
+                galaxy.player.cargo += 2;
+                infoPanel.gainResource(space);
+              case Hostile:
+                checkLocked();
+              default:
             }
             galaxy.pulse();
           } else if(space.explored && space.spaceType == SpaceType.Friendly) {

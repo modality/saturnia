@@ -1,6 +1,6 @@
 package com.saturnia;
 
-import flash.events.Event;
+import openfl.events.Event;
 import com.modality.AugRandom;
 
 class MerchantEncounter extends Encounter

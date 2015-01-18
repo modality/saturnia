@@ -1,10 +1,10 @@
 package com.modality;
 
-import flash.geom.Matrix;
-import flash.geom.Rectangle;
-import flash.display.BitmapData;
-import flash.display.Sprite;
-import flash.utils.ByteArray;
+import openfl.geom.Matrix;
+import openfl.geom.Rectangle;
+import openfl.display.BitmapData;
+import openfl.display.Sprite;
+import openfl.utils.ByteArray;
 
 enum EllipseMode {
   Radius;
@@ -80,12 +80,12 @@ class Sketch {
 
   public function blend(_src:BitmapData, _mode:BlendMode)
   {
-    var blendMode:flash.display.BlendMode = switch(_mode) {
-      case Multiply: flash.display.BlendMode.MULTIPLY;
-      case Lightest: flash.display.BlendMode.LIGHTEN;
-      case Overlay: flash.display.BlendMode.OVERLAY;
-      case HardLight: flash.display.BlendMode.HARDLIGHT;
-      case Screen: flash.display.BlendMode.SCREEN;
+    var blendMode:openfl.display.BlendMode = switch(_mode) {
+      case Multiply: openfl.display.BlendMode.MULTIPLY;
+      case Lightest: openfl.display.BlendMode.LIGHTEN;
+      case Overlay: openfl.display.BlendMode.OVERLAY;
+      case HardLight: openfl.display.BlendMode.HARDLIGHT;
+      case Screen: openfl.display.BlendMode.SCREEN;
     }
     _rasterize();
     bitmap.draw(_src, null, null, blendMode);

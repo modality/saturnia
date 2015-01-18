@@ -1,8 +1,8 @@
 package com.modality;
 
-import flash.events.Event;
-import flash.events.EventDispatcher;
-import flash.events.IEventDispatcher;
+import openfl.events.Event;
+import openfl.events.EventDispatcher;
+import openfl.events.IEventDispatcher;
 
 import com.haxepunk.Scene;
 

@@ -1,6 +1,6 @@
 package com.saturnia.ui;
 
-import flash.events.Event;
+import openfl.events.Event;
 import com.modality.Base;
 import com.modality.TextBase;
 

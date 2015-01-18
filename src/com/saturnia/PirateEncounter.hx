@@ -3,6 +3,7 @@ package com.saturnia;
 class PirateEncounter extends Encounter
 {
   public var stats:CombatStats;
+  public var description:String;
 
   public function new(_space:Space)
   {
