@@ -2,6 +2,7 @@ package com.saturnia.ui;
 
 import openfl.events.Event;
 import openfl.display.BitmapData;
+import com.haxepunk.utils.Input;
 import com.haxepunk.graphics.Image;
 import com.modality.Base;
 import com.modality.TextBase;
@@ -33,7 +34,6 @@ class InfoPanel extends Base
     sector = _sector;
     player = _player;
 
-    player.addEventListener(PlayerResources.SHIP_PART_ADDED, addShipPart);
 
     cards = [for (c in player.cards) new Base(0, 0, Assets.getImage(Generator.tarotGraphics.get(c)))];
 
@@ -43,6 +43,13 @@ class InfoPanel extends Base
       c.y = 200 + Std.random(10);
       addChild(c);
       ci++;
+    }
+
+    shipParts = [];
+    player.addEventListener(ShipPartEvent.ADD, addShipPart);
+    player.addEventListener(PlayerResources.UPDATED, playerUpdated);
+    for (sp in player.shipParts) {
+      addShipPart(new ShipPartEvent(ShipPartEvent.ADD, sp));
     }
 
     var bmd:BitmapData;
@@ -93,6 +100,17 @@ class InfoPanel extends Base
     updateGraphic();
   }
 
+  public override function update()
+  {
+    super.update();
+    if(Input.mouseReleased) {
+      var base:Base = cast(scene.collidePoint("ship_part_menu_item", Input.mouseX, Input.mouseY), Base);
+      if(base != null) {
+        base.dispatchEvent(new Event(ShipPartMenuItem.CLICKED));
+      }
+    }
+  }
+
   public function gainResource(space:Space)
   {
     var start_x = space.x + Constants.BLOCK_W/2 - 10;
@@ -127,8 +145,20 @@ class InfoPanel extends Base
 
   public function addShipPart(ev:ShipPartEvent):Void
   {
-    
+    var spmi:ShipPartMenuItem = new ShipPartMenuItem(0, 350 + shipParts.length * 40, ev.shipPart);
+    shipParts.push(spmi);
+    spmi.addEventListener(ShipPartEvent.TRY_USE, tryUseShipPart);
+    addChild(spmi);
+  }
 
+  public function tryUseShipPart(ev:ShipPartEvent):Void
+  {
+    ev.shipPart.use();
+  }
+
+  public function playerUpdated(ev:Event):Void
+  {
+    updateGraphic();
   }
 
   public override function updateGraphic()

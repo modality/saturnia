@@ -3,9 +3,10 @@ package com.saturnia;
 import com.modality.Base;
 import com.modality.cards.Message;
 
-class ShipPart
+class ShipPart extends Base
 {
-  public var name:String;
+  public static var UPDATED:String = "ship part updated";
+
   public var description:String;
   public var scienceCost:Int;
   public var cargoCost:Int;
@@ -16,10 +17,6 @@ class ShipPart
 
   public var refresh:Int = 0;
   public var refreshLevel:Int = 1;
-
-  public function new()
-  {
-  }
 
   public function reset():Void
   {
@@ -34,9 +31,11 @@ class ShipPart
 
   public function use():Void
   {
-    if(!activeEffect) return;
+    if(!ready()) return;
+    dispatchEvent(new EffectEvent(EffectEvent.APPLY, effects.get(refreshLevel-1)));
     refresh = 0;
     refreshLevel = 0;
+    dispatchEvent(new ShipPartEvent(UPDATED, this));
   }
 
   public function pulse():Void
@@ -47,6 +46,7 @@ class ShipPart
       if(refresh >= refreshRate) {
         refresh = 0;
         refreshLevel++;
+        dispatchEvent(new ShipPartEvent(UPDATED, this));
       }
     }
   }

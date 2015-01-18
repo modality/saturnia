@@ -8,6 +8,11 @@ class Message {
     tokens = _tokens;
   }
 
+  public function get(index:Int)
+  {
+    return Message.read(Message.stringify(tokens[index]));
+  }
+
   public function type():String
   {
     return Std.string(tokens[0]);

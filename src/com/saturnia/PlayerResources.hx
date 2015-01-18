@@ -1,15 +1,15 @@
 package com.saturnia;
 
 import openfl.display.BitmapData;
+import openfl.events.Event;
 import com.haxepunk.graphics.Image;
 import com.modality.Base;
 import com.modality.TextBase;
-import com.saturnia.ui.ShipPartEvent;
+import com.modality.cards.Message;
 
 class PlayerResources extends Base
 {
-  public static var SHIP_PART_ADDED:String = "ship part added";
-  public static var SHIP_PART_USED:String = "ship part used";
+  public static var UPDATED:String = "player resources updated";
 
   public var fuel:Int;
   public var shields:Int;
@@ -55,12 +55,14 @@ class PlayerResources extends Base
   public function useFuel(amount:Int)
   {
     fuel -= amount;
+    dispatchEvent(new Event(UPDATED));
   }
 
   public function addShipPart(shipPart:ShipPart)
   {
     shipParts.push(shipPart);
-    var ev = new ShipPartEvent(SHIP_PART_ADDED, shipPart);
+    shipPart.addEventListener(EffectEvent.APPLY, applyEffect);
+    var ev = new ShipPartEvent(ShipPartEvent.ADD, shipPart);
     dispatchEvent(ev);
   }
 
@@ -74,6 +76,20 @@ class PlayerResources extends Base
       //item.dispatchEvent(new Event(Item.PURCHASED));
       applyItem(item);
     }
+  }
+
+  public function applyEffect(ev:EffectEvent)
+  {
+    var msg:Message = ev.effect;
+
+    switch(msg.type()) {
+      case "heal":
+        stats.hitPoints += Std.int(msg.tokens[1]);
+        if(stats.hitPoints > stats.maxHitPoints) stats.hitPoints = stats.maxHitPoints;
+        shields = stats.hitPoints;
+      default:
+    }
+    dispatchEvent(new Event(UPDATED));
   }
 
   public function applyItem(item:Item)

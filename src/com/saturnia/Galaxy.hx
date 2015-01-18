@@ -22,7 +22,7 @@ class Galaxy
     player = new PlayerResources();
     player.cards.push(cards[0]);
     player.cards.push(cards[1]);
-    player.shipParts.push(ShipPartManager.getPart("ShieldBattery"));
+    player.addShipPart(ShipPartManager.getPart("ShieldBattery"));
   }
 
   public function getStartSector():Sector {

@@ -9,19 +9,21 @@ class ShipPartMenuItem extends Base
   public static var CLICKED:String = "clicked item";
 
   public var shipPart:ShipPart;
+  public var text:TextBase;
 
   public function new(_x:Int, _y:Int, _shipPart:ShipPart)
   {
     var img = Assets.getImage("icon_gear");
-    img.scaleX = 0.2;
-    img.scaleY = 0.2;
+    img.scaleX = 0.1;
+    img.scaleY = 0.1;
     super(_x, _y, img);
     shipPart = _shipPart;
     type = "ship_part_menu_item";
 
-    var tb:TextBase;
-    tb = new TextBase(20, 0, 50, 20, _shipPart.name);
-    addChild(tb);
+    shipPart.addEventListener(ShipPart.UPDATED, updateText);
+
+    text = new TextBase(20, 0, 50, 20, shipPart.name);
+    addChild(text);
 
     updateHitbox();
     addEventListener(CLICKED, onClick);
@@ -35,7 +37,22 @@ class ShipPartMenuItem extends Base
 
   public function onClick(event:Dynamic):Void
   {
-    dispatchEvent(new ShipPartEvent(CLICKED, shipPart));
+    dispatchEvent(new ShipPartEvent(ShipPartEvent.TRY_USE, shipPart));
+  }
+
+  public function updateText(event:Dynamic):Void
+  {
+    var _text = "";
+
+    _text += shipPart.name;
+
+    if(shipPart.activeEffect) {
+      _text += " [";
+      for(i in 0...shipPart.refreshLevel) _text += "*";
+      for(i in shipPart.refreshLevel...shipPart.refreshLevels) _text += " ";
+      _text += "]";
+    }
+
+    text.text = _text;
   }
 }
-
