@@ -86,7 +86,7 @@ class InfoPanel extends Base
     coffeeGfx = new Base(235, 182, coffeeImg);
     coffeeGfx.layer = Constants.RESOURCE_LAYER;
 
-    enemy_text = new TextBase(0, 350, 300, 50, "");
+    enemy_text = new TextBase(0, 400, 300, 50, "");
     enemy_text.size = Constants.FONT_SIZE_XS;
 
     addChild(sectorGfx);
@@ -135,7 +135,10 @@ class InfoPanel extends Base
 
   public function displayEnemy(pe:PirateEncounter)
   {
-    enemy_text.text = pe.description;
+    var enemyInfo = "The \""+pe.name + "\"\n";
+    enemyInfo += "HP: "+pe.stats.hitPoints+"/"+pe.stats.maxHitPoints+"\n";
+    enemyInfo += pe.description;
+    enemy_text.text = enemyInfo;
   }
 
   public function clearEnemy()

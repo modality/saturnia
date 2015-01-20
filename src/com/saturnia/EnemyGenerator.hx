@@ -108,9 +108,7 @@ class EnemyGenerator
 
   public static function buildDescription(pe:PirateEncounter):String
   {
-    var enemyInfo = "The \""+pe.name + "\"\n";
-
-    enemyInfo += "HP: "+pe.stats.hitPoints+"/"+pe.stats.maxHitPoints+"\n";
+    var enemyInfo = "";
     enemyInfo += "Attack: "+(pe.stats.attackPower+pe.stats.stackingDamage)+"\n";
     if(pe.stats.numAttacks > 1) {
       enemyInfo += "Multi-Attack ("+pe.stats.numAttacks+")\n";

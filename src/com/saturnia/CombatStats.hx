@@ -33,7 +33,7 @@ class CombatStats
 
   public var accuracyRating:Int = 90;
   public var evadeChance:Int = 0;
-  public var criticalChance:Int = 10;
+  public var criticalChance:Int = 5;
   public var alwaysHit:Bool = false;
 
   public function reset():Void {

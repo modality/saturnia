@@ -10,6 +10,7 @@ class ShipPartMenuItem extends Base
 
   public var shipPart:ShipPart;
   public var text:TextBase;
+  public var progressBar:ProgressBar;
 
   public function new(_x:Int, _y:Int, _shipPart:ShipPart)
   {
@@ -22,8 +23,14 @@ class ShipPartMenuItem extends Base
 
     shipPart.addEventListener(ShipPart.UPDATED, updateText);
 
+    if(shipPart.activeEffect) {
+      progressBar = new ProgressBar(25, 20, 100, 10, 0xFFFFFF);
+      addChild(progressBar);
+    }
+
     text = new TextBase(20, 0, 50, 20, shipPart.name);
     addChild(text);
+    updateText();
 
     updateHitbox();
     addEventListener(CLICKED, onClick);
@@ -40,19 +47,11 @@ class ShipPartMenuItem extends Base
     dispatchEvent(new ShipPartEvent(ShipPartEvent.TRY_USE, shipPart));
   }
 
-  public function updateText(event:Dynamic):Void
+  public function updateText(?event:Dynamic):Void
   {
-    var _text = "";
-
-    _text += shipPart.name;
-
+    text.text = shipPart.name;
     if(shipPart.activeEffect) {
-      _text += " [";
-      for(i in 0...shipPart.refreshLevel) _text += "*";
-      for(i in shipPart.refreshLevel...shipPart.refreshLevels) _text += " ";
-      _text += "]";
+      progressBar.set(shipPart.refreshLevel / shipPart.refreshLevels);
     }
-
-    text.text = _text;
   }
 }

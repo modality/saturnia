@@ -51,7 +51,7 @@
 					"description": "Restores shields",
 					"scienceCost": 0,
 					"cargoCost": 0,
-					"refreshRate": 3,
+					"refreshRate": 5,
 					"refreshLevels": 5,
 					"id": "ShieldBattery",
 					"activeEffect": true,
@@ -67,6 +67,153 @@
 					"refreshRate": 0,
 					"refreshLevels": 0,
 					"effects": ""
+				}
+			],
+			"separators": [],
+			"props": {}
+		},
+		{
+			"name": "sectors",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id"
+				},
+				{
+					"typeStr": "3",
+					"name": "weight"
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "star"
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "planet",
+					"display": null
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "friendly",
+					"display": null
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "hostile",
+					"display": null
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "debris",
+					"display": null
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "quest",
+					"display": null
+				},
+				{
+					"typeStr": "6:weights",
+					"name": "anomaly",
+					"display": null
+				}
+			],
+			"lines": [
+				{
+					"id": "Peaceful",
+					"star": "Maybe",
+					"planet": "High",
+					"friendly": "Low",
+					"hostile": "Wide",
+					"debris": "Wide",
+					"quest": "Maybe",
+					"anomaly": "No",
+					"weight": 30
+				},
+				{
+					"id": "Nebula",
+					"star": "Wide",
+					"planet": "No",
+					"friendly": "Low",
+					"hostile": "High",
+					"debris": "High",
+					"quest": "No",
+					"anomaly": "No",
+					"weight": 25
+				},
+				{
+					"id": "Asteroid",
+					"star": "No",
+					"planet": "Wide",
+					"friendly": "Low",
+					"hostile": "High",
+					"debris": "High",
+					"quest": "No",
+					"anomaly": "No",
+					"weight": 25
+				},
+				{
+					"id": "Anomaly",
+					"star": "No",
+					"planet": "No",
+					"friendly": "No",
+					"hostile": "High",
+					"debris": "No",
+					"quest": "No",
+					"anomaly": "Yes",
+					"weight": 20
+				}
+			],
+			"separators": [],
+			"props": {}
+		},
+		{
+			"name": "weights",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id",
+					"display": null
+				},
+				{
+					"typeStr": "3",
+					"name": "low"
+				},
+				{
+					"typeStr": "3",
+					"name": "high"
+				}
+			],
+			"lines": [
+				{
+					"id": "Yes",
+					"low": 1,
+					"high": 1
+				},
+				{
+					"id": "Maybe",
+					"low": 0,
+					"high": 1
+				},
+				{
+					"id": "Low",
+					"low": 2,
+					"high": 3
+				},
+				{
+					"id": "High",
+					"low": 5,
+					"high": 7
+				},
+				{
+					"id": "Wide",
+					"low": 3,
+					"high": 6
+				},
+				{
+					"id": "No",
+					"low": 0,
+					"high": 0
 				}
 			],
 			"separators": [],

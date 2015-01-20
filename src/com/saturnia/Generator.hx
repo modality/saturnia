@@ -36,41 +36,6 @@ class Generator
   public static var sectorNames:Array<String>;
   public static var itemNames:Array<String>;
 
-  public static var weightMakeup:Map<WeightSize, Array<Int>> = [
-    Yes => [1, 1],
-    Maybe => [0, 1],
-    Low => [2, 4],
-    High => [4, 7],
-    Wide => [2, 7]
-  ];
-
-  public static var sectorMakeup:Map<SectorType,Map<SpaceType,WeightSize>> = [
-    Peaceful => [
-      Star => Maybe,
-      Planet => Wide,
-      Friendly => High,
-      Hostile => Low,
-      Debris => Low,
-      Quest => Maybe
-    ],
-    Nebula => [
-      Star => Wide,
-      Friendly => Low,
-      Hostile => High,
-      Debris => High
-    ],
-    Asteroid => [
-      Planet => Wide,
-      Friendly => Low,
-      Hostile => High,
-      Debris => High
-    ],
-    Anomaly => [
-      Hostile => High,
-      Anomaly => Yes
-    ]
-  ];
-
   public static var tarotGraphics:Map<MajorArcana, String> = [
     TheFool => "tarot_0",
     TheMagician => "tarot_1",
@@ -137,24 +102,34 @@ class Generator
 
   public static function fillSector(sector:Sector):Sector
   {
-    var spaceTypes:Array<SpaceType> = [Start, Exit];
-    var sectorType:SectorType = AugRandom.weightedChoice([
-      SectorType.Peaceful => 30,
-      SectorType.Nebula => 25,
-      SectorType.Asteroid => 25,
-      SectorType.Anomaly => 20
-    ]);
+    var spaceTypes:Array<String> = ["Start", "Exit"];
+    var sectorTypes = new Map<String, Int>();
+    for(s in Data.sectors.all) {
+      sectorTypes.set(s.id.toString(), s.weight);
+    }
+    var sectorType:String = AugRandom.weightedChoice(sectorTypes);
+    var sectorData:Data.Sectors = Data.sectors.resolve(sectorType);
 
-    for(element in sectorMakeup[sectorType].keys()) {
-      var weight = sectorMakeup[sectorType][element];
-      var tuple = weightMakeup[weight];
-      for(times in 0...(AugRandom.range(tuple[0], tuple[1]+1))) {
-        spaceTypes.push(element);
+    var addSpaceType = function(type:String, num:Int):Void {
+      for(times in 0...num) {
+        spaceTypes.push(type);
       }
     }
 
+    addSpaceType("Star", AugRandom.range(sectorData.star.low, sectorData.star.high+1));
+    addSpaceType("Planet", AugRandom.range(sectorData.planet.low, sectorData.planet.high+1));
+    addSpaceType("Friendly", AugRandom.range(sectorData.friendly.low, sectorData.friendly.high+1));
+    addSpaceType("Hostile", AugRandom.range(sectorData.hostile.low, sectorData.hostile.high+1));
+    addSpaceType("Debris", AugRandom.range(sectorData.debris.low, sectorData.debris.high+1));
+    addSpaceType("Quest", AugRandom.range(sectorData.quest.low, sectorData.quest.high+1));
+    addSpaceType("Anomaly", AugRandom.range(sectorData.anomaly.low, sectorData.anomaly.high+1));
+
+    if(spaceTypes.length > 25) {
+      trace("too many spaces generated for sector type "+sectorType);
+    }
+
     while(spaceTypes.length < 25) {
-      spaceTypes.push(Voidness);
+      spaceTypes.push("Voidness");
     }
 
     spaceTypes = AugRandom.shuffle(spaceTypes.slice(0, 25));
@@ -162,14 +137,14 @@ class Generator
     sector.spaces.init(function(i:Int, j:Int):Space {
       var space:Space = new Space();
       space.grid = sector.spaces;
-      space.spaceType = spaceTypes.shift();
+      space.spaceType = EnumTools.createByName(SpaceType, spaceTypes.shift());
       space.x = Constants.GRID_X+(i*Constants.BLOCK_W);
       space.y = Constants.GRID_Y+(j*Constants.BLOCK_H);
       space = fillSpace(space, sector);
       return space;
     });
     sector.title = generateSectorName();
-    sector.sectorType = sectorType;
+    sector.sectorType = EnumTools.createByName(SectorType, sectorType);
 
     return sector;
   }

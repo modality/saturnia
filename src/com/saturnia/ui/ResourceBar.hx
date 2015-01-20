@@ -10,8 +10,8 @@ class ResourceBar extends ResourceCounter
   public static var BAR_WIDTH:Int = 275;
   public static var BAR_HEIGHT:Int = 20;
 
-  public var topBar:Base;
-  public var bottomBar:Base;
+  public var topBar:ProgressBar;
+  public var bottomBar:ProgressBar;
 
   public var maximum:Int;
 
@@ -19,19 +19,9 @@ class ResourceBar extends ResourceCounter
   {
     super(_x, _y, icon);
 
-    var bmd:BitmapData = new BitmapData(1, 1, false, color);
-    var img:Image;
-
-    img = new Image(bmd);
-    img.scaleX = BAR_WIDTH;
-    img.scaleY = BAR_HEIGHT;
-    topBar = new Base(25, 0, img);
-
-    img = new Image(bmd);
-    img.alpha = 0.7;
-    img.scaleX = BAR_WIDTH;
-    img.scaleY = BAR_HEIGHT;
-    bottomBar = new Base(25, 0, img);
+    topBar = new ProgressBar(25, 0, BAR_WIDTH, BAR_HEIGHT, color);
+    bottomBar = new ProgressBar(25, 0, BAR_WIDTH, BAR_HEIGHT, color);
+    bottomBar.image.alpha = 0.7;
 
     addChild(bottomBar);
     addChild(topBar);
@@ -42,7 +32,7 @@ class ResourceBar extends ResourceCounter
   public function preview(_amount:Int)
   {
     text.text = _amount+"/"+maximum;
-    cast(topBar.graphic, Image).scaleX = Math.ceil(BAR_WIDTH * _amount / maximum);
+    topBar.set(_amount/maximum);
   }
 
   public override function set(_amount:Int, _maximum:Int = 0)
@@ -56,11 +46,11 @@ class ResourceBar extends ResourceCounter
   {
     text.text = amount+"/"+maximum;
     if(maximum != 0) {
-      cast(topBar.graphic, Image).scaleX = Math.ceil(BAR_WIDTH * amount / maximum);
-      cast(bottomBar.graphic, Image).scaleX = Math.ceil(BAR_WIDTH * amount / maximum); 
+      topBar.set(amount/maximum);
+      bottomBar.set(amount/maximum);
     } else {
-      cast(topBar.graphic, Image).scaleX = BAR_WIDTH;
-      cast(bottomBar.graphic, Image).scaleX = BAR_WIDTH;
+      topBar.set(1);
+      bottomBar.set(1);
     }
   }
 }
