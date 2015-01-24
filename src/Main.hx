@@ -3,7 +3,6 @@ import com.haxepunk.HXP;
 
 import com.saturnia.GameController;
 import com.saturnia.Generator;
-import com.saturnia.MerchantGoods;
 
 class Main extends Engine
 {
@@ -13,8 +12,6 @@ class Main extends Engine
     Data.load(openfl.Assets.getText("data/items.cdb"));
     Assets.init();
     Generator.init();
-    MerchantGoods.init();
-
 #if debug
     HXP.console.enable();
 #end

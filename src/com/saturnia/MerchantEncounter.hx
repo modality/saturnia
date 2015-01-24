@@ -5,7 +5,7 @@ import com.modality.AugRandom;
 
 class MerchantEncounter extends Encounter
 {
-  public var goods:Array<Item>;
+  public var parts:Array<ShipPart>;
 
   public var goodBought:String;
   public var goodSold:String;
@@ -27,16 +27,12 @@ class MerchantEncounter extends Encounter
   public override function activate()
   {
     space.object = this;
-    goods = AugRandom.sample(MerchantGoods.currentGoods, 2);
-    for(item in goods) {
-      item.addEventListener(Item.PURCHASED, boughtItem);
-    }
+    parts = ShipPartManager.getMerchantParts(3);
   }
 
-  public function boughtItem(event:Dynamic):Void
+  public function boughtPart(shipPart:ShipPart)
   {
-    var item:Item = cast(cast(event, Event).currentTarget, Item);
-    goods.remove(item);
+    parts.remove(shipPart);
   }
 
   private function logistic(t:Float):Float

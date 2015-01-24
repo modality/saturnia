@@ -17,8 +17,17 @@
 					"display": null
 				},
 				{
+					"typeStr": "1",
+					"name": "effectName"
+				},
+				{
 					"typeStr": "2",
 					"name": "activeEffect"
+				},
+				{
+					"typeStr": "2",
+					"name": "inMerchant",
+					"display": null
 				},
 				{
 					"typeStr": "3",
@@ -55,18 +64,152 @@
 					"refreshLevels": 5,
 					"id": "ShieldBattery",
 					"activeEffect": true,
-					"effects": "((heal 1) (heal 3) (heal 6) (heal 10) (heal 15))"
+					"effects": "((heal 1) (heal 3) (heal 6) (heal 10) (heal 15))",
+					"effectName": "Recharge",
+					"inMerchant": false
 				},
 				{
 					"id": "MagneticShield",
 					"name": "Magnetic Shield",
-					"description": "Resists physical attacs",
+					"description": "Resists physical attacks",
 					"activeEffect": false,
 					"scienceCost": 0,
-					"cargoCost": 0,
+					"cargoCost": 10,
 					"refreshRate": 0,
 					"refreshLevels": 0,
-					"effects": ""
+					"effects": "(resistPhysical 5)",
+					"effectName": "Countermeasure",
+					"inMerchant": true
+				},
+				{
+					"id": "EnergyShield",
+					"name": "Energy Shield",
+					"description": "Resists energy attacks",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 10,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": "(resistEnergy 5)",
+					"effectName": "Reflection",
+					"inMerchant": true
+				},
+				{
+					"id": "PepperRay",
+					"name": "Pepper Ray",
+					"description": "Deal 1 damage",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 10,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": "(attack 1)",
+					"effectName": "Basic Shot",
+					"inMerchant": false
+				},
+				{
+					"id": "ViperRay",
+					"name": "Viper Ray",
+					"description": "Deal 2 damage",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 20,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": "(attack 2)",
+					"effectName": "Quick Shot",
+					"inMerchant": true
+				},
+				{
+					"id": "GhostRay",
+					"name": "Ghost Ray",
+					"description": "Deal 4 damage",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 40,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": "(attack 4)",
+					"effectName": "Big Shot",
+					"inMerchant": true
+				},
+				{
+					"id": "PelicanDrive",
+					"name": "Pelican Drive",
+					"description": "Gain 1 fuel per star",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 20,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": "(onStar addFuel 1)",
+					"effectName": "Particle Scoop",
+					"inMerchant": true
+				},
+				{
+					"id": "GullDrive",
+					"name": "Gull Drive",
+					"description": "Exploring next to revealed stars costs no fuel",
+					"activeEffect": false,
+					"scienceCost": 0,
+					"cargoCost": 20,
+					"refreshRate": 0,
+					"refreshLevels": 0,
+					"effects": "(nearStar freeExplore)",
+					"effectName": "Magnetic Sail",
+					"inMerchant": true
+				},
+				{
+					"id": "CoyoteBeam",
+					"name": "Coyote Beam",
+					"description": "Steal cargo",
+					"activeEffect": true,
+					"scienceCost": 0,
+					"cargoCost": 10,
+					"refreshRate": 5,
+					"refreshLevels": 1,
+					"effects": "(stealCargo)",
+					"effectName": "Scavenger",
+					"inMerchant": true
+				},
+				{
+					"id": "VultureBeam",
+					"name": "Vulture Beam",
+					"description": "Steal cargo and fuel",
+					"effectName": "Scavenger",
+					"activeEffect": true,
+					"scienceCost": 0,
+					"cargoCost": 30,
+					"refreshRate": 5,
+					"refreshLevels": 1,
+					"effects": "(stealCargoFuel)",
+					"inMerchant": true
+				},
+				{
+					"id": "JackalBeam",
+					"name": "Jackal Beam",
+					"description": "Steal cargo and science",
+					"effectName": "Scavenger",
+					"activeEffect": true,
+					"scienceCost": 0,
+					"cargoCost": 30,
+					"refreshRate": 5,
+					"refreshLevels": 1,
+					"effects": "(stealCargoScience)",
+					"inMerchant": true
+				},
+				{
+					"id": "MiningNanobots",
+					"name": "Mining Nanobots",
+					"description": "Convert planet to cargo and fuel",
+					"effectName": "Strip Mine",
+					"activeEffect": true,
+					"scienceCost": 0,
+					"cargoCost": 40,
+					"refreshRate": 5,
+					"refreshLevels": 1,
+					"effects": "(stripMine)",
+					"inMerchant": true
 				}
 			],
 			"separators": [],

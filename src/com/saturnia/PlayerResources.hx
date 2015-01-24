@@ -20,7 +20,6 @@ class PlayerResources extends Base
   public var maxShields:Int;
 
   public var cards:Array<MajorArcana>;
-  public var items:Array<Item>;
   public var shipParts:Array<ShipPart>;
 
   public var stats:CombatStats;
@@ -37,7 +36,6 @@ class PlayerResources extends Base
     maxShields = shields;
 
     cards = [];
-    items = [];
     shipParts = [];
 
     stats = new CombatStats();
@@ -71,16 +69,17 @@ class PlayerResources extends Base
     dispatchEvent(ev);
   }
 
-  public function buyItem(item:Item)
+  public function buyShipPart(shipPart:ShipPart):Bool
   {
-    if(cargo >= item.cargoCost && science >= item.scienceCost) {
-      cargo -= item.cargoCost;
-      science -= item.scienceCost;
-      items.push(item);
-
-      //item.dispatchEvent(new Event(Item.PURCHASED));
-      applyItem(item);
+    if(cargo >= shipPart.cargoCost && science >= shipPart.scienceCost) {
+      cargo -= shipPart.cargoCost;
+      science -= shipPart.scienceCost;
+      addShipPart(shipPart);
+      shipPart.dispatchEvent(new ShipPartEvent(ShipPartEvent.PURCHASED, shipPart));
+      updated();
+      return true;
     }
+    return false;
   }
 
   public function applyEffect(ev:EffectEvent)
@@ -95,19 +94,5 @@ class PlayerResources extends Base
       default:
     }
     updated();
-  }
-
-  public function applyItem(item:Item)
-  {
-    switch(item.itemType) {
-      case Fuel:
-        fuel += 10;
-      case Charge:
-        shields += 10;
-      case Data:
-        science += 5;
-      default:
-        trace("item not implemented :(");
-    }
   }
 }

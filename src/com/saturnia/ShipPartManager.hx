@@ -1,9 +1,12 @@
 package com.saturnia;
 
+import com.modality.AugRandom;
 import com.modality.cards.Message;
 
 class ShipPartManager
 {
+  public static var merchantParts:Array<String>;
+
   public static function getPart(id:String):ShipPart
   {
     var shipPartData:Data.ShipParts = Data.shipParts.resolve(id);
@@ -21,4 +24,15 @@ class ShipPartManager
     part.reset();
     return part;
   }
+
+  public static function getMerchantParts(count:Int):Array<ShipPart>
+  {
+    if(merchantParts == null) {
+      merchantParts = [for(p in Data.shipParts.all) if(p.inMerchant) p.id.toString()];
+    }
+
+    var sample = AugRandom.sample(merchantParts, count);
+    return [for(p in sample) getPart(p)];
+  }
+
 }

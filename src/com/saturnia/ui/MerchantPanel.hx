@@ -7,7 +7,7 @@ import com.modality.TextBase;
 
 class MerchantPanel extends Base
 {
-  public var space:Space;
+  public var merchant:MerchantEncounter;
   public var player:PlayerResources;
 
   public var ok_btn:TextBase;
@@ -18,7 +18,7 @@ class MerchantPanel extends Base
   {
     super(50, 50);
 
-    space = _space;
+    merchant = cast(_space.encounter, MerchantEncounter);
     player = _player;
 
     var modal = Assets.getImage("ui_modal");
@@ -29,7 +29,7 @@ class MerchantPanel extends Base
 
     var tb:TextBase;
 
-    tb = new TextBase(10, 20, 300, 50, "Items");
+    tb = new TextBase(10, 20, 300, 50, "Ship Parts");
     tb.size = Constants.FONT_SIZE_MD;
     addChild(tb);
 
@@ -37,11 +37,9 @@ class MerchantPanel extends Base
     tb.size = Constants.FONT_SIZE_MD;
     addChild(tb);
 
-    var merchant = cast(space.encounter, MerchantEncounter);
-
     var pos = 0;
-    for(good in merchant.goods) {
-      var mmi = new MerchantMenuItem(10, (50 * pos) + 50, good);
+    for(part in merchant.parts) {
+      var mmi = new MerchantMenuItem(10, (50 * pos) + 50, part);
       mmi.addEventListener(MerchantMenuItem.CLICKED, clickedItem);
       mmi.addEventListener(MerchantMenuItem.REMOVED, removedItem);
       addChild(mmi);
@@ -79,6 +77,11 @@ class MerchantPanel extends Base
         base.dispatchEvent(new Event(MerchantMenuItem.CLICKED));
       }
 
+      var base:Base = cast(scene.collidePoint("merchant_menu_parent", Input.mouseX, Input.mouseY), Base);
+      if(base != null) {
+        cast(base, MerchantMenuItem).onClick();
+      }
+
       var btn:TextBase = cast(scene.collidePoint("ok_btn", Input.mouseX, Input.mouseY), TextBase);
       if(btn != null) {
         cast(scene, GameController).exitMerchant();
@@ -86,17 +89,16 @@ class MerchantPanel extends Base
     }
   }
 
-  public function clickedItem(event:Dynamic):Void
+  public function clickedItem(event:ShipPartEvent):Void
   {
-    var menuItem = cast(cast(event, Event).currentTarget, MerchantMenuItem);
-    var item:Item = menuItem.item;
-
-    player.buyItem(item);
+    if(player.buyShipPart(event.shipPart)) {
+      merchant.boughtPart(event.shipPart);
+    }
   }
 
-  public function removedItem(event:Dynamic):Void
+  public function removedItem(event:Event):Void
   {
-    var menuItem = cast(cast(event, Event).currentTarget, MerchantMenuItem);
+    var menuItem = cast(event.currentTarget, MerchantMenuItem);
     removeChild(menuItem);
   }
 }
