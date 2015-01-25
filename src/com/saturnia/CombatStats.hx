@@ -1,9 +1,12 @@
 package com.saturnia;
 
 import com.modality.AugRandom;
+import com.modality.cards.Message;
 
 class CombatStats
 {
+  public var statusEffects:Array<StatusEffect>;
+
   public var hitPoints:Int = 3;
   public var maxHitPoints:Int = 3;
 
@@ -35,6 +38,36 @@ class CombatStats
   public var evadeChance:Int = 0;
   public var criticalChance:Int = 5;
   public var alwaysHit:Bool = false;
+
+  public function new()
+  {
+    statusEffects = [];
+  }
+
+  public function addStatusEffect(effect:StatusEffect)
+  {
+    statusEffects.push(effect);
+    var addEffect = function(effect:Message) {
+      switch(effect.type()) {
+        case "attackPower":
+          attackPower += Std.int(effect.tokens[1]);
+        case "resistPhysical":
+          resistPhysical += Std.int(effect.tokens[1]);
+        case "resistEnergy":
+          resistEnergy += Std.int(effect.tokens[1]);
+        default:
+      }
+    }
+  }
+
+  public function getStatusEffects(type:String):Array<Message>
+  {
+    var effects:Array<Message> = [];
+    for(effect in statusEffects) {
+      effects = effects.concat(effect.getType(type));
+    }
+    return effects;
+  }
 
   public function reset():Void {
     hitPoints = maxHitPoints;

@@ -52,6 +52,10 @@
 				{
 					"typeStr": "1",
 					"name": "effects"
+				},
+				{
+					"typeStr": "1",
+					"name": "soundEffect"
 				}
 			],
 			"lines": [
@@ -61,12 +65,13 @@
 					"scienceCost": 0,
 					"cargoCost": 0,
 					"refreshRate": 5,
-					"refreshLevels": 5,
+					"refreshLevels": 3,
 					"id": "ShieldBattery",
 					"activeEffect": true,
-					"effects": "((heal 1) (heal 3) (heal 6) (heal 10) (heal 15))",
+					"effects": "((heal 1) (heal 3) (heal 6))",
 					"effectName": "Recharge",
-					"inMerchant": false
+					"inMerchant": false,
+					"soundEffect": "space_teleport"
 				},
 				{
 					"id": "MagneticShield",
@@ -79,7 +84,8 @@
 					"refreshLevels": 0,
 					"effects": "(resistPhysical 5)",
 					"effectName": "Countermeasure",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "EnergyShield",
@@ -92,7 +98,8 @@
 					"refreshLevels": 0,
 					"effects": "(resistEnergy 5)",
 					"effectName": "Reflection",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "PepperRay",
@@ -105,7 +112,8 @@
 					"refreshLevels": 0,
 					"effects": "(attack 1)",
 					"effectName": "Basic Shot",
-					"inMerchant": false
+					"inMerchant": false,
+					"soundEffect": ""
 				},
 				{
 					"id": "ViperRay",
@@ -118,7 +126,8 @@
 					"refreshLevels": 0,
 					"effects": "(attack 2)",
 					"effectName": "Quick Shot",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "GhostRay",
@@ -131,7 +140,8 @@
 					"refreshLevels": 0,
 					"effects": "(attack 4)",
 					"effectName": "Big Shot",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "PelicanDrive",
@@ -142,9 +152,10 @@
 					"cargoCost": 20,
 					"refreshRate": 0,
 					"refreshLevels": 0,
-					"effects": "(onStar addFuel 1)",
+					"effects": "(onStar (gainFuel 1))",
 					"effectName": "Particle Scoop",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "GullDrive",
@@ -157,7 +168,8 @@
 					"refreshLevels": 0,
 					"effects": "(nearStar freeExplore)",
 					"effectName": "Magnetic Sail",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "CoyoteBeam",
@@ -170,7 +182,8 @@
 					"refreshLevels": 1,
 					"effects": "(stealCargo)",
 					"effectName": "Scavenger",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "VultureBeam",
@@ -183,7 +196,8 @@
 					"refreshRate": 5,
 					"refreshLevels": 1,
 					"effects": "(stealCargoFuel)",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "JackalBeam",
@@ -196,7 +210,8 @@
 					"refreshRate": 5,
 					"refreshLevels": 1,
 					"effects": "(stealCargoScience)",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
 				},
 				{
 					"id": "MiningNanobots",
@@ -209,7 +224,77 @@
 					"refreshRate": 5,
 					"refreshLevels": 1,
 					"effects": "(stripMine)",
-					"inMerchant": true
+					"inMerchant": true,
+					"soundEffect": ""
+				}
+			],
+			"separators": [],
+			"props": {}
+		},
+		{
+			"name": "crewMembers",
+			"columns": [
+				{
+					"typeStr": "0",
+					"name": "id",
+					"display": null
+				},
+				{
+					"typeStr": "1",
+					"name": "name",
+					"display": null
+				},
+				{
+					"typeStr": "1",
+					"name": "description",
+					"display": null
+				},
+				{
+					"typeStr": "1",
+					"name": "effectName",
+					"display": null
+				},
+				{
+					"typeStr": "1",
+					"name": "effects",
+					"display": null
+				}
+			],
+			"lines": [
+				{
+					"id": "Planetologist",
+					"name": "Planetologist",
+					"description": "Finds extra science on planets",
+					"effectName": "Sensor Readings",
+					"effects": "(onPlanet (gainScience 2))"
+				},
+				{
+					"id": "Smuggler",
+					"name": "Smuggler",
+					"description": "Pirates don't prevent exploration",
+					"effectName": "Maneuvers",
+					"effects": "(exploreNearPirates)"
+				},
+				{
+					"id": "Linguist",
+					"name": "Linguist",
+					"description": "Prices at merchants are better",
+					"effectName": "Fast Talk",
+					"effects": "(discount 5)"
+				},
+				{
+					"id": "Industrialist",
+					"name": "Industrialist",
+					"description": "Finds extra cargo on planets",
+					"effectName": "Mining Operations",
+					"effects": "(onPlanet (gainCargo 2))"
+				},
+				{
+					"id": "Astrochemist",
+					"name": "Astrochemist",
+					"description": "Gain fuel from debris",
+					"effectName": "Harvest Volatiles",
+					"effects": "(onDebris (gainFuel 2))"
 				}
 			],
 			"separators": [],

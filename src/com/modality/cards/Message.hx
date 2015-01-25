@@ -8,6 +8,11 @@ class Message {
     tokens = _tokens;
   }
 
+  public function isMessage(index:Int)
+  {
+    return Type.getClassName(Type.getClass(tokens[index])) == "Array";
+  }
+
   public function get(index:Int)
   {
     return Message.read(Message.stringify(tokens[index]));

@@ -5,6 +5,7 @@ import com.modality.Block;
 
 class Sector extends Block
 {
+  public var explored:Bool;
   public var spaces:Grid<Space>;
   public var sectorType:SectorType;
   public var title:String;
@@ -18,6 +19,7 @@ class Sector extends Block
   public function new()
   {
     super(0, 0);
+    explored = false;
     spaces = new Grid<Space>(Constants.GRID_X, Constants.GRID_Y, Constants.GRID_W, Constants.GRID_H);
     goodsBought = [];
     goodsSold = [];

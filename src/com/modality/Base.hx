@@ -17,7 +17,7 @@ class Base extends Entity implements IEventDispatcher
   public var children:Array<Base>;
   public var dead:Bool;
   public var alpha(get, set):Float;
-  public var image(get, null):Image;
+  public var image(get, set):Image;
 
   public function new(x:Float = 0, y:Float = 0, graphic:Graphic = null, mask:Mask = null)
   {
@@ -123,6 +123,12 @@ class Base extends Entity implements IEventDispatcher
   public function get_image():Image
   {
     return cast(this.graphic, Image);
+  }
+
+  public function set_image(image:Image):Image
+  {
+    this.graphic = image;
+    return this.image;
   }
 }
 

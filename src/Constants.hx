@@ -21,7 +21,7 @@ class Constants
   public static var RESOURCE_LAYER:Int = 1;
   public static var OVERLAY_LAYER:Int = 0;
 
-  public static var STARTING_FUEL:Int = 50;
+  public static var STARTING_FUEL:Int = 25;
   public static var STARTING_SHIELDS:Int = 20;
   public static var STARTING_CARGO:Int = 0;
   public static var STARTING_SCIENCE:Int = 0;

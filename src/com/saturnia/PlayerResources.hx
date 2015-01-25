@@ -20,6 +20,7 @@ class PlayerResources extends Base
   public var maxShields:Int;
 
   public var cards:Array<MajorArcana>;
+  public var crewMembers:Array<CrewMember>;
   public var shipParts:Array<ShipPart>;
 
   public var stats:CombatStats;
@@ -36,6 +37,7 @@ class PlayerResources extends Base
     maxShields = shields;
 
     cards = [];
+    crewMembers = [];
     shipParts = [];
 
     stats = new CombatStats();
@@ -61,10 +63,19 @@ class PlayerResources extends Base
     updated();
   }
 
+  public function addCrewMember(crewMember:CrewMember)
+  {
+    crewMembers.push(crewMember);
+    stats.addStatusEffect(StatusEffect.fromCrewMember(crewMember));
+  }
+
   public function addShipPart(shipPart:ShipPart)
   {
     shipParts.push(shipPart);
     shipPart.addEventListener(EffectEvent.APPLY, applyEffect);
+    if(!shipPart.activeEffect) {
+      stats.addStatusEffect(StatusEffect.fromShipPart(shipPart));
+    }
     var ev = new ShipPartEvent(ShipPartEvent.ADD, shipPart);
     dispatchEvent(ev);
   }

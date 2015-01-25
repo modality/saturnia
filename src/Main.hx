@@ -4,6 +4,8 @@ import com.haxepunk.HXP;
 import com.saturnia.GameController;
 import com.saturnia.Generator;
 
+import com.modality.cards.Message;
+
 class Main extends Engine
 {
 
@@ -11,6 +13,7 @@ class Main extends Engine
   {
     Data.load(openfl.Assets.getText("data/items.cdb"));
     Assets.init();
+    SoundManager.init();
     Generator.init();
 #if debug
     HXP.console.enable();

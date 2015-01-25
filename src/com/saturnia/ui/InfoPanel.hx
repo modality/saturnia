@@ -27,13 +27,11 @@ class InfoPanel extends Base
 
   public var cards:Array<Base>;
 
-  public function new(_sector:Sector, _player:PlayerResources)
+  public function new(_player:PlayerResources)
   {
     super(500, 0);
 
-    sector = _sector;
     player = _player;
-
 
     cards = [for (c in player.cards) new Base(0, 0, Assets.getImage(Generator.tarotGraphics.get(c)))];
 
@@ -60,20 +58,9 @@ class InfoPanel extends Base
     var science_x = 250;
     var science_y = 125;
 
-    sectorName = new TextBase();
-    sectorName.x = Constants.GRID_X;
-    sectorName.y = 0;
+    sectorName = new TextBase(Constants.GRID_X, 0, 0, 0, "");
     sectorName.layer = Constants.MAP_LAYER;
-    sectorName.text = sector.title;
-
-    var sectorImg = switch(sector.sectorType) {
-      case Peaceful: Assets.getImage("sector_system");
-      case Nebula: Assets.getImage("sector_nebula");
-      case Asteroid: Assets.getImage("sector_asteroid");
-      case Anomaly: Assets.getImage("sector_anomaly");
-    }
-
-    sectorGfx = new Base(0, 0, sectorImg);
+    sectorGfx = new Base(0, 0);
 
     shields_bar = new ResourceBar(0, 150, "shields", Constants.SHIELDS_COLOR);
     fuel_bar = new ResourceBar(0, 170, "fuel", Constants.FUEL_COLOR);
@@ -111,25 +98,31 @@ class InfoPanel extends Base
     }
   }
 
-  public function gainResource(space:Space)
+  public function gainResource(space:Space, type:String, count:Int)
   {
     var start_x = space.x + Constants.BLOCK_W/2 - 10;
     var start_y = space.y + Constants.BLOCK_H/2 - 10;
-    var science_end_x = science_counter.x;
-    var science_end_y = science_counter.y;
-    var cargo_end_x = cargo_counter.x;
-    var cargo_end_y = cargo_counter.y;
-    switch(space.spaceType) {
-      case Planet:
-        scene.add(new PickupParticle("science", this, start_x, start_y, science_end_x, science_end_y));
-        scene.add(new PickupParticle("cargo", this, start_x, start_y, cargo_end_x, cargo_end_y));
-      case Star, Start:
-        scene.add(new PickupParticle("science", this, start_x, start_y, science_end_x, science_end_y));
-        scene.add(new PickupParticle("science", this, start_x, start_y, science_end_x, science_end_y));
-      case Debris:
-        scene.add(new PickupParticle("cargo", this, start_x, start_y, cargo_end_x, cargo_end_y));
-        scene.add(new PickupParticle("cargo", this, start_x, start_y, cargo_end_x, cargo_end_y));
+    var end_x = 0.;
+    var end_y = 0.;
+
+    switch(type) {
+      case "science":
+        end_x = science_counter.x;
+        end_y = science_counter.y;
+      case "cargo":
+        end_x = cargo_counter.x;
+        end_y = cargo_counter.y;
+      case "fuel":
+        end_x = fuel_bar.x;
+        end_y = fuel_bar.y;
+      case "shields":
+        end_x = shields_bar.x;
+        end_y = shields_bar.y;
       default:
+    }
+
+    for(i in 0...count) {
+      scene.add(new PickupParticle(type, this, start_x, start_y, end_x, end_y));
     }
   }
 
@@ -171,5 +164,20 @@ class InfoPanel extends Base
     shields_bar.set(player.shields, player.maxShields);
     cargo_counter.set(player.cargo);
     science_counter.set(player.science);
+  }
+
+  public function updateSectorGraphic()
+  {
+    sectorName.text = sector.title;
+
+    var sectorImg = switch(sector.sectorType) {
+      case Peaceful: Assets.getImage("sector_system");
+      case Nebula: Assets.getImage("sector_nebula");
+      case Asteroid: Assets.getImage("sector_asteroid");
+      case Anomaly: Assets.getImage("sector_anomaly");
+    }
+
+    sectorGfx.image = sectorImg;
+
   }
 }

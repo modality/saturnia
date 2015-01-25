@@ -23,6 +23,8 @@ class Galaxy
     player.cards.push(cards[0]);
     player.cards.push(cards[1]);
     player.addShipPart(ShipPartManager.getPart("ShieldBattery"));
+    player.addCrewMember(CrewMemberManager.getCrew("Planetologist"));
+    player.addCrewMember(CrewMemberManager.getCrew("Astrochemist"));
   }
 
   public function getStartSector():Sector {
@@ -31,6 +33,18 @@ class Galaxy
     } else {
       return sectors.get(1, 0);
     }
+  }
+
+  public function getSector(_x:MajorArcana, _y:MajorArcana):Sector
+  {
+    var x = 0;
+    var y = 0;
+    for(i in 0...cards.length) {
+      if(cards[i] == _x) x = i;
+      if(cards[i] == _y) y = i;
+    }
+
+    return sectors.get(x, y);
   }
 
   public function pulse()

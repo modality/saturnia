@@ -19,6 +19,8 @@ class ShipPartManager
     part.activeEffect = shipPartData.activeEffect;
     part.refreshRate = shipPartData.refreshRate;
     part.refreshLevels = shipPartData.refreshLevels;
+    part.soundEffect = shipPartData.soundEffect;
+    part.effectName = shipPartData.effectName;
     part.effects = Message.read(shipPartData.effects);
 
     part.reset();

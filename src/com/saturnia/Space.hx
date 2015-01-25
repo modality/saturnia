@@ -22,12 +22,6 @@ class Space extends Block
     locked = false;
   }
 
-  public override function removed()
-  {
-    scene.remove(encounter);
-    encounter = null;
-  }
-
   public function explore():Void
   {
     if(!explored) {
@@ -37,10 +31,10 @@ class Space extends Block
       if(encounter != null) {
         encounter.activate();
 
-        encounter.x = x;
-        encounter.y = y;
+        encounter.x = 0;
+        encounter.y = 0;
         encounter.layer = Constants.EXPLORED_LAYER;
-        scene.add(encounter);
+        addChild(encounter);
       }
     }
   }
@@ -48,7 +42,7 @@ class Space extends Block
   public function removeEncounter():Void
   {
     spaceType = SpaceType.Voidness;
-    scene.remove(encounter);
+    removeChild(encounter);
     encounter = null;
     updateGraphic();
     objects = [];

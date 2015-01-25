@@ -8,6 +8,7 @@ enum SpaceType {
   Friendly;
   Hostile;
   Debris;
+  Impenetrable;
   Quest;
   Anomaly;
   Voidness;

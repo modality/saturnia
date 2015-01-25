@@ -13,6 +13,8 @@ class ShipPart extends Base
   public var activeEffect:Bool;
   public var refreshRate:Int = 1;
   public var refreshLevels:Int = 1;
+  public var soundEffect:String;
+  public var effectName:String;
   public var effects:Message;
 
   public var refresh:Int = 0;
@@ -35,6 +37,9 @@ class ShipPart extends Base
     dispatchEvent(new EffectEvent(EffectEvent.APPLY, effects.get(refreshLevel-1)));
     refresh = 0;
     refreshLevel = 0;
+    if(soundEffect != "") {
+      SoundManager.play(soundEffect);
+    }
     dispatchEvent(new ShipPartEvent(UPDATED, this));
   }
 

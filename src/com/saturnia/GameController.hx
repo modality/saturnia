@@ -1,6 +1,7 @@
 package com.saturnia;
 
 import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Key;
 import com.haxepunk.Scene;
 import com.modality.Grid;
 import com.modality.TextBase;
@@ -29,8 +30,11 @@ class GameController extends Scene
     inNavigation = false;
     regainFocus = false;
 
-    startLevel();
-    infoPanel = new InfoPanel(sector, galaxy.player);
+    regainFocus = false;
+
+    galaxy = Generator.generateGalaxy();
+    infoPanel = new InfoPanel(galaxy.player);
+    navigateTo(galaxy.getStartSector());
 
     add(infoPanel);
   }
@@ -47,25 +51,56 @@ class GameController extends Scene
       var mouse_y = Input.mouseY;
       var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
 
+      if(Input.released(Key.N)) {
+        enterNavigation();
+      }
+
       if(Input.mouseReleased) {
         if(space != null) {
           if(canExplore(space)) {
             space.explore();
+            SoundManager.play("whoosh");
             galaxy.player.useFuel(1);
+            var exploreEffects = [];
             switch(space.spaceType) {
               case Planet:
                 galaxy.player.cargo += 1;
                 galaxy.player.science += 1;
-                infoPanel.gainResource(space);
+                infoPanel.gainResource(space, "cargo", 1);
+                infoPanel.gainResource(space, "science", 1);
+                exploreEffects = galaxy.player.stats.getStatusEffects("onPlanet");
               case Star, Start:
                 galaxy.player.science += 2;
-                infoPanel.gainResource(space);
+                infoPanel.gainResource(space, "science", 2);
+                exploreEffects = galaxy.player.stats.getStatusEffects("onStar");
               case Debris:
                 galaxy.player.cargo += 2;
-                infoPanel.gainResource(space);
+                infoPanel.gainResource(space, "cargo", 2);
+                exploreEffects = galaxy.player.stats.getStatusEffects("onDebris");
               case Hostile:
                 checkLocked();
+                exploreEffects = galaxy.player.stats.getStatusEffects("onHostile");
+              case Friendly:
+                exploreEffects = galaxy.player.stats.getStatusEffects("onFriendly");
               default:
+            }
+            for(effect in exploreEffects) {
+              effect = effect.get(1);
+              switch(effect.type()) {
+                case "gainFuel":
+                  galaxy.player.fuel += Std.int(effect.tokens[1]);
+                  infoPanel.gainResource(space, "fuel", effect.tokens[1]);
+                case "gainCargo":
+                  galaxy.player.cargo += Std.int(effect.tokens[1]);
+                  infoPanel.gainResource(space, "cargo", effect.tokens[1]);
+                case "gainShields":
+                  galaxy.player.shields += Std.int(effect.tokens[1]);
+                  infoPanel.gainResource(space, "shields", effect.tokens[1]);
+                case "gainScience":
+                  galaxy.player.science += Std.int(effect.tokens[1]);
+                  infoPanel.gainResource(space, "science", effect.tokens[1]);
+                default:
+              }
             }
             galaxy.pulse();
           } else if(space.explored && space.spaceType == SpaceType.Friendly) {
@@ -106,7 +141,7 @@ class GameController extends Scene
   public function enterNavigation():Void
   {
     inNavigation = true;
-    navigationPanel = new NavigationPanel(galaxy.player);
+    navigationPanel = new NavigationPanel(galaxy);
     add(navigationPanel);
   }
 
@@ -118,33 +153,36 @@ class GameController extends Scene
     regainFocus = true;
   }
 
-  public function startLevel():Void
+  public function navigateTo(_sector:Sector):Void
   {
-    regainFocus = false;
+    if(navigationPanel != null) {
+      exitNavigation();
+    }
+    if(grid != null) {
+      grid.each(function(space:Space, i:Int, j:Int) {
+        remove(space);
+      });
+    }
 
-    galaxy = Generator.generateGalaxy();
-    sector = galaxy.getStartSector();
+    sector = _sector;
+    sector.explored = true;
     grid = sector.spaces;
+
+    infoPanel.sector = sector;
+    infoPanel.updateSectorGraphic();
 
     grid.each(function(space:Space, i:Int, j:Int) {
       space.updateGraphic();
-      if(space.spaceType == Start) {
+      if(space.spaceType == Start && !space.explored) {
         space.explore();
       }
       add(space);
     });
   }
 
-  public function nextLevel():Void
-  {
-    grid.each(function(space:Space, i:Int, j:Int) {
-      remove(space);
-    });
-    startLevel();
-  }
-
   public function playerAttacks(space:Space):Void
   {
+    SoundManager.play("hit"+Std.random(2));
     if(space.encounter != null) {
       var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
       if(pe.stats.firstStrike) {
@@ -161,6 +199,7 @@ class GameController extends Scene
       galaxy.player.updated();
       if(pe.stats.isDead()) {
         space.removeEncounter();
+        SoundManager.playIn("destroy", 200);
         checkLocked();
       }
     }
@@ -168,11 +207,12 @@ class GameController extends Scene
 
   public function checkLocked():Void
   {
+    var canExploreNearPirate = galaxy.player.stats.getStatusEffects("exploreNearPirates").length > 0;
     grid.each(function(s:Space, i:Int, j:Int):Void {
       if(!s.explored) {
         s.locked = false;
         for(nayb in grid.neighbors(s, true)) {
-          if(nayb.explored && nayb.hasObject("pirate")) {
+          if(nayb.explored && (nayb.hasObject("pirate") && !canExploreNearPirate)) {
             s.locked = true; 
           }
         }
