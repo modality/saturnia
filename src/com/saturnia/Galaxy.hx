@@ -10,12 +10,15 @@ class Galaxy
   public var sectors:Grid<Sector>;
   public var cardLocations:Array<Array<Int>>;
 
+  public var cycleCounter:Int;
+
   public function new()
   {
     cards = [];
     goods = [];
     cardLocations = [];
     sectors = new Grid<Sector>(0, 0, 5, 5);
+    cycleCounter = Constants.TURNS_PER_CYCLE;
   }
 
   public function setupPlayer() {
@@ -49,6 +52,11 @@ class Galaxy
 
   public function pulse()
   {
+    cycleCounter--;
+    if(cycleCounter == 0) {
+      cycleCounter = Constants.TURNS_PER_CYCLE;
+    }
+
     player.pulse();
     sectors.each(function(sector:Sector, u:Int, v:Int) {
       sector.spaces.each(function(space:Space, i:Int, j:Int) {

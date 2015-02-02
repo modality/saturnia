@@ -1,5 +1,6 @@
 package com.modality;
 
+import flash.text.TextFormatAlign;
 import com.haxepunk.graphics.Text;
 
 class TextBase extends Base
@@ -8,6 +9,7 @@ class TextBase extends Base
   public var color(get, set):Int;
   public var size(get, set):Int;
   public var text(get, set):String;
+  public var align(get, set):String;
   public var richText(get, set):String;
 
   private var _text:Text;
@@ -19,6 +21,7 @@ class TextBase extends Base
       size: 16,
       color: 0xFFFFFF,
       font: Assets.get("font"),
+      align: TextFormatAlign.LEFT,
       richText: true
     });
     this.graphic = _text;
@@ -58,6 +61,23 @@ class TextBase extends Base
     _text.text = value;
     updateHitbox();
     return _text.text;
+  }
+
+  public function get_align()
+  {
+    return "";
+  }
+
+  public function set_align(value)
+  {
+    _text.align = switch(value) {
+      case "left": TextFormatAlign.LEFT;
+      case "right": TextFormatAlign.RIGHT;
+      case "center": TextFormatAlign.CENTER;
+      default: TextFormatAlign.LEFT;
+    }
+    updateHitbox();
+    return value;
   }
 
   public function get_richText()

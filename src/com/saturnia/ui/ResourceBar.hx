@@ -7,20 +7,17 @@ import com.modality.TextBase;
 
 class ResourceBar extends ResourceCounter
 {
-  public static var BAR_WIDTH:Int = 275;
-  public static var BAR_HEIGHT:Int = 20;
-
   public var topBar:ProgressBar;
   public var bottomBar:ProgressBar;
 
   public var maximum:Int;
 
-  public function new(_x:Float, _y:Float, icon:String, color:Int)
+  public function new(_x:Float, _y:Float, _w:Int = 275, _h:Int = 20, icon:String, color:Int)
   {
     super(_x, _y, icon);
 
-    topBar = new ProgressBar(25, 0, BAR_WIDTH, BAR_HEIGHT, color);
-    bottomBar = new ProgressBar(25, 0, BAR_WIDTH, BAR_HEIGHT, color);
+    topBar = new ProgressBar(25, 0, _w, _h, color);
+    bottomBar = new ProgressBar(25, 0, _w, _h, color);
     bottomBar.image.alpha = 0.7;
 
     addChild(bottomBar);

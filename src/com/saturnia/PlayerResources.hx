@@ -16,8 +16,11 @@ class PlayerResources extends Base
   public var cargo:Int;
   public var science:Int;
 
+  public var energy:Int;
+
   public var maxFuel:Int;
   public var maxShields:Int;
+  public var maxEnergy:Int;
 
   public var cards:Array<MajorArcana>;
   public var crewMembers:Array<CrewMember>;
@@ -32,9 +35,11 @@ class PlayerResources extends Base
     shields = Constants.STARTING_SHIELDS;
     cargo = Constants.STARTING_CARGO;
     science = Constants.STARTING_SCIENCE;
+    energy = Constants.STARTING_ENERGY;
 
     maxFuel = fuel;
     maxShields = shields;
+    maxEnergy = energy;
 
     cards = [];
     crewMembers = [];
@@ -49,6 +54,14 @@ class PlayerResources extends Base
   {
     for(sp in shipParts) {
       sp.pulse();
+    }
+  }
+
+  public function cycle():Void
+  {
+    energy = maxEnergy;
+    for(sp in shipParts) {
+      sp.reset();
     }
   }
 

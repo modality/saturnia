@@ -16,8 +16,7 @@ class ProgressBar extends Base
     h = _h;
 
     var bmd:BitmapData = new BitmapData(1, 1, false, _color);
-    var img:Image;
-    img = new Image(bmd);
+    var img = new Image(bmd);
     img.scaleX = w;
     img.scaleY = h;
     graphic = img;

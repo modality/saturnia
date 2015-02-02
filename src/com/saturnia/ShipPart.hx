@@ -20,23 +20,28 @@ class ShipPart extends Base
   public var refresh:Int = 0;
   public var refreshLevel:Int = 1;
 
+  public var tapped:Bool = false;
+
   public function reset():Void
   {
     refresh = 0;
     refreshLevel = refreshLevels;
+    tapped = false;
   }
 
   public function ready():Bool
   {
-    return activeEffect && refreshLevel > 0;
+    return activeEffect && !tapped;
+    //return activeEffect && refreshLevel > 0;
   }
 
   public function use():Void
   {
     if(!ready()) return;
     dispatchEvent(new EffectEvent(EffectEvent.APPLY, effects.get(refreshLevel-1)));
-    refresh = 0;
-    refreshLevel = 0;
+    tapped = true;
+    //refresh = 0;
+    //refreshLevel = 0;
     if(soundEffect != "") {
       SoundManager.play(soundEffect);
     }

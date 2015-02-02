@@ -9,6 +9,7 @@ import com.modality.TextBase;
 import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
 import com.saturnia.ui.NavigationPanel;
+import com.saturnia.ui.PowerPanel;
 
 class GameController extends Scene
 {
@@ -22,6 +23,7 @@ class GameController extends Scene
   public var infoPanel:InfoPanel;
   public var merchantPanel:MerchantPanel;
   public var navigationPanel:NavigationPanel;
+  public var powerPanel:PowerPanel;
 
   public function new()
   {
@@ -34,9 +36,11 @@ class GameController extends Scene
 
     galaxy = Generator.generateGalaxy();
     infoPanel = new InfoPanel(galaxy.player);
+    powerPanel = new PowerPanel(galaxy);
     navigateTo(galaxy.getStartSector());
 
     add(infoPanel);
+    add(powerPanel);
   }
 
   public override function update():Void
@@ -102,14 +106,14 @@ class GameController extends Scene
                 default:
               }
             }
-            galaxy.pulse();
+            pulse();
           } else if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
           } else if(space.explored && space.spaceType == SpaceType.Exit) {
             enterNavigation();
           } else if(space.explored && space.spaceType == SpaceType.Hostile) {
             playerAttacks(space);
-            galaxy.pulse();
+            pulse();
           }
         }
       } else {
@@ -238,5 +242,11 @@ class GameController extends Scene
     if(s != null && s.explored) return true;
 
     return false;
+  }
+
+  public function pulse()
+  {
+    galaxy.pulse();
+    powerPanel.pulse();
   }
 }

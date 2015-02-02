@@ -62,8 +62,8 @@ class InfoPanel extends Base
     sectorName.layer = Constants.MAP_LAYER;
     sectorGfx = new Base(0, 0);
 
-    shields_bar = new ResourceBar(0, 150, "shields", Constants.SHIELDS_COLOR);
-    fuel_bar = new ResourceBar(0, 170, "fuel", Constants.FUEL_COLOR);
+    shields_bar = new ResourceBar(0, 150, 275, 20, "shields", Constants.SHIELDS_COLOR);
+    fuel_bar = new ResourceBar(0, 170, 275, 20, "fuel", Constants.FUEL_COLOR);
     cargo_counter = new ResourceCounter(250, 100, "cargo");
     science_counter = new ResourceCounter(250, 125, "science");
     

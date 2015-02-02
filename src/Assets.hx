@@ -13,6 +13,9 @@ class Assets
     assetDictionary.set("icon_science", "graphics/icons/science.png");
     assetDictionary.set("icon_shields", "graphics/icons/shields.png");
     assetDictionary.set("icon_gear", "graphics/icons/gear.png");
+    assetDictionary.set("icon_energy", "graphics/icons/energy.png");
+    assetDictionary.set("icon_cycle", "graphics/icons/cycle.png");
+    assetDictionary.set("icon_selector", "graphics/icons/selector.png");
 
     assetDictionary.set("space_star_blue", "graphics/spaces/star_blue.png");
     assetDictionary.set("space_star_yellow", "graphics/spaces/star_yellow.png");
@@ -26,11 +29,14 @@ class Assets
     assetDictionary.set("space_friendly", "graphics/spaces/friendly.png");
     assetDictionary.set("space_merchant", "graphics/spaces/merchant.png");
     assetDictionary.set("space_star", "graphics/spaces/star.png");
-    assetDictionary.set("space_unexplored", "graphics/spaces/unexplored_2.png");
+    assetDictionary.set("space_explored", "graphics/spaces/unexplored_2.png");
     assetDictionary.set("space_locked", "graphics/spaces/locked_2.png");
+    assetDictionary.set("space_explorable", "graphics/spaces/explorable.png");
+    assetDictionary.set("space_fog", "graphics/spaces/fogofwar.png");
 
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_coffee", "graphics/ui/hot_coffee.png");
+    assetDictionary.set("ui_power_panel", "graphics/ui/power_panel.png");
     assetDictionary.set("sector_anomaly", "graphics/ui/anomaly_spread.png");
     assetDictionary.set("sector_system", "graphics/ui/system_spread.png");
     assetDictionary.set("sector_asteroid", "graphics/ui/asteroid_spread.png");
