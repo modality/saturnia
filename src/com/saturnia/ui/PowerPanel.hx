@@ -44,15 +44,9 @@ class PowerPanel extends Base
 
     powers = [];
 
-    powers.push(new PowerMenuItem(0, 0, "ATK", 0));
-    powers.push(new PowerMenuItem(0, 0, "COM", 20));
-    powers.push(new PowerMenuItem(0, 0, "HIB", 5));
-    powers.push(new PowerMenuItem(0, 0, "NUC", 12));
-    
-    for(p in 0...powers.length) {
-      powers[p].x = 100 + 60*p;
-      powers[p].y = 20;
-      addChild(powers[p]);
+    player.addEventListener(ShipPartEvent.ADD, addPower);
+    for (sp in player.shipParts) {
+      addPower(new ShipPartEvent(ShipPartEvent.ADD, sp));
     }
   }
 
@@ -61,5 +55,14 @@ class PowerPanel extends Base
     cycleNumber.text = ""+galaxy.cycleCounter;
     energyBar.set(player.energy, player.maxEnergy);
   }
-  
+
+  public function addPower(e:ShipPartEvent)
+  {
+    powers.push(new PowerMenuItem(0, 0, e.shipPart.effectName, e.shipPart.energyCost));
+
+    var index = powers.length - 1;
+    powers[index].x = 100 + 110*index;
+    powers[index].y = 20;
+    addChild(powers[index]);
+  }
 }

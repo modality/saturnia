@@ -52,9 +52,7 @@ class PlayerResources extends Base
 
   public function pulse():Void
   {
-    for(sp in shipParts) {
-      sp.pulse();
-    }
+
   }
 
   public function cycle():Void
@@ -74,6 +72,17 @@ class PlayerResources extends Base
   {
     fuel -= amount;
     updated();
+  }
+
+  public function addResource(resource:String, amount:Int)
+  {
+    switch(resource) {
+      case "fuel": fuel += amount;
+      case "cargo": cargo += amount;
+      case "shields": shields += amount;
+      case "science": science += amount;
+      case "energy": energy += amount;
+    }
   }
 
   public function addCrewMember(crewMember:CrewMember)

@@ -3,62 +3,68 @@ package com.saturnia;
 import com.modality.Base;
 import com.modality.cards.Message;
 
-class ShipPart extends Base
+class ShipPart extends Base implements Purchasable
 {
   public static var UPDATED:String = "ship part updated";
 
+  public var infinite:Bool = false;
+  public var amount:Int = 1;
+  public var level:Int;
   public var description:String;
   public var scienceCost:Int;
   public var cargoCost:Int;
+  public var energyCost:Int;
   public var activeEffect:Bool;
-  public var refreshRate:Int = 1;
-  public var refreshLevels:Int = 1;
   public var soundEffect:String;
   public var effectName:String;
-  public var effects:Message;
-
-  public var refresh:Int = 0;
-  public var refreshLevel:Int = 1;
-
+  public var effect:Message;
   public var tapped:Bool = false;
 
   public function reset():Void
   {
-    refresh = 0;
-    refreshLevel = refreshLevels;
     tapped = false;
   }
 
   public function ready():Bool
   {
     return activeEffect && !tapped;
-    //return activeEffect && refreshLevel > 0;
   }
 
   public function use():Void
   {
     if(!ready()) return;
-    dispatchEvent(new EffectEvent(EffectEvent.APPLY, effects.get(refreshLevel-1)));
+    dispatchEvent(new EffectEvent(EffectEvent.APPLY, effect));
     tapped = true;
-    //refresh = 0;
-    //refreshLevel = 0;
     if(soundEffect != "") {
       SoundManager.play(soundEffect);
     }
     dispatchEvent(new ShipPartEvent(UPDATED, this));
   }
 
-  public function pulse():Void
+  public function singleUse():Bool
   {
-    if(!activeEffect) return;
-    if(refreshLevel < refreshLevels) {
-      refresh++;
-      if(refresh >= refreshRate) {
-        refresh = 0;
-        refreshLevel++;
-        dispatchEvent(new ShipPartEvent(UPDATED, this));
-      }
-    }
+    return true;
+  }
+
+  public function displayName():String
+  {
+    return name;
+  }
+
+  public function displayDescription():String
+  {
+    return description;
+  }
+
+  public function canPurchase(player:PlayerResources):Bool
+  {
+    return player.cargo >= cargoCost && player.science >= scienceCost;
+  }
+
+  public function onPurchase(event:PurchaseEvent):Void
+  {
+    event.player.cargo -= cargoCost;
+    event.player.science -= scienceCost;
+    event.player.addShipPart(this);
   }
 }
-

@@ -103,6 +103,15 @@ class EnemyGenerator
     s.reset();
     raider.description = buildDescription(raider);
 
+    var reward = Std.random(4);
+    switch(reward) {
+      case 0: raider.cargoReward = Math.floor(target/2);
+      case 1: raider.scienceReward = Math.floor(target/2);
+      case 2: raider.fuelReward = Math.floor(target/3);
+      case 4: raider.cargoReward = raider.scienceReward = Math.floor(target/3);
+      default:
+    }
+
     return raider;
   }
 

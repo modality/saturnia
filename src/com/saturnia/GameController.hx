@@ -1,5 +1,7 @@
 package com.saturnia;
 
+import openfl.events.Event;
+
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.Scene;
@@ -10,6 +12,7 @@ import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
 import com.saturnia.ui.NavigationPanel;
 import com.saturnia.ui.PowerPanel;
+import com.saturnia.ui.PopupIcon;
 
 class GameController extends Scene
 {
@@ -38,6 +41,8 @@ class GameController extends Scene
     infoPanel = new InfoPanel(galaxy.player);
     powerPanel = new PowerPanel(galaxy);
     navigateTo(galaxy.getStartSector());
+
+    galaxy.addEventListener(Galaxy.CYCLE, cycle);
 
     add(infoPanel);
     add(powerPanel);
@@ -70,16 +75,12 @@ class GameController extends Scene
               case Planet:
                 galaxy.player.cargo += 1;
                 galaxy.player.science += 1;
-                infoPanel.gainResource(space, "cargo", 1);
-                infoPanel.gainResource(space, "science", 1);
                 exploreEffects = galaxy.player.stats.getStatusEffects("onPlanet");
               case Star, Start:
                 galaxy.player.science += 2;
-                infoPanel.gainResource(space, "science", 2);
                 exploreEffects = galaxy.player.stats.getStatusEffects("onStar");
               case Debris:
                 galaxy.player.cargo += 2;
-                infoPanel.gainResource(space, "cargo", 2);
                 exploreEffects = galaxy.player.stats.getStatusEffects("onDebris");
               case Hostile:
                 checkLocked();
@@ -88,24 +89,10 @@ class GameController extends Scene
                 exploreEffects = galaxy.player.stats.getStatusEffects("onFriendly");
               default:
             }
-            for(effect in exploreEffects) {
-              effect = effect.get(1);
-              switch(effect.type()) {
-                case "gainFuel":
-                  galaxy.player.fuel += Std.int(effect.tokens[1]);
-                  infoPanel.gainResource(space, "fuel", effect.tokens[1]);
-                case "gainCargo":
-                  galaxy.player.cargo += Std.int(effect.tokens[1]);
-                  infoPanel.gainResource(space, "cargo", effect.tokens[1]);
-                case "gainShields":
-                  galaxy.player.shields += Std.int(effect.tokens[1]);
-                  infoPanel.gainResource(space, "shields", effect.tokens[1]);
-                case "gainScience":
-                  galaxy.player.science += Std.int(effect.tokens[1]);
-                  infoPanel.gainResource(space, "science", effect.tokens[1]);
-                default:
-              }
-            }
+
+            var em = new EffectManager(this, galaxy);
+            em.applyEffects(exploreEffects);
+            infoPanel.updateGraphic();
             pulse();
           } else if(space.explored && space.spaceType == SpaceType.Friendly) {
             enterMerchant(space);
@@ -178,6 +165,7 @@ class GameController extends Scene
     grid.each(function(space:Space, i:Int, j:Int) {
       space.updateGraphic();
       if(space.spaceType == Start && !space.explored) {
+        space.spaceType = Star;
         space.explore();
       }
       add(space);
@@ -203,6 +191,10 @@ class GameController extends Scene
       galaxy.player.updated();
       if(pe.stats.isDead()) {
         space.removeEncounter();
+        galaxy.player.cargo += pe.cargoReward;
+        galaxy.player.science += pe.scienceReward;
+        galaxy.player.fuel += pe.fuelReward;
+        infoPanel.updateGraphic();
         SoundManager.playIn("destroy", 200);
         checkLocked();
       }
@@ -249,4 +241,27 @@ class GameController extends Scene
     galaxy.pulse();
     powerPanel.pulse();
   }
+
+  public function cycle(e:Event):Void
+  {
+    var piratesAttacked = false;
+    grid.each(function(space:Space, i:Int, j:Int):Void {
+      if(space.explored && space.spaceType == Hostile) {
+        if(space.encounter != null) {
+          var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
+          if(!pe.stats.isDead()) {
+            piratesAttacked = true;
+            galaxy.player.stats.takeDamage(pe.stats.attack());
+          }
+        }
+      }
+    });
+
+    if(piratesAttacked) {
+      galaxy.player.shields = galaxy.player.stats.hitPoints;
+      galaxy.player.updated();
+      SoundManager.play("hit"+Std.random(2));
+    }
+  }
+
 }

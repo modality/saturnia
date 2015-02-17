@@ -152,25 +152,11 @@ class Generator
   public static function fillSpace(space:Space, sector:Sector):Space
   {
     if(space.spaceType == Friendly) {
-      space.encounter = generateMerchant(space, sector);
+      space.encounter = FriendlyGenerator.generateMerchant(space, sector);
     } else if(space.spaceType == Hostile) {
       space.encounter = EnemyGenerator.generateEnemy(space, sector.level * 10);
     }
     return space;
-  }
-
-  public static function generateMerchant(space:Space, sector:Sector):MerchantEncounter
-  {
-    var merchant = new MerchantEncounter(space);
-    merchant.goodBought = sector.goodsBought[Std.random(sector.goodsBought.length)];
-    merchant.goodSold = sector.goodsSold[Std.random(sector.goodsSold.length)];
-    merchant.maxInventory = AugRandom.range(50, 101);
-    merchant.refreshRate = AugRandom.range(25, 51);
-    merchant.sellRate = AugRandom.range(10, 31);
-    merchant.buyRate = AugRandom.range(20, 51);
-    merchant.refreshTime = AugRandom.range(0, merchant.refreshRate);
-    merchant.goodInventory = merchant.calcInventory();
-    return merchant;
   }
 
   public static function generateItem():String

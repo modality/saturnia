@@ -1,9 +1,13 @@
 package com.saturnia;
 
+import openfl.events.Event;
+import com.modality.Base;
 import com.modality.Grid;
 
-class Galaxy
+class Galaxy extends Base
 {
+  public static var CYCLE:String = "cycle";
+
   public var player:PlayerResources;
   public var cards:Array<MajorArcana>;
   public var goods:Array<String>;
@@ -14,6 +18,7 @@ class Galaxy
 
   public function new()
   {
+    super();
     cards = [];
     goods = [];
     cardLocations = [];
@@ -55,16 +60,16 @@ class Galaxy
     cycleCounter--;
     if(cycleCounter == 0) {
       cycleCounter = Constants.TURNS_PER_CYCLE;
-    }
-
-    player.pulse();
-    sectors.each(function(sector:Sector, u:Int, v:Int) {
-      sector.spaces.each(function(space:Space, i:Int, j:Int) {
-        if(space.spaceType == Friendly) {
-          cast(space.encounter, MerchantEncounter).pulse();
-        }
+      dispatchEvent(new Event(CYCLE));
+      sectors.each(function(sector:Sector, u:Int, v:Int) {
+        sector.spaces.each(function(space:Space, i:Int, j:Int) {
+          if(space.spaceType == Friendly) {
+            cast(space.encounter, FriendlyEncounter).pulse();
+          }
+        });
       });
-    });
+    }
+    player.pulse();
   }
 
   

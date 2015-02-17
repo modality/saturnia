@@ -19,14 +19,15 @@ class PowerMenuItem extends Base
   {
     var bmd:BitmapData = new BitmapData(1, 1, false, Constants.ENERGY_COLOR);
     var img = new Image(bmd);
-    img.scaleX = 50;
+    img.scaleX = 100;
     img.scaleY = 40;
     img.x = 5;
     img.y = 5;
 
     super(_x, _y, img);
 
-    text = new TextBase(5, 18, 50, 50, _text);
+    text = new TextBase(5, 18, 100, 50, _text);
+    text.size = Constants.FONT_SIZE_XS;
     text.color = 0x000000;
     text.align = "center";
     costText = new TextBase(0, 52, 35, 20, ""+_cost);

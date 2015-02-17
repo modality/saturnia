@@ -7,7 +7,7 @@ import com.modality.TextBase;
 
 class MerchantPanel extends Base
 {
-  public var merchant:MerchantEncounter;
+  public var friendly:FriendlyEncounter;
   public var player:PlayerResources;
 
   public var ok_btn:TextBase;
@@ -18,7 +18,7 @@ class MerchantPanel extends Base
   {
     super(50, 50);
 
-    merchant = cast(_space.encounter, MerchantEncounter);
+    friendly = cast(_space.encounter, FriendlyEncounter);
     player = _player;
 
     var modal = Assets.getImage("ui_modal");
@@ -38,29 +38,31 @@ class MerchantPanel extends Base
     addChild(tb);
 
     var pos = 0;
-    for(part in merchant.parts) {
-      var mmi = new MerchantMenuItem(10, (50 * pos) + 50, part);
+
+    for(item in friendly.items) {
+      var mmi = new MerchantMenuItem(10, (50 * pos) + 50, item);
       mmi.addEventListener(MerchantMenuItem.CLICKED, clickedItem);
       mmi.addEventListener(MerchantMenuItem.REMOVED, removedItem);
       addChild(mmi);
       pos++;
     }
 
-
+    /*
     sellGood = new GoodsMenuItem(360, 50,
-                                 merchant.goodSold,
-                                 merchant.goodInventory,
-                                 merchant.sellRate,
+                                 friendly.goodSold,
+                                 friendly.goodInventory,
+                                 friendly.sellRate,
                                  true);
 
     buyGood = new GoodsMenuItem(360, 100,
-                                merchant.goodBought,
+                                friendly.goodBought,
                                 0,
-                                merchant.buyRate,
+                                friendly.buyRate,
                                 false);
 
     addChild(sellGood);
     addChild(buyGood);
+    */
 
     ok_btn = new TextBase(140, 300, 50, 50, "OK");
     ok_btn.type = "ok_btn";
@@ -91,9 +93,11 @@ class MerchantPanel extends Base
 
   public function clickedItem(event:ShipPartEvent):Void
   {
+    /*
     if(player.buyShipPart(event.shipPart)) {
-      merchant.boughtPart(event.shipPart);
+      friendly.boughtPart(event.shipPart);
     }
+    */
   }
 
   public function removedItem(event:Event):Void

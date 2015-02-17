@@ -52,11 +52,11 @@ class StatusEffect
 
   public static function fromCrewMember(crewMember:CrewMember):StatusEffect
   {
-    return new StatusEffect(crewMember.effects, crewMember);
+    return new StatusEffect(crewMember.effect, crewMember);
   }
 
   public static function fromShipPart(shipPart:ShipPart):StatusEffect
   {
-    return new StatusEffect(shipPart.effects, shipPart);
+    return new StatusEffect(shipPart.effect, shipPart);
   }
 }

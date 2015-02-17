@@ -23,8 +23,6 @@ class InfoPanel extends Base
   public var sectorGfx:Base;
   public var sectorName:TextBase;
 
-  public var shipParts:Array<ShipPartMenuItem>;
-
   public var cards:Array<Base>;
 
   public function new(_player:PlayerResources)
@@ -43,12 +41,7 @@ class InfoPanel extends Base
       ci++;
     }
 
-    shipParts = [];
-    player.addEventListener(ShipPartEvent.ADD, addShipPart);
     player.addEventListener(PlayerResources.UPDATED, playerUpdated);
-    for (sp in player.shipParts) {
-      addShipPart(new ShipPartEvent(ShipPartEvent.ADD, sp));
-    }
 
     var bmd:BitmapData;
     var img:Image;
@@ -85,17 +78,6 @@ class InfoPanel extends Base
     addChild(enemy_text);
     addChild(coffeeGfx);
     updateGraphic();
-  }
-
-  public override function update()
-  {
-    super.update();
-    if(Input.mouseReleased) {
-      var base:Base = cast(scene.collidePoint("ship_part_menu_item", Input.mouseX, Input.mouseY), Base);
-      if(base != null) {
-        base.dispatchEvent(new Event(ShipPartMenuItem.CLICKED));
-      }
-    }
   }
 
   public function gainResource(space:Space, type:String, count:Int)
@@ -137,19 +119,6 @@ class InfoPanel extends Base
   public function clearEnemy()
   {
     enemy_text.text = "";
-  }
-
-  public function addShipPart(ev:ShipPartEvent):Void
-  {
-    var spmi:ShipPartMenuItem = new ShipPartMenuItem(0, 350 + shipParts.length * 40, ev.shipPart);
-    shipParts.push(spmi);
-    spmi.addEventListener(ShipPartEvent.TRY_USE, tryUseShipPart);
-    addChild(spmi);
-  }
-
-  public function tryUseShipPart(ev:ShipPartEvent):Void
-  {
-    ev.shipPart.use();
   }
 
   public function playerUpdated(ev:Event):Void

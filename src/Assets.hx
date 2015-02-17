@@ -34,6 +34,7 @@ class Assets
     assetDictionary.set("space_explorable", "graphics/spaces/explorable.png");
     assetDictionary.set("space_fog", "graphics/spaces/fogofwar.png");
 
+    assetDictionary.set("marble_logo", "graphics/ui/marble.png");
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_coffee", "graphics/ui/hot_coffee.png");
     assetDictionary.set("ui_power_panel", "graphics/ui/power_panel.png");

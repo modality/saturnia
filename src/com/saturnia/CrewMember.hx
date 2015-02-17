@@ -7,5 +7,5 @@ class CrewMember extends Base
 {
   public var description:String;
   public var effectName:String;
-  public var effects:Message;
+  public var effect:Message;
 }

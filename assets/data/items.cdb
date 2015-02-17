@@ -8,6 +8,10 @@
 					"name": "id"
 				},
 				{
+					"typeStr": "3",
+					"name": "level"
+				},
+				{
 					"typeStr": "1",
 					"name": "name"
 				},
@@ -41,13 +45,7 @@
 				},
 				{
 					"typeStr": "3",
-					"name": "refreshRate",
-					"display": null
-				},
-				{
-					"typeStr": "3",
-					"name": "refreshLevels",
-					"display": null
+					"name": "energyCost"
 				},
 				{
 					"typeStr": "1",
@@ -64,14 +62,14 @@
 					"description": "Restores shields",
 					"scienceCost": 0,
 					"cargoCost": 0,
-					"refreshRate": 5,
-					"refreshLevels": 3,
 					"id": "ShieldBattery",
 					"activeEffect": true,
-					"effects": "((heal 1) (heal 3) (heal 6))",
+					"effects": "(heal 5)",
 					"effectName": "Recharge",
 					"inMerchant": false,
-					"soundEffect": "space_teleport"
+					"soundEffect": "space_teleport",
+					"energyCost": 0,
+					"level": 0
 				},
 				{
 					"id": "MagneticShield",
@@ -80,12 +78,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 10,
-					"refreshRate": 0,
-					"refreshLevels": 0,
 					"effects": "(resistPhysical 5)",
 					"effectName": "Countermeasure",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 2
 				},
 				{
 					"id": "EnergyShield",
@@ -94,12 +92,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 10,
-					"refreshRate": 0,
-					"refreshLevels": 0,
 					"effects": "(resistEnergy 5)",
 					"effectName": "Reflection",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 2
 				},
 				{
 					"id": "PepperRay",
@@ -108,12 +106,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 10,
-					"refreshRate": 0,
-					"refreshLevels": 0,
 					"effects": "(attack 1)",
 					"effectName": "Basic Shot",
 					"inMerchant": false,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 0
 				},
 				{
 					"id": "ViperRay",
@@ -122,12 +120,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 20,
-					"refreshRate": 0,
-					"refreshLevels": 0,
 					"effects": "(attack 2)",
 					"effectName": "Quick Shot",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 1
 				},
 				{
 					"id": "GhostRay",
@@ -136,12 +134,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 40,
-					"refreshRate": 0,
-					"refreshLevels": 0,
 					"effects": "(attack 4)",
 					"effectName": "Big Shot",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 2
 				},
 				{
 					"id": "PelicanDrive",
@@ -150,12 +148,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 20,
-					"refreshRate": 0,
-					"refreshLevels": 0,
-					"effects": "(onStar (gainFuel 1))",
+					"effects": "(onStar (resource fuel 1))",
 					"effectName": "Particle Scoop",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 1
 				},
 				{
 					"id": "GullDrive",
@@ -164,12 +162,12 @@
 					"activeEffect": false,
 					"scienceCost": 0,
 					"cargoCost": 20,
-					"refreshRate": 0,
-					"refreshLevels": 0,
 					"effects": "(nearStar freeExplore)",
 					"effectName": "Magnetic Sail",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 2
 				},
 				{
 					"id": "CoyoteBeam",
@@ -178,12 +176,12 @@
 					"activeEffect": true,
 					"scienceCost": 0,
 					"cargoCost": 10,
-					"refreshRate": 5,
-					"refreshLevels": 1,
 					"effects": "(stealCargo)",
 					"effectName": "Scavenger",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 1
 				},
 				{
 					"id": "VultureBeam",
@@ -193,11 +191,11 @@
 					"activeEffect": true,
 					"scienceCost": 0,
 					"cargoCost": 30,
-					"refreshRate": 5,
-					"refreshLevels": 1,
 					"effects": "(stealCargoFuel)",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 2
 				},
 				{
 					"id": "JackalBeam",
@@ -207,25 +205,123 @@
 					"activeEffect": true,
 					"scienceCost": 0,
 					"cargoCost": 30,
-					"refreshRate": 5,
-					"refreshLevels": 1,
 					"effects": "(stealCargoScience)",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 2
 				},
 				{
 					"id": "MiningNanobots",
 					"name": "Mining Nanobots",
-					"description": "Convert planet to cargo and fuel",
+					"description": "Gain 1 cargo for every revealed planet",
 					"effectName": "Strip Mine",
 					"activeEffect": true,
 					"scienceCost": 0,
 					"cargoCost": 40,
-					"refreshRate": 5,
-					"refreshLevels": 1,
-					"effects": "(stripMine)",
+					"effects": "(resource cargo planetCount)",
 					"inMerchant": true,
-					"soundEffect": ""
+					"soundEffect": "",
+					"energyCost": 0,
+					"level": 1
+				},
+				{
+					"id": "Bactry",
+					"name": "Bactry",
+					"description": "Produce 5 fuel for every crew member on board",
+					"effectName": "Biofuels",
+					"activeEffect": true,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(resource fuel crewCount 5)",
+					"soundEffect": "",
+					"level": 2
+				},
+				{
+					"id": "TachyonSponge",
+					"name": "Tachyon Sponge",
+					"description": "Rewind the cycle clock and gain energy",
+					"effectName": "Rewinder",
+					"activeEffect": true,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(resource energy cycleProgress)",
+					"soundEffect": "",
+					"level": 3
+				},
+				{
+					"id": "SmokeScreen",
+					"name": "Smoke Screen",
+					"description": "Convert 2 fuel into 5 shields",
+					"effectName": "Countermeasure",
+					"activeEffect": true,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(convert fuel 2 shields 5)",
+					"soundEffect": "",
+					"level": 3
+				},
+				{
+					"id": "JunkArmor",
+					"name": "Junk Armor",
+					"description": "Convert 5 cargo into 5 shields",
+					"effectName": "Ablative Shielding",
+					"activeEffect": true,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(convert cargo 5 shields 5)",
+					"soundEffect": "",
+					"level": 3
+				},
+				{
+					"id": "StickyCoating",
+					"name": "Sticky Coating",
+					"description": "Gain 1 shield per explore",
+					"effectName": "Accretive Shielding",
+					"activeEffect": false,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(onExplore (resource shields 1))",
+					"soundEffect": "",
+					"level": 3
+				},
+				{
+					"id": "MirrorShield",
+					"name": "Mirror Shield",
+					"description": "Deal 1 damage when you take damage",
+					"effectName": "Reflective Shielding",
+					"activeEffect": false,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(onDamage (damage 1))",
+					"soundEffect": "",
+					"level": 3
+				},
+				{
+					"id": "BellWard",
+					"name": "Bell Ward",
+					"description": "Next time you take damage, gain that much shields instead",
+					"effectName": "Resonance Shield",
+					"activeEffect": true,
+					"inMerchant": true,
+					"scienceCost": 0,
+					"cargoCost": 0,
+					"energyCost": 0,
+					"effects": "(onDamage (healInstead))",
+					"soundEffect": "",
+					"level": 3
 				}
 			],
 			"separators": [],

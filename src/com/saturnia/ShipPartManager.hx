@@ -5,7 +5,7 @@ import com.modality.cards.Message;
 
 class ShipPartManager
 {
-  public static var merchantParts:Array<String>;
+  //public static var merchantParts:Array<String>;
 
   public static function getPart(id:String):ShipPart
   {
@@ -13,23 +13,26 @@ class ShipPartManager
     var part:ShipPart = new ShipPart();
 
     part.name = shipPartData.name;
+    part.level = shipPartData.level;
     part.description = shipPartData.description;
     part.scienceCost = shipPartData.scienceCost;
     part.cargoCost = shipPartData.cargoCost;
+    part.energyCost = shipPartData.energyCost;
     part.activeEffect = shipPartData.activeEffect;
-    part.refreshRate = shipPartData.refreshRate;
-    part.refreshLevels = shipPartData.refreshLevels;
     part.soundEffect = shipPartData.soundEffect;
     part.effectName = shipPartData.effectName;
-    part.effects = Message.read(shipPartData.effects);
+    part.effect = Message.read(shipPartData.effects);
 
     part.reset();
     return part;
   }
 
-  public static function getMerchantParts(count:Int):Array<ShipPart>
+  public static function getParts(count:Int, level:Int = 0):Array<ShipPart>
   {
-    if(merchantParts == null) {
+    var merchantParts = [];
+    if(level > 0) {
+      merchantParts = [for(p in Data.shipParts.all) if(p.inMerchant && p.level <= level) p.id.toString()];
+    } else {
       merchantParts = [for(p in Data.shipParts.all) if(p.inMerchant) p.id.toString()];
     }
 

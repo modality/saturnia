@@ -1,38 +1,23 @@
 package com.saturnia;
 
-import openfl.events.Event;
-import com.modality.AugRandom;
-
-class MerchantEncounter extends Encounter
+class MerchantEncounter extends FriendlyEncounter
 {
-  public var parts:Array<ShipPart>;
-
   public var goodBought:String;
   public var goodSold:String;
 
-  public var maxInventory:Int;
-  public var refreshRate:Int;
-  public var sellRate:Int;
-  public var buyRate:Int;
-  public var refreshTime:Int;
   public var goodInventory:Int;
+  public var maxInventory:Int;
+  public var sellPrice:Int;
+  public var buyPrice:Int;
 
-  public function new(_space:Space)
-  {
-    super(_space);
-    type = "merchant";
-    graphic = Assets.getImage("space_merchant");
-  }
-
+  public var refreshRate:Int;
+  public var refreshTime:Int;
+  
   public override function activate()
   {
-    space.object = this;
-    parts = ShipPartManager.getMerchantParts(3);
-  }
-
-  public function boughtPart(shipPart:ShipPart)
-  {
-    parts.remove(shipPart);
+    for(part in ShipPartManager.getParts(5, 1)) {
+      items.push(part);
+    }
   }
 
   private function logistic(t:Float):Float
@@ -55,7 +40,7 @@ class MerchantEncounter extends Encounter
     return Math.floor(logit(1. * goodInventory / maxInventory) * refreshRate);
   }
 
-  public function pulse():Void
+  public override function pulse():Void
   {
     refreshTime += 1;
     goodInventory = calcInventory();

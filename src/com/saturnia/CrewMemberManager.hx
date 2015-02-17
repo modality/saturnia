@@ -15,7 +15,7 @@ class CrewMemberManager
     crewMember.name = crewMemberData.name;
     crewMember.description = crewMemberData.description;
     crewMember.effectName = crewMemberData.effectName;
-    crewMember.effects = Message.read(crewMemberData.effects);
+    crewMember.effect = Message.read(crewMemberData.effects);
 
     return crewMember;
   }

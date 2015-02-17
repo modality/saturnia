@@ -10,7 +10,6 @@ class ShipPartMenuItem extends Base
 
   public var shipPart:ShipPart;
   public var text:TextBase;
-  public var progressBar:ProgressBar;
 
   public function new(_x:Int, _y:Int, _shipPart:ShipPart)
   {
@@ -22,11 +21,6 @@ class ShipPartMenuItem extends Base
     type = "ship_part_menu_item";
 
     shipPart.addEventListener(ShipPart.UPDATED, updateText);
-
-    if(shipPart.activeEffect) {
-      progressBar = new ProgressBar(25, 20, 100, 10, 0xFFFFFF);
-      addChild(progressBar);
-    }
 
     text = new TextBase(20, 0, 50, 20, shipPart.name);
     addChild(text);
@@ -50,8 +44,5 @@ class ShipPartMenuItem extends Base
   public function updateText(?event:Dynamic):Void
   {
     text.text = shipPart.name;
-    if(shipPart.activeEffect) {
-      progressBar.set(shipPart.refreshLevel / shipPart.refreshLevels);
-    }
   }
 }
