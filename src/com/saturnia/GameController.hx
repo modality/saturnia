@@ -10,6 +10,7 @@ import com.modality.TextBase;
 
 import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
+import com.saturnia.ui.HackerPanel;
 import com.saturnia.ui.NavigationPanel;
 import com.saturnia.ui.PowerPanel;
 import com.saturnia.ui.PopupIcon;
@@ -25,6 +26,7 @@ class GameController extends Scene
   
   public var infoPanel:InfoPanel;
   public var merchantPanel:MerchantPanel;
+  public var hackerPanel:HackerPanel;
   public var navigationPanel:NavigationPanel;
   public var powerPanel:PowerPanel;
 
@@ -118,13 +120,15 @@ class GameController extends Scene
   {
     inMerchant = true;
     merchantPanel = new MerchantPanel(space, galaxy.player);
-    add(merchantPanel);
+    hackerPanel = new HackerPanel(space, galaxy);
+    add(hackerPanel);
   }
 
   public function exitMerchant():Void
   {
-    remove(merchantPanel);
+    remove(hackerPanel);
     merchantPanel = null;
+    hackerPanel = null;
     inMerchant = false;
     regainFocus = true;
   }

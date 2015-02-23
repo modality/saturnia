@@ -50,7 +50,7 @@ class Assets
     assetDictionary.set("tarot_4", "graphics/tarot/4_emperor.png");
     assetDictionary.set("tarot_5", "graphics/tarot/5_hierophant.png");
 
-    assetDictionary.set("font", "font/magic_forest.ttf");
+    assetDictionary.set("font", "font/dos_vga.ttf");
   }
 
   public static function get(asset:String):String

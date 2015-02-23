@@ -4,6 +4,9 @@ import openfl.events.Event;
 import com.haxepunk.utils.Input;
 import com.modality.Base;
 import com.modality.TextBase;
+import com.modality.ui.UIPanel;
+import com.modality.ui.UIAlign;
+import com.modality.ui.UILabel;
 
 class MerchantPanel extends Base
 {
@@ -13,6 +16,8 @@ class MerchantPanel extends Base
   public var ok_btn:TextBase;
   public var sellGood:GoodsMenuItem;
   public var buyGood:GoodsMenuItem;
+
+  public var panel:UIPanel;
 
   public function new(_space:Space, _player:PlayerResources)
   {
@@ -27,18 +32,13 @@ class MerchantPanel extends Base
     this.graphic = modal;
     this.layer = Constants.OVERLAY_LAYER;
 
-    var tb:TextBase;
+    panel = new UIPanel(20, 20, 660, 460);
+    addChild(panel.entity);
 
-    tb = new TextBase(10, 20, 300, 50, "Ship Parts");
-    tb.size = Constants.FONT_SIZE_MD;
-    addChild(tb);
-
-    tb = new TextBase(360, 20, 300, 50, "Trade Goods");
-    tb.size = Constants.FONT_SIZE_MD;
-    addChild(tb);
+    panel.addChild(new UILabel("Ship Parts", Constants.FONT_SIZE_MD), UIAlign.Left);
+    panel.addChild(new UILabel("Trade Goods", Constants.FONT_SIZE_MD), UIAlign.Left);
 
     var pos = 0;
-
     for(item in friendly.items) {
       var mmi = new MerchantMenuItem(10, (50 * pos) + 50, item);
       mmi.addEventListener(MerchantMenuItem.CLICKED, clickedItem);
@@ -46,6 +46,8 @@ class MerchantPanel extends Base
       addChild(mmi);
       pos++;
     }
+
+    panel.updateGraphic();
 
     /*
     sellGood = new GoodsMenuItem(360, 50,

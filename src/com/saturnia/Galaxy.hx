@@ -14,6 +14,8 @@ class Galaxy extends Base
   public var sectors:Grid<Sector>;
   public var cardLocations:Array<Array<Int>>;
 
+  public var hackAttempts:Int = 0;
+  public var operatorsActive:Int = 0;
   public var cycleCounter:Int;
 
   public function new()

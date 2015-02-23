@@ -22,6 +22,12 @@ class PlayerResources extends Base
   public var maxShields:Int;
   public var maxEnergy:Int;
 
+  // systems stats
+  public var initiative:Int; // MOVE
+  public var evasion:Int;    // EVAD
+  public var targeting:Int;  // TRGT
+  public var damage:Int;     // LASR
+
   public var cards:Array<MajorArcana>;
   public var crewMembers:Array<CrewMember>;
   public var shipParts:Array<ShipPart>;
@@ -36,6 +42,11 @@ class PlayerResources extends Base
     cargo = Constants.STARTING_CARGO;
     science = Constants.STARTING_SCIENCE;
     energy = Constants.STARTING_ENERGY;
+
+    initiative = 1;
+    evasion = 1;
+    targeting = 1;
+    damage = 1;
 
     maxFuel = fuel;
     maxShields = shields;
