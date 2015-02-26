@@ -15,8 +15,6 @@ class ShipPartManager
     part.name = shipPartData.name;
     part.level = shipPartData.level;
     part.description = shipPartData.description;
-    part.scienceCost = shipPartData.scienceCost;
-    part.cargoCost = shipPartData.cargoCost;
     part.energyCost = shipPartData.energyCost;
     part.activeEffect = shipPartData.activeEffect;
     part.soundEffect = shipPartData.soundEffect;

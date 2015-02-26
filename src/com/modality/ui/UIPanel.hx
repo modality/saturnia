@@ -67,14 +67,14 @@ class UIPanel extends UIElement
           tuple.element.entity.x = x_offset;
         case Right, FloatRight:
           tuple.element.entity.x = x_offset + width() - tuple.element.width();
-        case Center:
+        case Center, FloatCenter:
           tuple.element.entity.x = x_offset + (width() - tuple.element.width())/2;
       }
       tuple.element.updateGraphic();
       switch(tuple.align) {
         case Left, Center, Right:
           y_offset += tuple.element.height();
-        case FloatLeft, FloatRight:
+        case FloatLeft, FloatRight, FloatCenter:
       }
     }
     h = y_offset;

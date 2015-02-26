@@ -11,6 +11,7 @@ import com.modality.TextBase;
 import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
 import com.saturnia.ui.HackerPanel;
+import com.saturnia.ui.MilitaryPanel;
 import com.saturnia.ui.NavigationPanel;
 import com.saturnia.ui.PowerPanel;
 import com.saturnia.ui.PopupIcon;
@@ -27,6 +28,7 @@ class GameController extends Scene
   public var infoPanel:InfoPanel;
   public var merchantPanel:MerchantPanel;
   public var hackerPanel:HackerPanel;
+  public var militaryPanel:MilitaryPanel;
   public var navigationPanel:NavigationPanel;
   public var powerPanel:PowerPanel;
 
@@ -75,20 +77,16 @@ class GameController extends Scene
             var exploreEffects = [];
             switch(space.spaceType) {
               case Planet:
-                galaxy.player.cargo += 1;
-                galaxy.player.science += 1;
-                exploreEffects = galaxy.player.stats.getStatusEffects("onPlanet");
+                exploreEffects = galaxy.player.getStatusEffects("onPlanet");
               case Star, Start:
-                galaxy.player.science += 2;
-                exploreEffects = galaxy.player.stats.getStatusEffects("onStar");
+                exploreEffects = galaxy.player.getStatusEffects("onStar");
               case Debris:
-                galaxy.player.cargo += 2;
-                exploreEffects = galaxy.player.stats.getStatusEffects("onDebris");
+                exploreEffects = galaxy.player.getStatusEffects("onDebris");
               case Hostile:
                 checkLocked();
-                exploreEffects = galaxy.player.stats.getStatusEffects("onHostile");
+                exploreEffects = galaxy.player.getStatusEffects("onHostile");
               case Friendly:
-                exploreEffects = galaxy.player.stats.getStatusEffects("onFriendly");
+                exploreEffects = galaxy.player.getStatusEffects("onFriendly");
               default:
             }
 
@@ -119,7 +117,7 @@ class GameController extends Scene
   public function enterMerchant(space:Space):Void
   {
     inMerchant = true;
-    merchantPanel = new MerchantPanel(space, galaxy.player);
+    militaryPanel = new MilitaryPanel(space, galaxy);
     hackerPanel = new HackerPanel(space, galaxy);
     add(hackerPanel);
   }
@@ -128,6 +126,7 @@ class GameController extends Scene
   {
     remove(hackerPanel);
     merchantPanel = null;
+    militaryPanel = null;
     hackerPanel = null;
     inMerchant = false;
     regainFocus = true;
@@ -181,21 +180,20 @@ class GameController extends Scene
     SoundManager.play("hit"+Std.random(2));
     if(space.encounter != null) {
       var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
-      if(pe.stats.firstStrike) {
-        galaxy.player.stats.takeDamage(pe.stats.attack());
-        pe.stats.takeDamage(galaxy.player.stats.attack());
+      if(pe.stats.progInitiative > galaxy.player.progInitiative) {
+        galaxy.player.takeDamage(pe.stats.attack());
+        pe.stats.takeDamage(galaxy.player.attack());
       } else {
-        pe.stats.takeDamage(galaxy.player.stats.attack());
+        pe.stats.takeDamage(galaxy.player.attack());
         if(!pe.stats.isDead()) {
-          galaxy.player.stats.takeDamage(pe.stats.attack());
+          galaxy.player.takeDamage(pe.stats.attack());
         }
       }
 
-      galaxy.player.shields = galaxy.player.stats.hitPoints;
+      galaxy.player.useFuel(1);
       galaxy.player.updated();
       if(pe.stats.isDead()) {
         space.removeEncounter();
-        galaxy.player.cargo += pe.cargoReward;
         galaxy.player.science += pe.scienceReward;
         galaxy.player.fuel += pe.fuelReward;
         infoPanel.updateGraphic();
@@ -207,7 +205,7 @@ class GameController extends Scene
 
   public function checkLocked():Void
   {
-    var canExploreNearPirate = galaxy.player.stats.getStatusEffects("exploreNearPirates").length > 0;
+    var canExploreNearPirate = galaxy.player.getStatusEffects("exploreNearPirates").length > 0;
     grid.each(function(s:Space, i:Int, j:Int):Void {
       if(!s.explored) {
         s.locked = false;
@@ -249,20 +247,39 @@ class GameController extends Scene
   public function cycle(e:Event):Void
   {
     var piratesAttacked = false;
+    var pirates:Array<PirateEncounter> = [];
+
     grid.each(function(space:Space, i:Int, j:Int):Void {
       if(space.explored && space.spaceType == Hostile) {
         if(space.encounter != null) {
           var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
           if(!pe.stats.isDead()) {
-            piratesAttacked = true;
-            galaxy.player.stats.takeDamage(pe.stats.attack());
+            pirates.push(pe);
           }
+        }
+      } else if(space.spaceType == Friendly) {
+        if(space.encounter != null) {
+          cast(space.encounter, FriendlyEncounter).cycle();
         }
       }
     });
 
+    pirates.sort(function(a:PirateEncounter, b:PirateEncounter):Int {
+      return b.stats.progInitiative - a.stats.progInitiative;
+    });
+
+    var evade = galaxy.player.progEvasion;
+    for(pirate in pirates) {
+      if(evade > 0) {
+        evade--;
+      } else {
+        piratesAttacked = true;
+        galaxy.player.takeDamage(pirate.stats.attack());
+      }
+      pirate.stats.cycle();
+    }
+
     if(piratesAttacked) {
-      galaxy.player.shields = galaxy.player.stats.hitPoints;
       galaxy.player.updated();
       SoundManager.play("hit"+Std.random(2));
     }

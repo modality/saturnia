@@ -12,9 +12,7 @@ class InfoPanel extends Base
   public var sector:Sector;
   public var player:PlayerResources;
 
-  public var fuel_bar:ResourceBar;
-  public var shields_bar:ResourceBar;
-  public var cargo_counter:ResourceCounter;
+  public var fuel_counter:ResourceCounter;
   public var science_counter:ResourceCounter;
 
   public var enemy_text:TextBase;
@@ -55,9 +53,7 @@ class InfoPanel extends Base
     sectorName.layer = Constants.MAP_LAYER;
     sectorGfx = new Base(0, 0);
 
-    shields_bar = new ResourceBar(0, 150, 275, 20, "shields", Constants.SHIELDS_COLOR);
-    fuel_bar = new ResourceBar(0, 170, 275, 20, "fuel", Constants.FUEL_COLOR);
-    cargo_counter = new ResourceCounter(250, 100, "cargo");
+    fuel_counter = new ResourceCounter(0, 170, "fuel");
     science_counter = new ResourceCounter(250, 125, "science");
     
     var coffeeImg = Assets.getImage("ui_coffee");
@@ -71,9 +67,7 @@ class InfoPanel extends Base
 
     addChild(sectorGfx);
     addChild(sectorName);
-    addChild(fuel_bar);
-    addChild(shields_bar);
-    addChild(cargo_counter);
+    addChild(fuel_counter);
     addChild(science_counter);
     addChild(enemy_text);
     addChild(coffeeGfx);
@@ -91,15 +85,9 @@ class InfoPanel extends Base
       case "science":
         end_x = science_counter.x;
         end_y = science_counter.y;
-      case "cargo":
-        end_x = cargo_counter.x;
-        end_y = cargo_counter.y;
       case "fuel":
-        end_x = fuel_bar.x;
-        end_y = fuel_bar.y;
-      case "shields":
-        end_x = shields_bar.x;
-        end_y = shields_bar.y;
+        end_x = fuel_counter.x;
+        end_y = fuel_counter.y;
       default:
     }
 
@@ -111,7 +99,7 @@ class InfoPanel extends Base
   public function displayEnemy(pe:PirateEncounter)
   {
     var enemyInfo = "The \""+pe.name + "\"\n";
-    enemyInfo += "HP: "+pe.stats.hitPoints+"/"+pe.stats.maxHitPoints+"\n";
+    enemyInfo += "HP: "+pe.stats.hullPoints+"/"+pe.stats.maxHullPoints+"\n";
     enemyInfo += pe.description;
     enemy_text.text = enemyInfo;
   }
@@ -129,9 +117,7 @@ class InfoPanel extends Base
   public override function updateGraphic()
   {
     super.updateGraphic();
-    fuel_bar.set(player.fuel, player.maxFuel);
-    shields_bar.set(player.shields, player.maxShields);
-    cargo_counter.set(player.cargo);
+    fuel_counter.set(player.fuel);
     science_counter.set(player.science);
   }
 
@@ -140,7 +126,7 @@ class InfoPanel extends Base
     sectorName.text = sector.title;
 
     var sectorImg = switch(sector.sectorType) {
-      case Peaceful: Assets.getImage("sector_system");
+      case Peaceful, Debug: Assets.getImage("sector_system");
       case Nebula: Assets.getImage("sector_nebula");
       case Asteroid: Assets.getImage("sector_asteroid");
       case Anomaly: Assets.getImage("sector_anomaly");

@@ -1,6 +1,5 @@
 package com.saturnia.ui;
 
-import openfl.events.Event;
 import com.haxepunk.utils.Input;
 import com.modality.Base;
 import com.modality.TextBase;
@@ -40,31 +39,31 @@ class HackerPanel extends Base
 
     panel.addChild(new UILabel("The Operators", Constants.FONT_SIZE_LG), UIAlign.Left);
     panel.addChild(new UISpacer(660, 20), UIAlign.Left);
-    panel.addChild(new UILabel("Total Science: "+galaxy.player.science), UIAlign.FloatRight);
     panel.addChild(new UILabel("Network Power: "+galaxy.operatorsActive), UIAlign.FloatLeft);
+    panel.addChild(new UILabel("Total Science: "+galaxy.player.science), UIAlign.FloatRight);
     panel.addNamedChild("hack attempts", new UILabel("Hack Attempts: "+galaxy.hackAttempts), UIAlign.Center);
     panel.addChild(new UISpacer(660, 40, true), UIAlign.Left);
 
     leftPanel.addChild(new UILabel("Hack Systems", Constants.FONT_SIZE_MD), UIAlign.Left);
     leftPanel.addChild(new UISpacer(300, 20), UIAlign.Left);
 
-    success = Math.floor(calculateSuccess(galaxy.player.initiative) * 100);
-    leftPanel.addNamedChild("hack initiative label", new UILabel("MOVE - "+galaxy.player.initiative), UIAlign.FloatLeft);
+    success = Math.floor(calculateSuccess(galaxy.player.progInitiative) * 100);
+    leftPanel.addNamedChild("hack initiative label", new UILabel("MOVE - "+galaxy.player.progInitiative), UIAlign.FloatLeft);
     leftPanel.addNamedChild("hack initiative button", new UIButton(100, 30, "HACK ("+success+"%)", hackFunction("initiative")), UIAlign.Right);
     leftPanel.addChild(new UISpacer(300, 10), UIAlign.Left);
 
-    success = Math.floor(calculateSuccess(galaxy.player.evasion) * 100);
-    leftPanel.addNamedChild("hack evasion label", new UILabel("EVAD - "+galaxy.player.evasion), UIAlign.FloatLeft);
+    success = Math.floor(calculateSuccess(galaxy.player.progEvasion) * 100);
+    leftPanel.addNamedChild("hack evasion label", new UILabel("EVAD - "+galaxy.player.progEvasion), UIAlign.FloatLeft);
     leftPanel.addNamedChild("hack evasion button", new UIButton(100, 30, "HACK ("+success+"%)", hackFunction("evasion")), UIAlign.Right);
     leftPanel.addChild(new UISpacer(300, 10), UIAlign.Left);
 
-    success = Math.floor(calculateSuccess(galaxy.player.targeting) * 100);
-    leftPanel.addNamedChild("hack targeting label", new UILabel("TRGT - "+galaxy.player.targeting), UIAlign.FloatLeft);
-    leftPanel.addNamedChild("hack targeting button", new UIButton(100, 30, "HACK ("+success+"%)", hackFunction("targeting")), UIAlign.Right);
+    success = Math.floor(calculateSuccess(galaxy.player.progShield) * 100);
+    leftPanel.addNamedChild("hack shield label", new UILabel("SHLD - "+galaxy.player.progShield), UIAlign.FloatLeft);
+    leftPanel.addNamedChild("hack shield button", new UIButton(100, 30, "HACK ("+success+"%)", hackFunction("shield")), UIAlign.Right);
     leftPanel.addChild(new UISpacer(300, 10), UIAlign.Left);
 
-    success = Math.floor(calculateSuccess(galaxy.player.damage) * 100);
-    leftPanel.addNamedChild("hack damage label", new UILabel("LASR - "+galaxy.player.damage), UIAlign.FloatLeft);
+    success = Math.floor(calculateSuccess(galaxy.player.progDamage) * 100);
+    leftPanel.addNamedChild("hack damage label", new UILabel("LASR - "+galaxy.player.progDamage), UIAlign.FloatLeft);
     leftPanel.addNamedChild("hack damage button", new UIButton(100, 30, "HACK ("+success+"%)", hackFunction("damage")), UIAlign.Right);
 
     rightPanel.addChild(new UILabel("Modify Timescale", Constants.FONT_SIZE_MD), UIAlign.Left);
@@ -105,10 +104,10 @@ class HackerPanel extends Base
   {
     return function(button:UIButton) {
       var startValue = switch(system) {
-        case "initiative": galaxy.player.initiative;
-        case "evasion": galaxy.player.evasion;
-        case "targeting": galaxy.player.targeting;
-        case "damage": galaxy.player.damage;
+        case "initiative": galaxy.player.progInitiative;
+        case "evasion": galaxy.player.progEvasion;
+        case "shield": galaxy.player.progShield;
+        case "damage": galaxy.player.progDamage;
         default: return;
       }
 
@@ -118,16 +117,16 @@ class HackerPanel extends Base
       if(success) {
         switch(system) {
           case "initiative":
-            if(galaxy.player.initiative < 10) galaxy.player.initiative += 1;
+            if(galaxy.player.progInitiative < 10) galaxy.player.progInitiative += 1;
             systemName = "MOVE";
           case "evasion":
-            if(galaxy.player.evasion < 10) galaxy.player.evasion += 1;
+            if(galaxy.player.progEvasion < 10) galaxy.player.progEvasion += 1;
             systemName = "EVAD";
-          case "targeting":
-            if(galaxy.player.targeting < 10) galaxy.player.targeting += 1;
-            systemName = "TRGT";
+          case "shield":
+            if(galaxy.player.progShield < 10) galaxy.player.progShield += 1;
+            systemName = "SHLD";
           case "damage":
-            if(galaxy.player.damage < 10) galaxy.player.damage += 1;
+            if(galaxy.player.progDamage < 10) galaxy.player.progDamage += 1;
             systemName = "LASR";
           default: return;
         }
@@ -136,16 +135,16 @@ class HackerPanel extends Base
       } else {
         switch(system) {
           case "initiative":
-            if(galaxy.player.initiative > 1) galaxy.player.initiative -= 1;
+            if(galaxy.player.progInitiative > 1) galaxy.player.progInitiative -= 1;
             systemName = "MOVE";
           case "evasion":
-            if(galaxy.player.evasion > 1) galaxy.player.evasion -= 1;
+            if(galaxy.player.progEvasion > 1) galaxy.player.progEvasion -= 1;
             systemName = "EVAD";
-          case "targeting":
-            if(galaxy.player.targeting > 1) galaxy.player.targeting -= 1;
-            systemName = "TRGT";
+          case "shield":
+            if(galaxy.player.progShield > 1) galaxy.player.progShield -= 1;
+            systemName = "SHLD";
           case "damage":
-            if(galaxy.player.damage > 1) galaxy.player.damage -= 1;
+            if(galaxy.player.progDamage > 1) galaxy.player.progDamage -= 1;
             systemName = "LASR";
           default: return;
         }
@@ -165,20 +164,20 @@ class HackerPanel extends Base
     panel.getChild("hack attempts").updateText("Hack Attempts: "+galaxy.hackAttempts);
 
     var success; 
-    success = Math.floor(calculateSuccess(galaxy.player.initiative) * 100);
-    leftPanel.getChild("hack initiative label").updateText("MOVE - "+galaxy.player.initiative);
+    success = Math.floor(calculateSuccess(galaxy.player.progInitiative) * 100);
+    leftPanel.getChild("hack initiative label").updateText("MOVE - "+galaxy.player.progInitiative);
     leftPanel.getChild("hack initiative button").updateText("HACK ("+success+"%)");
 
-    success = Math.floor(calculateSuccess(galaxy.player.evasion) * 100);
-    leftPanel.getChild("hack evasion label").updateText("EVAD - "+galaxy.player.evasion);
+    success = Math.floor(calculateSuccess(galaxy.player.progEvasion) * 100);
+    leftPanel.getChild("hack evasion label").updateText("EVAD - "+galaxy.player.progEvasion);
     leftPanel.getChild("hack evasion button").updateText("HACK ("+success+"%)");
 
-    success = Math.floor(calculateSuccess(galaxy.player.targeting) * 100);
-    leftPanel.getChild("hack targeting label").updateText("TRGT - "+galaxy.player.targeting);
-    leftPanel.getChild("hack targeting button").updateText("HACK ("+success+"%)");
+    success = Math.floor(calculateSuccess(galaxy.player.progShield) * 100);
+    leftPanel.getChild("hack shield label").updateText("SHLD - "+galaxy.player.progShield);
+    leftPanel.getChild("hack shield button").updateText("HACK ("+success+"%)");
 
-    success = Math.floor(calculateSuccess(galaxy.player.damage) * 100);
-    leftPanel.getChild("hack damage label").updateText("LASR - "+galaxy.player.damage);
+    success = Math.floor(calculateSuccess(galaxy.player.progDamage) * 100);
+    leftPanel.getChild("hack damage label").updateText("LASR - "+galaxy.player.progDamage);
     leftPanel.getChild("hack damage button").updateText("HACK ("+success+"%)");
   }
 
@@ -195,22 +194,6 @@ class HackerPanel extends Base
   {
     super.update();
     panel.update();
-    if(Input.mouseReleased) {
-      var base:Base = cast(scene.collidePoint("merchant_menu_item", Input.mouseX, Input.mouseY), Base);
-      if(base != null) {
-        base.dispatchEvent(new Event(MerchantMenuItem.CLICKED));
-      }
-
-      var base:Base = cast(scene.collidePoint("merchant_menu_parent", Input.mouseX, Input.mouseY), Base);
-      if(base != null) {
-        cast(base, MerchantMenuItem).onClick();
-      }
-
-      var btn:TextBase = cast(scene.collidePoint("ok_btn", Input.mouseX, Input.mouseY), TextBase);
-      if(btn != null) {
-        cast(scene, GameController).exitMerchant();
-      }
-    }
   }
 }
 

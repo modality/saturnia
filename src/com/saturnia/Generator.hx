@@ -13,6 +13,8 @@ enum WeightSize {
 
 class Generator
 {
+  public static var pirate_names:Array<String> = ["Hungry Hungry", "Men's Health", "Subprime Lender", "Cost Of Doing Business", "High Deductible", "Break Even", "Death and Gravity", "Dramatic Exit", "Ethics Gradient", "Honest Mistake", "Killing Time", "Lasting Damage", "Profit Margin", "Reasonable Excuse", "Trade Surplus", "Uninvited Guest", "Wit Amidst Folly", "Appropriate Measures", "Excessive Tolerance", "Frank Exchange of Ideas", "Vindictive Euphemism", "Polite Invitation", "Bad for Business", "Hidden Income", "Just Testing", "Lapsed Pacifist", "Insurance Claim", "Shrinkage", "Shoot Them Later", "So Much For Subtlety", "Somebody Else's Problem", "Steely Glint", "Unwitting Accomplice", "Youthful Indiscretion", "Forgetful", "Target Practice", "Uncertain Doom", "Second Guess", "Lower Your Shields", "Last Chance", "Breakneck Pace", "At All Cost", "Business End", "Shoots First", "Short End", "Cargo Liberator", "Cash Money", "Unfriendly", "Special Blend", "Stop Your Wailing", "Make Your Peace", "Wild Abandon", "Why Worry", "Better Luck Next Time", "Dumb Luck", "Meant Well", "Nevermore", "Bad News", "Why She Don't Write", "Inopportune Moment", "Iridium Blonde", "Imagine That", "Priceless Expression", "Dicey Odds", "New Economy", "Infringer", "Pot Luck", "One Too Many", "Bad Medicine", "Free Lunch", "Losing Bet", "Shakedown", "Sudden Movement", "Miranda Right", "Imaginative Name", "Stand and Deliver", "Long Walk, Short Airlock", "Despicable", "Oh No", "Baleful", "Unimaginable Delight", "Day Is Ours", "Better Than She Looks", "Relentless Apathy", "Lady Doth Protest", "Coming Right At Us", "End Of The Line", "Minor Anomaly", "Launch On Warning", "Collective Endeavor", "Bad Gravity", "Flux Capacitor", "Gray Area", "Inevitable", "Line Item Veto", "Inescapable Questioner", "Trade By Other Means", "Personal Growth Area", "Probable Cause", "Stop And Frisk", "Free Stress Test", "Incorrigible"];
+
   public static var sector_types:Array<String> = ["Deep Core", "Core", "Inner Rim", "Outer Rim", "Unknown"];
 
   public static var good_1:Array<String> = ["Amusing", "Assorted", "Battle", "Black", "Blue", "Bubbling", "Charm", "Crystal", "Data", "Delightful", "Dope", "Dream", "Eyeball", "Fire", "Flat", "Flux", "Fungus", "Gas", "God", "Grow", "Guardian", "Harmony", "Holo", "Important", "Jeweled", "Laser", "Lovely", "Mineral", "Nutrient", "Parasitic", "Passion", "Phase", "Planetary", "Psychic", "Red", "Religious", "Screech", "Shimmer", "Singing", "Whining"];
@@ -81,8 +83,9 @@ class Generator
     // decorate sectors
     galaxy.sectors.init(function(i:Int, j:Int):Sector {
       var sector:Sector = new Sector();
-
       var goodsList = AugRandom.shuffle(galaxy.goods);
+
+      galaxy.addEventListener(Galaxy.CYCLE, sector.cycle);
       sector.tarot_x = galaxy.cards[i];
       sector.tarot_y = galaxy.cards[j];
       if(i == j) {
@@ -93,11 +96,41 @@ class Generator
       sector.goodsBought = goodsList.slice(0, 3);
       sector.goodsSold = goodsList.slice(3);
 
-      return fillSector(sector);
+      return fillDebugSector(sector);
     });
 
     galaxy.setupPlayer();
     return galaxy;
+  }
+
+  public static function fillDebugSector(sector:Sector):Sector
+  {
+    var spaceTypes:Array<String> = ["Start", "Exit"];
+    
+    for(times in 0...20) {
+      spaceTypes.push("Friendly");
+    }
+
+    while(spaceTypes.length < 25) {
+      spaceTypes.push("Voidness");
+    }
+
+    spaceTypes = AugRandom.shuffle(spaceTypes.slice(0, 25));
+
+    sector.spaces.init(function(i:Int, j:Int):Space {
+      var space:Space = new Space();
+      space.grid = sector.spaces;
+      space.spaceType = EnumTools.createByName(SpaceType, spaceTypes.shift());
+      space.x = Constants.GRID_X+(i*Constants.BLOCK_W);
+      space.y = Constants.GRID_Y+(j*Constants.BLOCK_H);
+      space = fillSpace(space, sector);
+      return space;
+    });
+
+    sector.title = generateSectorName();
+    sector.sectorType = SectorType.Debug;
+
+    return sector;
   }
 
   public static function fillSector(sector:Sector):Sector
@@ -154,7 +187,7 @@ class Generator
     if(space.spaceType == Friendly) {
       space.encounter = FriendlyGenerator.generateMerchant(space, sector);
     } else if(space.spaceType == Hostile) {
-      space.encounter = EnemyGenerator.generateEnemy(space, sector.level * 10);
+      space.encounter = EnemyGenerator.generateEnemy(space);
     }
     return space;
   }

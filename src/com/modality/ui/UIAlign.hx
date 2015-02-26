@@ -6,4 +6,5 @@ enum UIAlign {
   Right;
   FloatLeft;
   FloatRight;
+  FloatCenter;
 }

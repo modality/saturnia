@@ -15,9 +15,6 @@ class MerchantEncounter extends FriendlyEncounter
   
   public override function activate()
   {
-    for(part in ShipPartManager.getParts(5, 1)) {
-      items.push(part);
-    }
   }
 
   private function logistic(t:Float):Float
@@ -40,7 +37,7 @@ class MerchantEncounter extends FriendlyEncounter
     return Math.floor(logit(1. * goodInventory / maxInventory) * refreshRate);
   }
 
-  public override function pulse():Void
+  public override function cycle():Void
   {
     refreshTime += 1;
     goodInventory = calcInventory();

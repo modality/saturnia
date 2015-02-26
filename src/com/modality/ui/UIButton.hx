@@ -7,7 +7,6 @@ import com.haxepunk.utils.Input;
 class UIButton extends UIElement
 {
   public var textEntity:TextBase;
-  public var active:Bool;
   public var imageOff:Image;
   public var imageOn:Image;
 

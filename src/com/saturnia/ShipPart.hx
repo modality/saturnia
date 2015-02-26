@@ -3,7 +3,7 @@ package com.saturnia;
 import com.modality.Base;
 import com.modality.cards.Message;
 
-class ShipPart extends Base implements Purchasable
+class ShipPart extends Base
 {
   public static var UPDATED:String = "ship part updated";
 
@@ -11,8 +11,6 @@ class ShipPart extends Base implements Purchasable
   public var amount:Int = 1;
   public var level:Int;
   public var description:String;
-  public var scienceCost:Int;
-  public var cargoCost:Int;
   public var energyCost:Int;
   public var activeEffect:Bool;
   public var soundEffect:String;
@@ -56,15 +54,8 @@ class ShipPart extends Base implements Purchasable
     return description;
   }
 
-  public function canPurchase(player:PlayerResources):Bool
-  {
-    return player.cargo >= cargoCost && player.science >= scienceCost;
-  }
-
   public function onPurchase(event:PurchaseEvent):Void
   {
-    event.player.cargo -= cargoCost;
-    event.player.science -= scienceCost;
     event.player.addShipPart(this);
   }
 }

@@ -4,7 +4,6 @@ class PirateEncounter extends Encounter
 {
   public var stats:CombatStats;
   public var description:String;
-  public var cargoReward:Int;
   public var scienceReward:Int;
   public var fuelReward:Int;
 
@@ -14,7 +13,6 @@ class PirateEncounter extends Encounter
     type = "pirate";
     graphic = Assets.getImage("space_raider");
     stats = new CombatStats();
-    cargoReward = 0;
     scienceReward = 0;
     fuelReward = 0;
   }

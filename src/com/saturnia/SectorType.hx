@@ -5,4 +5,5 @@ enum SectorType {
   Nebula;
   Asteroid;
   Anomaly;
+  Debug;
 }

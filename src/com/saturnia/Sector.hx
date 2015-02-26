@@ -1,5 +1,6 @@
 package com.saturnia;
 
+import openfl.events.Event;
 import com.modality.Grid;
 import com.modality.Block;
 
@@ -24,5 +25,16 @@ class Sector extends Block
     goodsBought = [];
     goodsSold = [];
     cardLocations = [];
+  }
+
+  public function cycle(e:Event):Void
+  {
+    if(!explored) return;
+
+    spaces.each(function(space:Space, i:Int, j:Int) {
+      if(space.spaceType == Friendly) {
+        cast(space.encounter, FriendlyEncounter).cycle();
+      }
+    });
   }
 }

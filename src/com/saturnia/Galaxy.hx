@@ -17,6 +17,7 @@ class Galaxy extends Base
   public var hackAttempts:Int = 0;
   public var operatorsActive:Int = 0;
   public var cycleCounter:Int;
+  public var policingContract:Int = 0;
 
   public function new()
   {
@@ -62,17 +63,12 @@ class Galaxy extends Base
     cycleCounter--;
     if(cycleCounter == 0) {
       cycleCounter = Constants.TURNS_PER_CYCLE;
+      if(policingContract > 0) {
+        policingContract -= 1;
+      }
+      player.cycle();
       dispatchEvent(new Event(CYCLE));
-      sectors.each(function(sector:Sector, u:Int, v:Int) {
-        sector.spaces.each(function(space:Space, i:Int, j:Int) {
-          if(space.spaceType == Friendly) {
-            cast(space.encounter, FriendlyEncounter).pulse();
-          }
-        });
-      });
     }
     player.pulse();
   }
-
-  
 }
