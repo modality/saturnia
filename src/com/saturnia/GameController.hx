@@ -6,12 +6,14 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.Scene;
 import com.modality.Grid;
+import com.modality.Base;
 import com.modality.TextBase;
 
 import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
 import com.saturnia.ui.HackerPanel;
 import com.saturnia.ui.MilitaryPanel;
+import com.saturnia.ui.EngineerPanel;
 import com.saturnia.ui.NavigationPanel;
 import com.saturnia.ui.PowerPanel;
 import com.saturnia.ui.PopupIcon;
@@ -26,9 +28,7 @@ class GameController extends Scene
   public var regainFocus:Bool;
   
   public var infoPanel:InfoPanel;
-  public var merchantPanel:MerchantPanel;
-  public var hackerPanel:HackerPanel;
-  public var militaryPanel:MilitaryPanel;
+  public var friendlyPanel:Base;
   public var navigationPanel:NavigationPanel;
   public var powerPanel:PowerPanel;
 
@@ -85,8 +85,11 @@ class GameController extends Scene
               case Hostile:
                 checkLocked();
                 exploreEffects = galaxy.player.getStatusEffects("onHostile");
-              case Friendly:
+              case Engineer, Merchant, Military:
                 exploreEffects = galaxy.player.getStatusEffects("onFriendly");
+              case Hacker:
+                exploreEffects = galaxy.player.getStatusEffects("onFriendly");
+                galaxy.operatorsActive++;
               default:
             }
 
@@ -94,13 +97,17 @@ class GameController extends Scene
             em.applyEffects(exploreEffects);
             infoPanel.updateGraphic();
             pulse();
-          } else if(space.explored && space.spaceType == SpaceType.Friendly) {
-            enterMerchant(space);
-          } else if(space.explored && space.spaceType == SpaceType.Exit) {
-            enterNavigation();
-          } else if(space.explored && space.spaceType == SpaceType.Hostile) {
-            playerAttacks(space);
-            pulse();
+          } else if(space.explored) {
+            switch(space.spaceType) {
+              case Engineer, Hacker, Merchant, Military:
+                enterFriendly(space);
+              case Exit:
+                enterNavigation();
+              case Hostile:
+                playerAttacks(space);
+                pulse();
+              default:
+            }
           }
         }
       } else {
@@ -114,20 +121,23 @@ class GameController extends Scene
     }
   }
 
-  public function enterMerchant(space:Space):Void
+  public function enterFriendly(space:Space):Void
   {
     inMerchant = true;
-    militaryPanel = new MilitaryPanel(space, galaxy);
-    hackerPanel = new HackerPanel(space, galaxy);
-    add(hackerPanel);
+    friendlyPanel = switch(space.spaceType) {
+      case Engineer: new EngineerPanel(space, galaxy);
+      case Military: new MilitaryPanel(space, galaxy);
+      case Merchant: new MerchantPanel(space, galaxy);
+      case Hacker: new HackerPanel(space, galaxy);
+      default:
+    }
+    add(friendlyPanel);
   }
 
-  public function exitMerchant():Void
+  public function exitFriendly():Void
   {
-    remove(hackerPanel);
-    merchantPanel = null;
-    militaryPanel = null;
-    hackerPanel = null;
+    remove(friendlyPanel);
+    friendlyPanel = null;
     inMerchant = false;
     regainFocus = true;
   }
@@ -206,6 +216,7 @@ class GameController extends Scene
   public function checkLocked():Void
   {
     var canExploreNearPirate = galaxy.player.getStatusEffects("exploreNearPirates").length > 0;
+    canExploreNearPirate = canExploreNearPirate || galaxy.policingContract > 0;
     grid.each(function(s:Space, i:Int, j:Int):Void {
       if(!s.explored) {
         s.locked = false;
@@ -257,31 +268,38 @@ class GameController extends Scene
             pirates.push(pe);
           }
         }
+      /*
       } else if(space.spaceType == Friendly) {
         if(space.encounter != null) {
           cast(space.encounter, FriendlyEncounter).cycle();
         }
+      */
       }
     });
 
-    pirates.sort(function(a:PirateEncounter, b:PirateEncounter):Int {
-      return b.stats.progInitiative - a.stats.progInitiative;
-    });
+    if(galaxy.policingContract == 0) {
+      pirates.sort(function(a:PirateEncounter, b:PirateEncounter):Int {
+        return b.stats.progInitiative - a.stats.progInitiative;
+      });
 
-    var evade = galaxy.player.progEvasion;
-    for(pirate in pirates) {
-      if(evade > 0) {
-        evade--;
-      } else {
-        piratesAttacked = true;
-        galaxy.player.takeDamage(pirate.stats.attack());
+      var evade = galaxy.player.progEvasion;
+      for(pirate in pirates) {
+        if(evade > 0) {
+          evade--;
+        } else {
+          piratesAttacked = true;
+          galaxy.player.takeDamage(pirate.stats.attack());
+        }
       }
-      pirate.stats.cycle();
+
+      if(piratesAttacked) {
+        galaxy.player.updated();
+        SoundManager.play("hit"+Std.random(2));
+      }
     }
 
-    if(piratesAttacked) {
-      galaxy.player.updated();
-      SoundManager.play("hit"+Std.random(2));
+    for(pirate in pirates) {
+      pirate.stats.cycle();
     }
   }
 

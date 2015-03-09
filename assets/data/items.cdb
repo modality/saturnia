@@ -25,25 +25,6 @@
 					"name": "effectName"
 				},
 				{
-					"typeStr": "2",
-					"name": "activeEffect"
-				},
-				{
-					"typeStr": "2",
-					"name": "inMerchant",
-					"display": null
-				},
-				{
-					"typeStr": "3",
-					"name": "scienceCost",
-					"display": null
-				},
-				{
-					"typeStr": "3",
-					"name": "cargoCost",
-					"display": null
-				},
-				{
 					"typeStr": "3",
 					"name": "energyCost"
 				},
@@ -58,270 +39,154 @@
 			],
 			"lines": [
 				{
-					"name": "Shield Battery",
-					"description": "Restores shields",
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"id": "ShieldBattery",
-					"activeEffect": true,
-					"effects": "(heal 5)",
-					"effectName": "Recharge",
-					"inMerchant": false,
-					"soundEffect": "space_teleport",
-					"energyCost": 0,
-					"level": 0
+					"id": "Telescope",
+					"level": 0,
+					"name": "Telescope",
+					"description": "Reveales the contents of an unexplored space",
+					"effectName": "Observe",
+					"energyCost": 1,
+					"effects": "(target unexplored (showType))",
+					"soundEffect": ""
 				},
 				{
-					"id": "MagneticShield",
-					"name": "Magnetic Shield",
-					"description": "Resists physical attacks",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 10,
-					"effects": "(resistPhysical 5)",
-					"effectName": "Countermeasure",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 2
+					"id": "SolarSail",
+					"level": 1,
+					"name": "Solar Sail",
+					"description": "Explore the row and column around a star, free.",
+					"effectName": "Solar Sail",
+					"energyCost": 3,
+					"effects": "(target star (solarSail))",
+					"soundEffect": ""
 				},
 				{
-					"id": "EnergyShield",
-					"name": "Energy Shield",
-					"description": "Resists energy attacks",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 10,
-					"effects": "(resistEnergy 5)",
-					"effectName": "Reflection",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 2
-				},
-				{
-					"id": "PepperRay",
-					"name": "Pepper Ray",
-					"description": "Deal 1 damage",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 10,
-					"effects": "(attack 1)",
-					"effectName": "Basic Shot",
-					"inMerchant": false,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 0
-				},
-				{
-					"id": "ViperRay",
-					"name": "Viper Ray",
-					"description": "Deal 2 damage",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 20,
-					"effects": "(attack 2)",
-					"effectName": "Quick Shot",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 1
-				},
-				{
-					"id": "GhostRay",
-					"name": "Ghost Ray",
-					"description": "Deal 4 damage",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 40,
-					"effects": "(attack 4)",
-					"effectName": "Big Shot",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 2
-				},
-				{
-					"id": "PelicanDrive",
-					"name": "Pelican Drive",
-					"description": "Gain 1 fuel per star",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 20,
-					"effects": "(onStar (resource fuel 1))",
-					"effectName": "Particle Scoop",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 1
-				},
-				{
-					"id": "GullDrive",
-					"name": "Gull Drive",
-					"description": "Exploring next to revealed stars costs no fuel",
-					"activeEffect": false,
-					"scienceCost": 0,
-					"cargoCost": 20,
-					"effects": "(nearStar freeExplore)",
-					"effectName": "Magnetic Sail",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 2
-				},
-				{
-					"id": "CoyoteBeam",
-					"name": "Coyote Beam",
-					"description": "Steal cargo",
-					"activeEffect": true,
-					"scienceCost": 0,
-					"cargoCost": 10,
-					"effects": "(stealCargo)",
-					"effectName": "Scavenger",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 1
-				},
-				{
-					"id": "VultureBeam",
-					"name": "Vulture Beam",
-					"description": "Steal cargo and fuel",
-					"effectName": "Scavenger",
-					"activeEffect": true,
-					"scienceCost": 0,
-					"cargoCost": 30,
-					"effects": "(stealCargoFuel)",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 2
-				},
-				{
-					"id": "JackalBeam",
-					"name": "Jackal Beam",
-					"description": "Steal cargo and science",
-					"effectName": "Scavenger",
-					"activeEffect": true,
-					"scienceCost": 0,
-					"cargoCost": 30,
-					"effects": "(stealCargoScience)",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 2
-				},
-				{
-					"id": "MiningNanobots",
-					"name": "Mining Nanobots",
-					"description": "Gain 1 cargo for every revealed planet",
-					"effectName": "Strip Mine",
-					"activeEffect": true,
-					"scienceCost": 0,
-					"cargoCost": 40,
-					"effects": "(resource cargo planetCount)",
-					"inMerchant": true,
-					"soundEffect": "",
-					"energyCost": 0,
-					"level": 1
+					"id": "Stunner",
+					"level": 1,
+					"name": "Stunner",
+					"description": "Prevent enemy in a square from attacking.",
+					"effectName": "Lockdown",
+					"energyCost": 3,
+					"effects": "(target enemy (stun))",
+					"soundEffect": ""
 				},
 				{
 					"id": "Bactry",
+					"level": 1,
 					"name": "Bactry",
-					"description": "Produce 5 fuel for every crew member on board",
-					"effectName": "Biofuels",
-					"activeEffect": true,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"energyCost": 0,
-					"effects": "(resource fuel crewCount 5)",
-					"soundEffect": "",
-					"level": 2
-				},
-				{
-					"id": "TachyonSponge",
-					"name": "Tachyon Sponge",
-					"description": "Rewind the cycle clock and gain energy",
-					"effectName": "Rewinder",
-					"activeEffect": true,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"energyCost": 0,
-					"effects": "(resource energy cycleProgress)",
-					"soundEffect": "",
-					"level": 3
+					"description": "Gain 3 fuel for every crew member on board.",
+					"effectName": "Bactry",
+					"energyCost": 3,
+					"effects": "(resource fuel crewCount 3)",
+					"soundEffect": ""
 				},
 				{
 					"id": "SmokeScreen",
+					"level": 1,
 					"name": "Smoke Screen",
-					"description": "Convert 2 fuel into 5 shields",
-					"effectName": "Countermeasure",
-					"activeEffect": true,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"energyCost": 0,
-					"effects": "(convert fuel 2 shields 5)",
-					"soundEffect": "",
-					"level": 3
+					"description": "Convert 5 fuel to 5 shields",
+					"effectName": "Smoke Screen",
+					"energyCost": 3,
+					"effects": "(convert fuel 5 shields 5)",
+					"soundEffect": ""
 				},
 				{
-					"id": "JunkArmor",
-					"name": "Junk Armor",
-					"description": "Convert 5 cargo into 5 shields",
-					"effectName": "Ablative Shielding",
-					"activeEffect": true,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"energyCost": 0,
-					"effects": "(convert cargo 5 shields 5)",
-					"soundEffect": "",
-					"level": 3
+					"id": "OrbitalDefense",
+					"level": 1,
+					"name": "Orbital Defense",
+					"description": "Destroy pirates around target planet or moon.",
+					"effectName": "Orbital Defense",
+					"energyCost": 3,
+					"effects": "(target planet (orbitalDefense))",
+					"soundEffect": ""
 				},
 				{
-					"id": "StickyCoating",
-					"name": "Sticky Coating",
-					"description": "Gain 1 shield per explore",
-					"effectName": "Accretive Shielding",
-					"activeEffect": false,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"energyCost": 0,
-					"effects": "(onExplore (resource shields 1))",
-					"soundEffect": "",
-					"level": 3
+					"id": "GravityRay",
+					"level": 1,
+					"name": "Gravity Ray",
+					"description": "Pull enemies in row and column towards square.",
+					"effectName": "Gravity Ray",
+					"energyCost": 3,
+					"effects": "(target any (gravityRay))",
+					"soundEffect": ""
 				},
 				{
-					"id": "MirrorShield",
-					"name": "Mirror Shield",
-					"description": "Deal 1 damage when you take damage",
-					"effectName": "Reflective Shielding",
-					"activeEffect": false,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
-					"energyCost": 0,
-					"effects": "(onDamage (damage 1))",
-					"soundEffect": "",
-					"level": 3
+					"id": "Atomizer",
+					"level": 1,
+					"name": "Atomizer",
+					"description": "Turn rock debris into ice debris.",
+					"effectName": "Atomizer",
+					"energyCost": 3,
+					"effects": "(target rockDebris (changeSpace iceDebris))",
+					"soundEffect": ""
 				},
 				{
-					"id": "BellWard",
-					"name": "Bell Ward",
-					"description": "Next time you take damage, gain that much shields instead",
-					"effectName": "Resonance Shield",
-					"activeEffect": true,
-					"inMerchant": true,
-					"scienceCost": 0,
-					"cargoCost": 0,
+					"id": "TachyonSponge",
+					"level": 1,
+					"name": "Tachyon Sponge",
+					"description": "Rewind cycle clock and gain as much energy.",
+					"effectName": "Tachyon Sponge",
+					"energyCost": 3,
+					"effects": "(multi (resource energy cycleProgress) (resetCycleProgress))",
+					"soundEffect": ""
+				},
+				{
+					"id": "SurfaceProbe",
+					"level": 1,
+					"name": "Surface Probe",
+					"description": "Gain science for every planet revealed.",
+					"effectName": "Surface Probe",
+					"energyCost": 3,
+					"effects": "(onPlanet (resource science 5))",
+					"soundEffect": ""
+				},
+				{
+					"id": "VultureBeam",
+					"level": 1,
+					"name": "Vulture Beam",
+					"description": "Double cargo from defeated enemy.",
+					"effectName": "Vulture Beam",
+					"energyCost": 3,
+					"effects": "(target enemy (vultureBeam))",
+					"soundEffect": ""
+				},
+				{
+					"id": "FearsomeProw",
+					"level": 1,
+					"name": "Fearsome Prow",
+					"description": "Convert friendly into cargo.",
+					"effectName": "Fearsome Prow",
+					"energyCost": 3,
+					"effects": "(target friendly (fearsomeProw))",
+					"soundEffect": ""
+				},
+				{
+					"id": "HeavyOrdnance",
+					"level": 1,
+					"name": "Heavy Ordnance",
+					"description": "Spend cargo to destroy enemy.",
+					"effectName": "Heavy Ordnance",
+					"energyCost": 3,
+					"effects": "(target enemy (multi (resource cargo -10) (destroyEnemy)))",
+					"soundEffect": ""
+				},
+				{
+					"id": "Overdrive",
+					"level": 1,
+					"name": "Overdrive",
+					"description": "Double fuel consumption and double attack power until end of cycle.",
+					"effectName": "Overdrive",
+					"energyCost": 3,
+					"effects": "(overdrive)",
+					"soundEffect": ""
+				},
+				{
+					"id": "PlanetCracker",
+					"level": 1,
+					"name": "Planet Cracker",
+					"description": "Turn planets and moons into rock debris, gain cargo.",
+					"effectName": "Planet Cracker",
 					"energyCost": 0,
-					"effects": "(onDamage (healInstead))",
-					"soundEffect": "",
-					"level": 3
+					"effects": "(multi (target planet (changeSpace rockDebris)) (resource cargo 10))",
+					"soundEffect": ""
 				}
 			],
 			"separators": [],
@@ -358,39 +223,109 @@
 			],
 			"lines": [
 				{
-					"id": "Planetologist",
-					"name": "Planetologist",
-					"description": "Finds extra science on planets",
-					"effectName": "Sensor Readings",
-					"effects": "(onPlanet (gainScience 2))"
+					"id": "Keeper",
+					"name": "Keeper",
+					"description": "Every cycle, your ship regenerates Hull Points equal to the number of crew members on board.",
+					"effectName": "Live Oak",
+					"effects": "(keeper)"
 				},
 				{
-					"id": "Smuggler",
-					"name": "Smuggler",
-					"description": "Pirates don't prevent exploration",
-					"effectName": "Maneuvers",
-					"effects": "(exploreNearPirates)"
+					"id": "Empath",
+					"name": "Empath",
+					"description": "When an enemy spawns, there's a 25% chance that a friendly will spawn instead.",
+					"effectName": "Silent Spring",
+					"effects": "(empath)"
+				},
+				{
+					"id": "Planetologist",
+					"name": "Planetologist",
+					"description": "Dead Planets can be terraformed into Live Planets.",
+					"effectName": "Terraform",
+					"effects": "(planetologist)"
+				},
+				{
+					"id": "Silviculturist",
+					"name": "Silviculturist",
+					"description": "Gain free cargo from Live Planets.",
+					"effectName": "Giving Tree",
+					"effects": "(silviculturist)"
+				},
+				{
+					"id": "Thresher",
+					"name": "Thresher",
+					"description": "Attacks stun unshielded ships.",
+					"effectName": "Kudzooka",
+					"effects": "(thresher)"
+				},
+				{
+					"id": "Margrave",
+					"name": "Margrave",
+					"description": "Better deals and weaker enemies adjacent to Moons.",
+					"effectName": "Gravity",
+					"effects": "(margrave)"
 				},
 				{
 					"id": "Linguist",
 					"name": "Linguist",
-					"description": "Prices at merchants are better",
-					"effectName": "Fast Talk",
-					"effects": "(discount 5)"
+					"description": "Reveals the next cycle event.",
+					"effectName": "The Big Picture",
+					"effects": "(linguist)"
 				},
 				{
-					"id": "Industrialist",
-					"name": "Industrialist",
-					"description": "Finds extra cargo on planets",
-					"effectName": "Mining Operations",
-					"effects": "(onPlanet (gainCargo 2))"
+					"id": "Lunographer",
+					"name": "Lunographer",
+					"description": "Reveals the Moon count in unexplored sectors and gains free cargo from Moons.",
+					"effectName": "LSTOR Subscription",
+					"effects": "(lunographer)"
 				},
 				{
-					"id": "Astrochemist",
-					"name": "Astrochemist",
-					"description": "Gain fuel from debris",
-					"effectName": "Harvest Volatiles",
-					"effects": "(onDebris (gainFuel 2))"
+					"id": "SkinnyAtlas",
+					"name": "Skinny Atlas",
+					"description": "Doubles the number options when traveling between sectors.",
+					"effectName": "Hidden Paths",
+					"effects": "(skinnyAtlas)"
+				},
+				{
+					"id": "Bombadier",
+					"name": "Bombadier",
+					"description": "Slower enemies don't counterattack.",
+					"effectName": "Shoot-N-Scoot",
+					"effects": "(bombadier)"
+				},
+				{
+					"id": "RoyalJelly",
+					"name": "Royal Jelly",
+					"description": "???",
+					"effectName": "???",
+					"effects": "(royalJelly)"
+				},
+				{
+					"id": "Judge",
+					"name": "Judge",
+					"description": "Every cycle, picks a new rule from this list.",
+					"effectName": "New Rule",
+					"effects": "(judge)"
+				},
+				{
+					"id": "WiseOwl",
+					"name": "WiseOwl",
+					"description": "Doubles the effect of all other crew members.",
+					"effectName": "Homunculus",
+					"effects": "(wiseOwl)"
+				},
+				{
+					"id": "Dominator",
+					"name": "Dominator",
+					"description": "Gain free science from Live Planets.",
+					"effectName": "You Are The Quarry",
+					"effects": "(dominator)"
+				},
+				{
+					"id": "FrogOperative",
+					"name": "Frog Operative",
+					"description": "Half of your damage ignores shields.",
+					"effectName": "Frog In Throat",
+					"effects": "(frogOperative)"
 				}
 			],
 			"separators": [],

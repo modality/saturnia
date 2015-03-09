@@ -25,7 +25,7 @@ class EngineerPanel extends Base
   {
     super(50, 50);
 
-    //encounter = cast(_space.encounter, EngineerPanel);
+    encounter = cast(_space.encounter, EngineerEncounter);
     galaxy = _galaxy;
 
     var modal = Assets.getImage("ui_modal");
@@ -58,7 +58,7 @@ class EngineerPanel extends Base
 
   public function closePanel(button:UIButton):Void
   {
-    cast(scene, GameController).exitMerchant();
+    cast(scene, GameController).exitFriendly();
   }
 
   public override function update()

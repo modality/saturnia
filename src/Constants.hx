@@ -22,7 +22,7 @@ class Constants
   public static var OVERLAY_LAYER:Int = 0;
 
   public static var STARTING_FUEL:Int = 25;
-  public static var STARTING_SCIENCE:Int = 0;
+  public static var STARTING_SCIENCE:Int = 5;
   public static var STARTING_ENERGY:Int = 10;
 
   public static var FUEL_COLOR:Int = 0xFD9B4E;

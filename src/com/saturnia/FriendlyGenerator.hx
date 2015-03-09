@@ -32,13 +32,6 @@ class FriendlyGenerator
     friendly.level = sector.level;
     friendly.goodBought = sector.goodsBought[Std.random(sector.goodsBought.length)];
     friendly.goodSold = sector.goodsSold[Std.random(sector.goodsSold.length)];
-    friendly.maxInventory = AugRandom.range(50, 101);
-    friendly.refreshRate = AugRandom.range(25, 51);
-    friendly.sellPrice = AugRandom.range(10, 31);
-    friendly.buyPrice = AugRandom.range(20, 51);
-    friendly.refreshTime = AugRandom.range(0, friendly.refreshRate);
-    friendly.goodInventory = friendly.calcInventory();
     return friendly;
   }
 }
-

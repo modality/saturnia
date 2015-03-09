@@ -36,7 +36,7 @@ class Generator
 
 
   public static var sectorNames:Array<String>;
-  public static var itemNames:Array<String>;
+  public static var tradeGoods:Array<TradeGood>;
 
   public static var tarotGraphics:Map<MajorArcana, String> = [
     TheFool => "tarot_0",
@@ -50,7 +50,7 @@ class Generator
   public static function init():Void
   {
     sectorNames = [];
-    itemNames = [];
+    tradeGoods = [];
   }
 
   public static function generateGalaxy():Galaxy
@@ -60,7 +60,7 @@ class Generator
     galaxy.cards = AugRandom.sample([for (k in tarotGraphics.keys()) k], 5);
 
     for(i in 0...5) {
-      galaxy.goods.push(generateItem());
+      galaxy.goods.push(generateTradeGood());
     }
 
     // choose locations for keys
@@ -105,17 +105,18 @@ class Generator
 
   public static function fillDebugSector(sector:Sector):Sector
   {
-    var spaceTypes:Array<String> = ["Start", "Exit"];
+    var spaceTypes:Array<String> = [];
     
-    for(times in 0...20) {
-      spaceTypes.push("Friendly");
-    }
+    spaceTypes.push("Start");
+    spaceTypes.push("Merchant");
+    spaceTypes.push("Hacker");
+    spaceTypes.push("Military");
+    spaceTypes.push("Engineer");
+    spaceTypes.push("Exit");
 
     while(spaceTypes.length < 25) {
       spaceTypes.push("Voidness");
     }
-
-    spaceTypes = AugRandom.shuffle(spaceTypes.slice(0, 25));
 
     sector.spaces.init(function(i:Int, j:Int):Space {
       var space:Space = new Space();
@@ -184,31 +185,46 @@ class Generator
 
   public static function fillSpace(space:Space, sector:Sector):Space
   {
-    if(space.spaceType == Friendly) {
+    if(space.spaceType == Hacker) {
+      space.encounter = FriendlyGenerator.generateHacker(space, sector);
+    } else if(space.spaceType == Merchant) {
       space.encounter = FriendlyGenerator.generateMerchant(space, sector);
+    } else if(space.spaceType == Military) {
+      space.encounter = FriendlyGenerator.generateMilitary(space, sector);
+    } else if(space.spaceType == Engineer) {
+      space.encounter = FriendlyGenerator.generateEngineer(space, sector);
     } else if(space.spaceType == Hostile) {
       space.encounter = EnemyGenerator.generateEnemy(space);
     }
     return space;
   }
 
-  public static function generateItem():String
+  public static function generateTradeGood():TradeGood
   {
     var generatedName:Bool = false;
-    var name:String = "";
+    var adj, sing, plur;
+    var tradeGood:TradeGood = new TradeGood("", "", "");
 
     while(generatedName == false) {
-      name = good_1[Std.random(good_1.length)] + " " + good_2[Std.random(good_2.length)];
+      adj = good_1[Std.random(good_1.length)];
+
+      var nounIndex = Std.random(good_2.length);
+
+      plur = good_2[nounIndex];
+      sing = good_2_singular[nounIndex];
+
       generatedName = true;
-      for(sn in itemNames) {
-        if(name == sn) {
+      for(tg in tradeGoods) {
+        if(tg.adjective == adj || tg.singular == sing) {
           generatedName = false;
         }
       }
-      if(generatedName) sectorNames.push(name);
+
+      tradeGood = new TradeGood(adj, sing, plur);
+      tradeGoods.push(tradeGood);
     }
 
-    return name;
+    return tradeGood;
   }
 
 

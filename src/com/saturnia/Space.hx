@@ -81,8 +81,14 @@ class Space extends Block
           sm.add("play", [for(i in 0...64) i]);
           sm.play("play");
           subSprite.graphic = sm;
-        case Friendly:
-          subSprite.graphic = Assets.getImage("space_friendly");
+        case Engineer:
+          subSprite.graphic = Assets.getImage("space_engineer");
+        case Hacker:
+          subSprite.graphic = Assets.getImage("space_hacker");
+        case Merchant:
+          subSprite.graphic = Assets.getImage("space_merchant");
+        case Military:
+          subSprite.graphic = Assets.getImage("space_military");
         case Hostile:
           subSprite.graphic = Assets.getImage("space_hostile");
         default:

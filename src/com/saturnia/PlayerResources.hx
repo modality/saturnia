@@ -13,7 +13,7 @@ class PlayerResources extends CombatStats
   public var energy:Int;
   public var maxEnergy:Int;
 
-  public var cargos:Map<String, Int>;
+  public var cargos:Map<TradeGood, Int>;
   public var cards:Array<MajorArcana>;
   public var crewMembers:Array<CrewMember>;
   public var shipParts:Array<ShipPart>;
@@ -33,7 +33,7 @@ class PlayerResources extends CombatStats
 
     shieldLevel = progShield;
 
-    cargos = new Map<String, Int>();
+    cargos = new Map<TradeGood, Int>();
     cards = [];
     crewMembers = [];
     shipParts = [];
@@ -66,6 +66,11 @@ class PlayerResources extends CombatStats
       case "science": science += amount;
       case "energy": energy += amount;
     }
+  }
+
+  public function addCargo(tradeGood:TradeGood, amount:Int):Void
+  {
+    cargos.set(tradeGood, cargos.get(tradeGood) + amount);
   }
 
   public function totalCargo():Int

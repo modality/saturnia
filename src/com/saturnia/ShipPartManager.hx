@@ -16,7 +16,6 @@ class ShipPartManager
     part.level = shipPartData.level;
     part.description = shipPartData.description;
     part.energyCost = shipPartData.energyCost;
-    part.activeEffect = shipPartData.activeEffect;
     part.soundEffect = shipPartData.soundEffect;
     part.effectName = shipPartData.effectName;
     part.effect = Message.read(shipPartData.effects);
@@ -27,12 +26,7 @@ class ShipPartManager
 
   public static function getParts(count:Int, level:Int = 0):Array<ShipPart>
   {
-    var merchantParts = [];
-    if(level > 0) {
-      merchantParts = [for(p in Data.shipParts.all) if(p.inMerchant && p.level <= level) p.id.toString()];
-    } else {
-      merchantParts = [for(p in Data.shipParts.all) if(p.inMerchant) p.id.toString()];
-    }
+    var merchantParts = [for(p in Data.shipParts.all) p.id.toString()];
 
     var sample = AugRandom.sample(merchantParts, count);
     return [for(p in sample) getPart(p)];

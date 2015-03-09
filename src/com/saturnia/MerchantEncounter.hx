@@ -2,44 +2,34 @@ package com.saturnia;
 
 class MerchantEncounter extends FriendlyEncounter
 {
-  public var goodBought:String;
-  public var goodSold:String;
+  public var goodBought:TradeGood;
+  public var goodSold:TradeGood;
+
+  public var goodRatio:Int;
+  public var fuelRatio:Int;
 
   public var goodInventory:Int;
-  public var maxInventory:Int;
-  public var sellPrice:Int;
-  public var buyPrice:Int;
+  public var fuelInventory:Int;
 
-  public var refreshRate:Int;
-  public var refreshTime:Int;
-  
   public override function activate()
   {
-  }
-
-  private function logistic(t:Float):Float
-  {
-    return 1. / (1. + Math.exp(-t));
-  }
-
-  private function logit(y:Float):Float
-  {
-    return -Math.log((1./y) -1.);
-  }
-
-  public function calcInventory():Int
-  {
-    return Math.ceil(logistic((12. * refreshTime / refreshRate) - 6.) * maxInventory);
-  }
-
-  public function calcTime():Int
-  {
-    return Math.floor(logit(1. * goodInventory / maxInventory) * refreshRate);
+    cycle();
   }
 
   public override function cycle():Void
   {
-    refreshTime += 1;
-    goodInventory = calcInventory();
+    goodRatio = Std.random(5) + 1;
+    fuelRatio = 1;
+
+    goodInventory = switch(goodRatio) {
+      case 1: 100;
+      case 2: 80;
+      case 3: 60;
+      case 4: 40;
+      case 5: 20;
+      default: 0;
+    };
+
+    fuelInventory = 10;
   }
 }

@@ -10,7 +10,7 @@ class Galaxy extends Base
 
   public var player:PlayerResources;
   public var cards:Array<MajorArcana>;
-  public var goods:Array<String>;
+  public var goods:Array<TradeGood>;
   public var sectors:Grid<Sector>;
   public var cardLocations:Array<Array<Int>>;
 
@@ -33,9 +33,10 @@ class Galaxy extends Base
     player = new PlayerResources();
     player.cards.push(cards[0]);
     player.cards.push(cards[1]);
-    player.addShipPart(ShipPartManager.getPart("ShieldBattery"));
-    player.addCrewMember(CrewMemberManager.getCrew("Planetologist"));
-    player.addCrewMember(CrewMemberManager.getCrew("Astrochemist"));
+    for(good in goods) {
+      player.cargos.set(good, 0);
+    }
+    player.addShipPart(ShipPartManager.getPart("Telescope"));
   }
 
   public function getStartSector():Sector {
@@ -63,11 +64,11 @@ class Galaxy extends Base
     cycleCounter--;
     if(cycleCounter == 0) {
       cycleCounter = Constants.TURNS_PER_CYCLE;
+      player.cycle();
+      dispatchEvent(new Event(CYCLE));
       if(policingContract > 0) {
         policingContract -= 1;
       }
-      player.cycle();
-      dispatchEvent(new Event(CYCLE));
     }
     player.pulse();
   }

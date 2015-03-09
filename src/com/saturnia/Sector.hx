@@ -13,8 +13,8 @@ class Sector extends Block
   public var level:Int;
   public var tarot_x:MajorArcana;
   public var tarot_y:MajorArcana;
-  public var goodsBought:Array<String>;
-  public var goodsSold:Array<String>;
+  public var goodsBought:Array<TradeGood>;
+  public var goodsSold:Array<TradeGood>;
   public var cardLocations:Array<Array<Int>>;
 
   public function new()
@@ -32,8 +32,10 @@ class Sector extends Block
     if(!explored) return;
 
     spaces.each(function(space:Space, i:Int, j:Int) {
-      if(space.spaceType == Friendly) {
-        cast(space.encounter, FriendlyEncounter).cycle();
+      switch(space.spaceType) {
+        case Engineer, Hacker, Merchant, Military:
+          cast(space.encounter, FriendlyEncounter).cycle();
+        default:
       }
     });
   }

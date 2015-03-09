@@ -5,7 +5,10 @@ enum SpaceType {
   Exit;
   Star;
   Planet;
-  Friendly;
+  Engineer;
+  Hacker;
+  Merchant;
+  Military;
   Hostile;
   Debris;
   Impenetrable;
@@ -13,4 +16,3 @@ enum SpaceType {
   Anomaly;
   Voidness;
 }
-

@@ -10,8 +10,6 @@ class FriendlyEncounter extends Encounter
   public function new(_space:Space)
   {
     super(_space);
-    type = "merchant";
-    graphic = Assets.getImage("space_merchant");
   }
 
   public function cycle():Void

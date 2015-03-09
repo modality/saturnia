@@ -25,7 +25,7 @@ class MilitaryPanel extends Base
   {
     super(50, 50);
 
-    //encounter = cast(_space.encounter, HackerEncounter);
+    encounter = cast(_space.encounter, MilitaryEncounter);
     galaxy = _galaxy;
 
     var modal = Assets.getImage("ui_modal");
@@ -139,7 +139,7 @@ class MilitaryPanel extends Base
 
   public function closePanel(button:UIButton):Void
   {
-    cast(scene, GameController).exitMerchant();
+    cast(scene, GameController).exitFriendly();
   }
 
   public override function update()

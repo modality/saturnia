@@ -27,12 +27,15 @@ class Assets
     assetDictionary.set("space_raider", "graphics/spaces/raider.png");
     assetDictionary.set("space_hostile", "graphics/spaces/hostile.png");
     assetDictionary.set("space_friendly", "graphics/spaces/friendly.png");
-    assetDictionary.set("space_merchant", "graphics/spaces/merchant.png");
     assetDictionary.set("space_star", "graphics/spaces/star.png");
     assetDictionary.set("space_explored", "graphics/spaces/unexplored_2.png");
     assetDictionary.set("space_locked", "graphics/spaces/locked_2.png");
     assetDictionary.set("space_explorable", "graphics/spaces/explorable.png");
     assetDictionary.set("space_fog", "graphics/spaces/fogofwar.png");
+    assetDictionary.set("space_engineer", "graphics/spaces/engineer.png");
+    assetDictionary.set("space_hacker", "graphics/spaces/hacker.png");
+    assetDictionary.set("space_military", "graphics/spaces/military.png");
+    assetDictionary.set("space_merchant", "graphics/spaces/merchant.png");
 
     assetDictionary.set("marble_logo", "graphics/ui/marble.png");
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");

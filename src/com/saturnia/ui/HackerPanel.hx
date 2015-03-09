@@ -22,7 +22,7 @@ class HackerPanel extends Base
   {
     super(50, 50);
 
-    //encounter = cast(_space.encounter, HackerEncounter);
+    encounter = cast(_space.encounter, HackerEncounter);
     galaxy = _galaxy;
 
     var modal = Assets.getImage("ui_modal");
@@ -79,6 +79,7 @@ class HackerPanel extends Base
 
     addChild(panel.entity);
 
+    updateLabels();
     panel.updateGraphic();
   }
 
@@ -103,11 +104,21 @@ class HackerPanel extends Base
   public function hackFunction(system:String):UIButton->Void
   {
     return function(button:UIButton) {
-      var startValue = switch(system) {
-        case "initiative": galaxy.player.progInitiative;
-        case "evasion": galaxy.player.progEvasion;
-        case "shield": galaxy.player.progShield;
-        case "damage": galaxy.player.progDamage;
+      var startValue = 0;
+
+      switch(system) {
+        case "initiative":
+          startValue = galaxy.player.progInitiative;
+          encounter.initiativeTapped = true;
+        case "evasion":
+          startValue = galaxy.player.progEvasion;
+          encounter.evasionTapped = true;
+        case "shield":
+          startValue = galaxy.player.progShield;
+          encounter.shieldTapped = true;
+        case "damage":
+          startValue = galaxy.player.progDamage;
+          encounter.damageTapped = true;
         default: return;
       }
 
@@ -167,18 +178,22 @@ class HackerPanel extends Base
     success = Math.floor(calculateSuccess(galaxy.player.progInitiative) * 100);
     leftPanel.getChild("hack initiative label").updateText("MOVE - "+galaxy.player.progInitiative);
     leftPanel.getChild("hack initiative button").updateText("HACK ("+success+"%)");
+    leftPanel.getChild("hack initiative button").active = !encounter.initiativeTapped;
 
     success = Math.floor(calculateSuccess(galaxy.player.progEvasion) * 100);
     leftPanel.getChild("hack evasion label").updateText("EVAD - "+galaxy.player.progEvasion);
     leftPanel.getChild("hack evasion button").updateText("HACK ("+success+"%)");
+    leftPanel.getChild("hack evasion button").active = !encounter.evasionTapped;
 
     success = Math.floor(calculateSuccess(galaxy.player.progShield) * 100);
     leftPanel.getChild("hack shield label").updateText("SHLD - "+galaxy.player.progShield);
     leftPanel.getChild("hack shield button").updateText("HACK ("+success+"%)");
+    leftPanel.getChild("hack shield button").active = !encounter.shieldTapped;
 
     success = Math.floor(calculateSuccess(galaxy.player.progDamage) * 100);
     leftPanel.getChild("hack damage label").updateText("LASR - "+galaxy.player.progDamage);
     leftPanel.getChild("hack damage button").updateText("HACK ("+success+"%)");
+    leftPanel.getChild("hack damage button").active = !encounter.damageTapped;
   }
 
   public function showPopup(message:String):Void
@@ -187,7 +202,7 @@ class HackerPanel extends Base
 
   public function closePanel(button:UIButton):Void
   {
-    cast(scene, GameController).exitMerchant();
+    cast(scene, GameController).exitFriendly();
   }
 
   public override function update()
