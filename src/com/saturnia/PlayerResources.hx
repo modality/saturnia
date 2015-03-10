@@ -59,13 +59,23 @@ class PlayerResources extends CombatStats
     updated();
   }
 
-  public function addResource(resource:String, amount:Int)
+  public function addResource(resource:String, amount:Int):Void
   {
     switch(resource) {
       case "fuel": fuel += amount;
       case "science": science += amount;
       case "energy": energy += amount;
     }
+  }
+
+  public function getResource(resource:String):Int
+  {
+    switch(resource) {
+      case "fuel": return fuel;
+      case "science": return science;
+      case "energy": return energy;
+    }
+    return 0;
   }
 
   public function addCargo(tradeGood:TradeGood, amount:Int):Void

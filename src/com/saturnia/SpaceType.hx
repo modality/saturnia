@@ -4,14 +4,10 @@ enum SpaceType {
   Start;
   Exit;
   Star;
-  Planet;
-  Engineer;
-  Hacker;
-  Merchant;
-  Military;
+  Planet(type:String); // "dead", "live", "moon"
+  Friendly(type:String); // "engineer", "hacker", "merchant", "military"
   Hostile;
-  Debris;
-  Impenetrable;
+  Debris(type:String); // "rock", "ice"
   Quest;
   Anomaly;
   Voidness;

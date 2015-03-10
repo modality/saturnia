@@ -105,23 +105,28 @@ class Generator
 
   public static function fillDebugSector(sector:Sector):Sector
   {
-    var spaceTypes:Array<String> = [];
+    var spaceTypes:Array<SpaceType> = [];
     
-    spaceTypes.push("Start");
-    spaceTypes.push("Merchant");
-    spaceTypes.push("Hacker");
-    spaceTypes.push("Military");
-    spaceTypes.push("Engineer");
-    spaceTypes.push("Exit");
+    spaceTypes.push(Start);
+    spaceTypes.push(Friendly("merchant"));
+    spaceTypes.push(Friendly("hacker"));
+    spaceTypes.push(Friendly("military"));
+    spaceTypes.push(Friendly("engineer"));
+    spaceTypes.push(Exit);
+    spaceTypes.push(Voidness);
+    spaceTypes.push(Voidness);
+    spaceTypes.push(Voidness);
+    spaceTypes.push(Voidness);
+    spaceTypes.push(Hostile);
 
     while(spaceTypes.length < 25) {
-      spaceTypes.push("Voidness");
+      spaceTypes.push(Voidness);
     }
 
     sector.spaces.init(function(i:Int, j:Int):Space {
       var space:Space = new Space();
       space.grid = sector.spaces;
-      space.spaceType = EnumTools.createByName(SpaceType, spaceTypes.shift());
+      space.spaceType = spaceTypes.shift();
       space.x = Constants.GRID_X+(i*Constants.BLOCK_W);
       space.y = Constants.GRID_Y+(j*Constants.BLOCK_H);
       space = fillSpace(space, sector);
@@ -185,16 +190,21 @@ class Generator
 
   public static function fillSpace(space:Space, sector:Sector):Space
   {
-    if(space.spaceType == Hacker) {
-      space.encounter = FriendlyGenerator.generateHacker(space, sector);
-    } else if(space.spaceType == Merchant) {
-      space.encounter = FriendlyGenerator.generateMerchant(space, sector);
-    } else if(space.spaceType == Military) {
-      space.encounter = FriendlyGenerator.generateMilitary(space, sector);
-    } else if(space.spaceType == Engineer) {
-      space.encounter = FriendlyGenerator.generateEngineer(space, sector);
-    } else if(space.spaceType == Hostile) {
-      space.encounter = EnemyGenerator.generateEnemy(space);
+    switch(space.spaceType) {
+      case Friendly(type):
+        switch(type) {
+          case "hacker":
+            space.encounter = FriendlyGenerator.generateHacker(space, sector);
+          case "merchant":
+            space.encounter = FriendlyGenerator.generateMerchant(space, sector);
+          case "military":
+            space.encounter = FriendlyGenerator.generateMilitary(space, sector);
+          case "engineer":
+            space.encounter = FriendlyGenerator.generateEngineer(space, sector);
+        }
+      case Hostile:
+        space.encounter = EnemyGenerator.generateEnemy(space);
+      default:
     }
     return space;
   }

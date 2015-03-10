@@ -29,6 +29,10 @@
 					"name": "energyCost"
 				},
 				{
+					"typeStr": "2",
+					"name": "implemented"
+				},
+				{
 					"typeStr": "1",
 					"name": "effects"
 				},
@@ -46,7 +50,8 @@
 					"effectName": "Observe",
 					"energyCost": 1,
 					"effects": "(target unexplored (showType))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "SolarSail",
@@ -56,7 +61,8 @@
 					"effectName": "Solar Sail",
 					"energyCost": 3,
 					"effects": "(target star (solarSail))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "Stunner",
@@ -66,7 +72,8 @@
 					"effectName": "Lockdown",
 					"energyCost": 3,
 					"effects": "(target enemy (stun))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "Bactry",
@@ -76,7 +83,8 @@
 					"effectName": "Bactry",
 					"energyCost": 3,
 					"effects": "(resource fuel crewCount 3)",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "SmokeScreen",
@@ -86,7 +94,8 @@
 					"effectName": "Smoke Screen",
 					"energyCost": 3,
 					"effects": "(convert fuel 5 shields 5)",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "OrbitalDefense",
@@ -96,7 +105,8 @@
 					"effectName": "Orbital Defense",
 					"energyCost": 3,
 					"effects": "(target planet (orbitalDefense))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "GravityRay",
@@ -105,8 +115,9 @@
 					"description": "Pull enemies in row and column towards square.",
 					"effectName": "Gravity Ray",
 					"energyCost": 3,
-					"effects": "(target any (gravityRay))",
-					"soundEffect": ""
+					"effects": "(target explored (gravityRay))",
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "Atomizer",
@@ -116,7 +127,8 @@
 					"effectName": "Atomizer",
 					"energyCost": 3,
 					"effects": "(target rockDebris (changeSpace iceDebris))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "TachyonSponge",
@@ -126,17 +138,19 @@
 					"effectName": "Tachyon Sponge",
 					"energyCost": 3,
 					"effects": "(multi (resource energy cycleProgress) (resetCycleProgress))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "SurfaceProbe",
 					"level": 1,
 					"name": "Surface Probe",
-					"description": "Gain science for every planet revealed.",
+					"description": "Gain science from target planet or moon.",
 					"effectName": "Surface Probe",
 					"energyCost": 3,
-					"effects": "(onPlanet (resource science 5))",
-					"soundEffect": ""
+					"effects": "(target planet (resource science 5))",
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "VultureBeam",
@@ -146,7 +160,8 @@
 					"effectName": "Vulture Beam",
 					"energyCost": 3,
 					"effects": "(target enemy (vultureBeam))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "FearsomeProw",
@@ -155,8 +170,9 @@
 					"description": "Convert friendly into cargo.",
 					"effectName": "Fearsome Prow",
 					"energyCost": 3,
-					"effects": "(target friendly (fearsomeProw))",
-					"soundEffect": ""
+					"effects": "(target friendly (multi (changeSpace void) (resource cargo 10)))",
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "HeavyOrdnance",
@@ -165,8 +181,9 @@
 					"description": "Spend cargo to destroy enemy.",
 					"effectName": "Heavy Ordnance",
 					"energyCost": 3,
-					"effects": "(target enemy (multi (resource cargo -10) (destroyEnemy)))",
-					"soundEffect": ""
+					"effects": "(target enemy (multi (resource cargo -10) (changeSpace void)))",
+					"soundEffect": "",
+					"implemented": true
 				},
 				{
 					"id": "Overdrive",
@@ -176,7 +193,8 @@
 					"effectName": "Overdrive",
 					"energyCost": 3,
 					"effects": "(overdrive)",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": false
 				},
 				{
 					"id": "PlanetCracker",
@@ -186,7 +204,8 @@
 					"effectName": "Planet Cracker",
 					"energyCost": 0,
 					"effects": "(multi (target planet (changeSpace rockDebris)) (resource cargo 10))",
-					"soundEffect": ""
+					"soundEffect": "",
+					"implemented": true
 				}
 			],
 			"separators": [],

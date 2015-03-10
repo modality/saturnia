@@ -76,20 +76,20 @@ class GameController extends Scene
             galaxy.player.useFuel(1);
             var exploreEffects = [];
             switch(space.spaceType) {
-              case Planet:
+              case Planet(type):
                 exploreEffects = galaxy.player.getStatusEffects("onPlanet");
               case Star, Start:
                 exploreEffects = galaxy.player.getStatusEffects("onStar");
-              case Debris:
+              case Debris(type):
                 exploreEffects = galaxy.player.getStatusEffects("onDebris");
               case Hostile:
                 checkLocked();
                 exploreEffects = galaxy.player.getStatusEffects("onHostile");
-              case Engineer, Merchant, Military:
+              case Friendly(type):
                 exploreEffects = galaxy.player.getStatusEffects("onFriendly");
-              case Hacker:
-                exploreEffects = galaxy.player.getStatusEffects("onFriendly");
-                galaxy.operatorsActive++;
+                if(type == "hacker") {
+                  galaxy.operatorsActive++;
+                }
               default:
             }
 
@@ -99,7 +99,7 @@ class GameController extends Scene
             pulse();
           } else if(space.explored) {
             switch(space.spaceType) {
-              case Engineer, Hacker, Merchant, Military:
+              case Friendly(_):
                 enterFriendly(space);
               case Exit:
                 enterNavigation();
@@ -125,10 +125,10 @@ class GameController extends Scene
   {
     inMerchant = true;
     friendlyPanel = switch(space.spaceType) {
-      case Engineer: new EngineerPanel(space, galaxy);
-      case Military: new MilitaryPanel(space, galaxy);
-      case Merchant: new MerchantPanel(space, galaxy);
-      case Hacker: new HackerPanel(space, galaxy);
+      case Friendly("engineer"): new EngineerPanel(space, galaxy);
+      case Friendly("military"): new MilitaryPanel(space, galaxy);
+      case Friendly("merchant"): new MerchantPanel(space, galaxy);
+      case Friendly("hacker"): new HackerPanel(space, galaxy);
       default:
     }
     add(friendlyPanel);
@@ -284,7 +284,9 @@ class GameController extends Scene
 
       var evade = galaxy.player.progEvasion;
       for(pirate in pirates) {
-        if(evade > 0) {
+        if(pirate.stats.stunned) {
+          continue;
+        } else if(evade > 0) {
           evade--;
         } else {
           piratesAttacked = true;

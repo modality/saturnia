@@ -18,6 +18,7 @@ class CombatStats extends Base
   public var progShield:Int;     // SHLD
 
   public var shieldLevel:Int;
+  public var stunned:Bool = false;
 
   public function new()
   {
@@ -39,6 +40,7 @@ class CombatStats extends Base
   public function cycle():Void
   {
     shieldLevel = progShield;
+    stunned = false;
   }
 
   public function reset():Void {
@@ -47,6 +49,11 @@ class CombatStats extends Base
 
   public function isDead():Bool {
     return hullPoints == 0;
+  }
+
+  public function stun()
+  {
+    stunned = true;
   }
 
   public function addStatusEffect(effect:StatusEffect)

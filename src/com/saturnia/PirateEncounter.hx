@@ -21,5 +21,4 @@ class PirateEncounter extends Encounter
   {
     space.object = this;
   }
-
 }

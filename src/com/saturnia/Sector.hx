@@ -33,7 +33,7 @@ class Sector extends Block
 
     spaces.each(function(space:Space, i:Int, j:Int) {
       switch(space.spaceType) {
-        case Engineer, Hacker, Merchant, Military:
+        case Friendly(type):
           cast(space.encounter, FriendlyEncounter).cycle();
         default:
       }

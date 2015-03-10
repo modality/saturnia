@@ -9,10 +9,15 @@ import com.modality.Block;
 class Space extends Block
 {
   public var grid:Grid<Space>;
-  public var subSprite:Base;
   public var explored:Bool = false;
   public var locked:Bool = false;
   public var explorable:Bool = false;
+  public var typeRevealed:Bool = false;
+
+  public var frameSprite:Base;
+  public var typeSprite:Base;
+  public var lockedSprite:Base;
+
   public var encounter:Encounter;
   public var spaceType:SpaceType;
 
@@ -21,10 +26,17 @@ class Space extends Block
     super(_x, _y);
     type = "space";
     layer = Constants.UNEXPLORED_LAYER;
-    subSprite = new Base(x, y);
+
+    frameSprite = new Base(x, y);
+    typeSprite = new Base(x, y);
+    lockedSprite = new Base(x, y);
+
     spaceType = SpaceType.Voidness;
     locked = false;
-    addChild(subSprite);
+
+    addChild(frameSprite);
+    addChild(typeSprite);
+    addChild(lockedSprite);
   }
 
   public function explore():Void
@@ -56,8 +68,9 @@ class Space extends Block
   public override function updateGraphic():Void
   {
     super.updateGraphic();
+    frameSprite = Assets.getImage("space_explored");
     if(explored) {
-      graphic = Assets.getImage("space_explored");
+      typeSprite.graphic = null;
       switch(spaceType) {
         case Star, Start:
           //graphic = Assets.getImage("space_star");
@@ -65,47 +78,38 @@ class Space extends Block
           var sm = new Spritemap(Assets.get(star_str), 100, 100);
           sm.add("play", [for(i in 0...48) i]);
           sm.play("play");
-          subSprite.graphic = sm;
+          graphic = sm;
         case Exit:
           var sm = new Spritemap(Assets.get("space_star_exit"), 100, 100);
           sm.add("play", [for(i in 0...48) i]);
           sm.play("play");
-          subSprite.graphic = sm;
-        case Planet:
+          graphic = sm;
+        case Planet(x):
           var sm = new Spritemap(Assets.get("space_planet_sprite"), 100, 100);
           sm.add("play", [for(i in 0...190) i]);
           sm.play("play");
-          subSprite.graphic = sm;
-        case Debris:
+          graphic = sm;
+        case Debris(x):
           var sm = new Spritemap(Assets.get("space_debris_sprite"), 100, 100);
           sm.add("play", [for(i in 0...64) i]);
           sm.play("play");
-          subSprite.graphic = sm;
-        case Engineer:
-          subSprite.graphic = Assets.getImage("space_engineer");
-        case Hacker:
-          subSprite.graphic = Assets.getImage("space_hacker");
-        case Merchant:
-          subSprite.graphic = Assets.getImage("space_merchant");
-        case Military:
-          subSprite.graphic = Assets.getImage("space_military");
-        case Hostile:
-          subSprite.graphic = Assets.getImage("space_hostile");
+          graphic = sm;
+        case Friendly(type):
+          graphic = Assets.getImage("space_"+type);
         default:
-          subSprite.graphic = null;
+          graphic = null;
       }
     } else {
-      if(!locked) {
-        if(!explored) {
-          graphic = Assets.getImage("space_fog");
-        } else {
-          graphic = null;
-        }
-        subSprite.graphic = null;
+      if(typeRevealed) {
       } else {
-        graphic = Assets.getImage("space_locked");
-        subSprite.graphic = null;
+        typeSprite.graphic = null;
       }
+      if(!locked) {
+        lockedSprite.graphic = null;
+      } else {
+        lockedSprite.graphic = Asset.getImage("space_locked");
+      }
+      graphic = Assets.getImage("space_fog");
     }
 
     setHitbox(Constants.BLOCK_W, Constants.BLOCK_H, 0, 0);
