@@ -37,6 +37,10 @@ class Assets
     assetDictionary.set("space_military", "graphics/spaces/military.png");
     assetDictionary.set("space_merchant", "graphics/spaces/merchant.png");
 
+    assetDictionary.set("overlay_friendly", "graphics/spaces/friendly_overlay.png");
+    assetDictionary.set("overlay_hostile", "graphics/spaces/enemy_overlay.png");
+    assetDictionary.set("overlay_space", "graphics/spaces/space_overlay.png");
+
     assetDictionary.set("marble_logo", "graphics/ui/marble.png");
     assetDictionary.set("ui_modal", "graphics/ui/modal.png");
     assetDictionary.set("ui_coffee", "graphics/ui/hot_coffee.png");

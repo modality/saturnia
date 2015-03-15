@@ -13,9 +13,19 @@ class Message {
     return Type.getClassName(Type.getClass(tokens[index])) == "Array";
   }
 
-  public function get(index:Int)
+  public function getMessage(index:Int)
   {
     return Message.read(Message.stringify(tokens[index]));
+  }
+
+  public function getString(index:Int)
+  {
+    return Std.string(tokens[index]);
+  }
+
+  public function getInt(index:Int)
+  {
+    return Std.int(tokens[index]);
   }
 
   public function type():String

@@ -6,6 +6,7 @@ import com.modality.TextBase;
 
 class PowerPanel extends Base
 {
+  public var game:GameController;
   public var galaxy:Galaxy;
   public var player:PlayerResources;
   public var cycleIcon:Base;
@@ -15,9 +16,10 @@ class PowerPanel extends Base
 
   public var powers:Array<PowerMenuItem>;
 
-  public function new(_galaxy:Galaxy)
+  public function new(_game:GameController, _galaxy:Galaxy)
   {
     super(0, 500);
+    game = _game;
     galaxy = _galaxy;
     player = galaxy.player;
 
@@ -44,9 +46,8 @@ class PowerPanel extends Base
 
     powers = [];
 
-    player.addEventListener(ShipPartEvent.ADD, addPower);
-    for (sp in player.shipParts) {
-      addPower(new ShipPartEvent(ShipPartEvent.ADD, sp));
+    for (shipPart in player.shipParts) {
+      addPower(shipPart);
     }
   }
 
@@ -56,9 +57,14 @@ class PowerPanel extends Base
     energyBar.set(player.energy, player.maxEnergy);
   }
 
-  public function addPower(e:ShipPartEvent)
+  public function usePart(shipPart:ShipPart)
   {
-    powers.push(new PowerMenuItem(0, 0, e.shipPart.effectName, e.shipPart.energyCost));
+    game.usePart(shipPart);
+  }
+
+  public function addPower(shipPart:ShipPart)
+  {
+    powers.push(new PowerMenuItem(0, 0, shipPart, usePart));
 
     var index = powers.length - 1;
     powers[index].x = 100 + 110*index;

@@ -42,6 +42,7 @@ class PlayerResources extends CombatStats
   public override function cycle():Void
   {
     super.cycle();
+    removeStatusEffect("overdrive");
     energy = maxEnergy;
     for(sp in shipParts) {
       sp.reset();
@@ -55,6 +56,9 @@ class PlayerResources extends CombatStats
 
   public function useFuel(amount:Int)
   {
+    if(hasStatusEffect("overdrive")) {
+      amount *= 2;
+    }
     fuel -= amount;
     updated();
   }

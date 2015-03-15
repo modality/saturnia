@@ -118,6 +118,7 @@ class Generator
     spaceTypes.push(Voidness);
     spaceTypes.push(Voidness);
     spaceTypes.push(Hostile);
+    spaceTypes.push(Planet("live"));
 
     while(spaceTypes.length < 25) {
       spaceTypes.push(Voidness);

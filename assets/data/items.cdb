@@ -33,6 +33,10 @@
 					"name": "implemented"
 				},
 				{
+					"typeStr": "2",
+					"name": "tested"
+				},
+				{
 					"typeStr": "1",
 					"name": "effects"
 				},
@@ -51,7 +55,8 @@
 					"energyCost": 1,
 					"effects": "(target unexplored (showType))",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": true,
+					"tested": true
 				},
 				{
 					"id": "SolarSail",
@@ -59,10 +64,11 @@
 					"name": "Solar Sail",
 					"description": "Explore the row and column around a star, free.",
 					"effectName": "Solar Sail",
-					"energyCost": 3,
+					"energyCost": 6,
 					"effects": "(target star (solarSail))",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": true,
+					"tested": true
 				},
 				{
 					"id": "Stunner",
@@ -70,10 +76,23 @@
 					"name": "Stunner",
 					"description": "Prevent enemy in a square from attacking.",
 					"effectName": "Lockdown",
-					"energyCost": 3,
-					"effects": "(target enemy (stun))",
+					"energyCost": 2,
+					"effects": "(target hostile (stun))",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
+				},
+				{
+					"id": "RadioScanner",
+					"level": 1,
+					"name": "Radio Scanner",
+					"description": "Show other ships.",
+					"effectName": "Radio Scanner",
+					"energyCost": 3,
+					"implemented": true,
+					"effects": "(multi (showType friendly) (showType hostile))",
+					"soundEffect": "",
+					"tested": false
 				},
 				{
 					"id": "Bactry",
@@ -81,10 +100,11 @@
 					"name": "Bactry",
 					"description": "Gain 3 fuel for every crew member on board.",
 					"effectName": "Bactry",
-					"energyCost": 3,
+					"energyCost": 4,
 					"effects": "(resource fuel crewCount 3)",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "SmokeScreen",
@@ -92,10 +112,11 @@
 					"name": "Smoke Screen",
 					"description": "Convert 5 fuel to 5 shields",
 					"effectName": "Smoke Screen",
-					"energyCost": 3,
+					"energyCost": 4,
 					"effects": "(convert fuel 5 shields 5)",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "OrbitalDefense",
@@ -103,10 +124,11 @@
 					"name": "Orbital Defense",
 					"description": "Destroy pirates around target planet or moon.",
 					"effectName": "Orbital Defense",
-					"energyCost": 3,
+					"energyCost": 6,
 					"effects": "(target planet (orbitalDefense))",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": true,
+					"tested": true
 				},
 				{
 					"id": "GravityRay",
@@ -114,10 +136,11 @@
 					"name": "Gravity Ray",
 					"description": "Pull enemies in row and column towards square.",
 					"effectName": "Gravity Ray",
-					"energyCost": 3,
+					"energyCost": 6,
 					"effects": "(target explored (gravityRay))",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": false,
+					"tested": false
 				},
 				{
 					"id": "Atomizer",
@@ -125,10 +148,11 @@
 					"name": "Atomizer",
 					"description": "Turn rock debris into ice debris.",
 					"effectName": "Atomizer",
-					"energyCost": 3,
+					"energyCost": 2,
 					"effects": "(target rockDebris (changeSpace iceDebris))",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "TachyonSponge",
@@ -136,10 +160,11 @@
 					"name": "Tachyon Sponge",
 					"description": "Rewind cycle clock and gain as much energy.",
 					"effectName": "Tachyon Sponge",
-					"energyCost": 3,
+					"energyCost": 0,
 					"effects": "(multi (resource energy cycleProgress) (resetCycleProgress))",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "SurfaceProbe",
@@ -150,7 +175,8 @@
 					"energyCost": 3,
 					"effects": "(target planet (resource science 5))",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "VultureBeam",
@@ -158,10 +184,11 @@
 					"name": "Vulture Beam",
 					"description": "Double cargo from defeated enemy.",
 					"effectName": "Vulture Beam",
-					"energyCost": 3,
-					"effects": "(target enemy (vultureBeam))",
+					"energyCost": 2,
+					"effects": "(target hostile (vultureBeam))",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "FearsomeProw",
@@ -169,10 +196,11 @@
 					"name": "Fearsome Prow",
 					"description": "Convert friendly into cargo.",
 					"effectName": "Fearsome Prow",
-					"energyCost": 3,
+					"energyCost": 5,
 					"effects": "(target friendly (multi (changeSpace void) (resource cargo 10)))",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "HeavyOrdnance",
@@ -181,9 +209,10 @@
 					"description": "Spend cargo to destroy enemy.",
 					"effectName": "Heavy Ordnance",
 					"energyCost": 3,
-					"effects": "(target enemy (multi (resource cargo -10) (changeSpace void)))",
+					"effects": "(target hostile (multi (resource cargo -10) (changeSpace void)))",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "Overdrive",
@@ -191,10 +220,11 @@
 					"name": "Overdrive",
 					"description": "Double fuel consumption and double attack power until end of cycle.",
 					"effectName": "Overdrive",
-					"energyCost": 3,
+					"energyCost": 6,
 					"effects": "(overdrive)",
 					"soundEffect": "",
-					"implemented": false
+					"implemented": true,
+					"tested": false
 				},
 				{
 					"id": "PlanetCracker",
@@ -202,10 +232,11 @@
 					"name": "Planet Cracker",
 					"description": "Turn planets and moons into rock debris, gain cargo.",
 					"effectName": "Planet Cracker",
-					"energyCost": 0,
-					"effects": "(multi (target planet (changeSpace rockDebris)) (resource cargo 10))",
+					"energyCost": 6,
+					"effects": "(target planet (multi (changeSpace rockDebris) (resource cargo 10)))",
 					"soundEffect": "",
-					"implemented": true
+					"implemented": true,
+					"tested": false
 				}
 			],
 			"separators": [],

@@ -2,12 +2,14 @@ package com.saturnia;
 
 import openfl.events.Event;
 
+import pgr.dconsole.DC;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.Scene;
 import com.modality.Grid;
 import com.modality.Base;
 import com.modality.TextBase;
+import com.modality.cards.Message;
 
 import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
@@ -31,6 +33,7 @@ class GameController extends Scene
   public var friendlyPanel:Base;
   public var navigationPanel:NavigationPanel;
   public var powerPanel:PowerPanel;
+  public var effectManager:EffectManager;
 
   public function new()
   {
@@ -43,13 +46,23 @@ class GameController extends Scene
 
     galaxy = Generator.generateGalaxy();
     infoPanel = new InfoPanel(galaxy.player);
-    powerPanel = new PowerPanel(galaxy);
+    powerPanel = new PowerPanel(this, galaxy);
     navigateTo(galaxy.getStartSector());
 
     galaxy.addEventListener(Galaxy.CYCLE, cycle);
 
     add(infoPanel);
     add(powerPanel);
+
+    DC.init();
+    DC.registerObject(this, "game");
+    DC.registerObject(galaxy, "galaxy");
+    haxe.Log.trace = GameController.newTrace;
+  }
+
+  public static function newTrace(v:Dynamic, ?inf:haxe.PosInfos):Void
+  {
+    DC.log(v, 0xFFFFFF);
   }
 
   public override function update():Void
@@ -64,37 +77,24 @@ class GameController extends Scene
       var mouse_y = Input.mouseY;
       var space:Space = cast(collidePoint("space", mouse_x, mouse_y), Space);
 
-      if(Input.released(Key.N)) {
-        enterNavigation();
-      }
-
       if(Input.mouseReleased) {
         if(space != null) {
-          if(canExplore(space)) {
+          if(effectManager != null) {
+            effectManager.apply(space);
+            effectManager = null;
+          } else if(canExplore(space)) {
             space.explore();
             SoundManager.play("whoosh");
             galaxy.player.useFuel(1);
-            var exploreEffects = [];
             switch(space.spaceType) {
-              case Planet(type):
-                exploreEffects = galaxy.player.getStatusEffects("onPlanet");
-              case Star, Start:
-                exploreEffects = galaxy.player.getStatusEffects("onStar");
-              case Debris(type):
-                exploreEffects = galaxy.player.getStatusEffects("onDebris");
               case Hostile:
                 checkLocked();
-                exploreEffects = galaxy.player.getStatusEffects("onHostile");
               case Friendly(type):
-                exploreEffects = galaxy.player.getStatusEffects("onFriendly");
                 if(type == "hacker") {
                   galaxy.operatorsActive++;
                 }
               default:
             }
-
-            var em = new EffectManager(this, galaxy);
-            em.applyEffects(exploreEffects);
             infoPanel.updateGraphic();
             pulse();
           } else if(space.explored) {
@@ -185,6 +185,24 @@ class GameController extends Scene
     });
   }
 
+  public function usePart(shipPart:ShipPart):Void
+  {
+    effectManager = new EffectManager(this, galaxy, shipPart.effect);
+    if(!effectManager.targeted()) {
+      effectManager.apply();
+      effectManager = null;
+    }
+  }
+
+  public function runEffect(message:String):Void
+  {
+    effectManager = new EffectManager(this, galaxy, Message.read(message));
+    if(!effectManager.targeted()) {
+      effectManager.apply();
+      effectManager = null;
+    }
+  }
+
   public function playerAttacks(space:Space):Void
   {
     SoundManager.play("hit"+Std.random(2));
@@ -215,7 +233,7 @@ class GameController extends Scene
 
   public function checkLocked():Void
   {
-    var canExploreNearPirate = galaxy.player.getStatusEffects("exploreNearPirates").length > 0;
+    var canExploreNearPirate = galaxy.player.hasStatusEffect("exploreNearPirates");
     canExploreNearPirate = canExploreNearPirate || galaxy.policingContract > 0;
     grid.each(function(s:Space, i:Int, j:Int):Void {
       if(!s.explored) {

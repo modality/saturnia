@@ -56,11 +56,21 @@ class Space extends Block
     }
   }
 
+  public function revealType():Void
+  {
+    if(!typeRevealed) {
+      typeRevealed = true;
+      updateGraphic();
+    }
+  }
+
   public function removeEncounter():Void
   {
     spaceType = SpaceType.Voidness;
-    removeChild(encounter);
-    encounter = null;
+    if(encounter != null) {
+      removeChild(encounter);
+      encounter = null;
+    }
     updateGraphic();
     objects = [];
   }
@@ -68,7 +78,7 @@ class Space extends Block
   public override function updateGraphic():Void
   {
     super.updateGraphic();
-    frameSprite = Assets.getImage("space_explored");
+    frameSprite.graphic = Assets.getImage("space_explored");
     if(explored) {
       typeSprite.graphic = null;
       switch(spaceType) {
@@ -101,13 +111,21 @@ class Space extends Block
       }
     } else {
       if(typeRevealed) {
+        switch(spaceType) {
+          case Friendly(type):
+            typeSprite.graphic = Assets.getImage("overlay_friendly");
+          case Hostile:
+            typeSprite.graphic = Assets.getImage("overlay_hostile");
+          default:
+            typeSprite.graphic = Assets.getImage("overlay_space");
+        }
       } else {
         typeSprite.graphic = null;
       }
-      if(!locked) {
-        lockedSprite.graphic = null;
+      if(locked) {
+        lockedSprite.graphic = Assets.getImage("space_locked");
       } else {
-        lockedSprite.graphic = Asset.getImage("space_locked");
+        lockedSprite.graphic = null;
       }
       graphic = Assets.getImage("space_fog");
     }

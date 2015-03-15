@@ -6,7 +6,7 @@ import com.modality.Base;
 
 class CombatStats extends Base
 {
-  public var statusEffects:Array<StatusEffect>;
+  public var statusEffects:Array<String>;
 
   public var hullPoints:Int = 1;
   public var maxHullPoints:Int = 1;
@@ -56,20 +56,32 @@ class CombatStats extends Base
     stunned = true;
   }
 
-  public function addStatusEffect(effect:StatusEffect)
+  public function addStatusEffect(effect:String)
   {
-    statusEffects.push(effect);
+    if(!hasStatusEffect(effect)) {
+      statusEffects.push(effect);
+    }
   }
 
-  public function getStatusEffects(type:String):Array<Message>
+  public function hasStatusEffect(_effect:String):Bool
   {
-    var effects:Array<Message> = [];
     for(effect in statusEffects) {
-      effects = effects.concat(effect.getType(type));
+      if(effect == _effect) return true;
     }
-    return effects;
+    return false;
   }
-  
+
+  public function removeStatusEffect(effect:String)
+  {
+    var i = statusEffects.length-1;
+    while(i >= 0) {
+      if(statusEffects[i] == effect) {
+        statusEffects.splice(i, 1);
+      }
+      i--;
+    }
+  }
+
   public function attack():Array<CombatResult> {
     var attacks:Array<CombatResult> = [];
 
@@ -77,6 +89,9 @@ class CombatStats extends Base
 
     cr.hit = true;
     cr.damage = progDamage;
+    if(hasStatusEffect("overdrive")) {
+      cr.damage *= 2;
+    }
     attacks.push(cr);
 
     return attacks;

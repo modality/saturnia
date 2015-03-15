@@ -1,60 +1,40 @@
 package com.saturnia.ui;
 
-import openfl.display.BitmapData;
-import openfl.events.Event;
-import com.haxepunk.graphics.Image;
 import com.modality.Base;
-import com.modality.TextBase;
+import com.modality.ui.UIPanel;
+import com.modality.ui.UIAlign;
+import com.modality.ui.UILabel;
+import com.modality.ui.UIButton;
+import com.modality.ui.UIImage;
 
 class PowerMenuItem extends Base
 {
   public static var CLICKED:String = "clicked item";
 
-  public var selector:Base;
-  public var text:TextBase;
-  public var costText:TextBase;
-  public var energyIcon:Base;
+  public var shipPart:ShipPart;
+  public var panel:UIPanel;
 
-  public function new(_x:Int, _y:Int, _text:String, _cost:Int)
+  public function new(_x:Int, _y:Int, _shipPart:ShipPart, _useCallback:ShipPart->Void)
   {
-    var bmd:BitmapData = new BitmapData(1, 1, false, Constants.ENERGY_COLOR);
-    var img = new Image(bmd);
-    img.scaleX = 100;
-    img.scaleY = 40;
-    img.x = 5;
-    img.y = 5;
+    super(_x, _y);
+    shipPart = _shipPart;
 
-    super(_x, _y, img);
+    panel = new UIPanel(0, 0, 80, 100);
 
-    text = new TextBase(5, 18, 100, 50, _text);
-    text.size = Constants.FONT_SIZE_XS;
-    text.color = 0x000000;
-    text.align = "center";
-    costText = new TextBase(0, 52, 35, 20, ""+_cost);
-    costText.align = "right";
-    energyIcon = new Base(35, 50, Assets.getImage("icon_energy"));
-    selector = new Base(0, 0, Assets.getImage("icon_selector"));
-    selector.alpha = 0;
+    panel.addChild(new UILabel(shipPart.effectName, Constants.FONT_SIZE_SM), UIAlign.Left);
+    panel.addChild(new UIButton(80, 30, "USE", function(button:UIButton) {
+      _useCallback(shipPart);
+    }), UIAlign.Left);
+    panel.addChild(new UILabel(""+shipPart.energyCost, Constants.FONT_SIZE_MD), UIAlign.FloatLeft);
+    panel.addChild(new UIImage("icon_energy"), UIAlign.Right);
 
-    addChild(text);
-    addChild(costText);
-    addChild(energyIcon);
-    addChild(selector);
-
-    type = "power_menu_item";
-
-    updateHitbox();
-    addEventListener(CLICKED, onClick);
-
-    eachChild(function(child:Base):Void {
-      child.updateHitbox();
-      child.type = type;
-      child.addEventListener(CLICKED, onClick);
-    });
+    addChild(panel.entity);
+    panel.updateGraphic();
   }
 
-  public function onClick(event:Dynamic):Void
+  public override function update()
   {
+    super.update();
+    panel.update();
   }
 }
-

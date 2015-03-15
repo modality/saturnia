@@ -59,6 +59,11 @@ class Galaxy extends Base
     return sectors.get(x, y);
   }
 
+  public function resetCycleProgress()
+  {
+    cycleCounter = 0;
+  }
+
   public function pulse()
   {
     cycleCounter--;

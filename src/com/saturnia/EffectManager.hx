@@ -6,35 +6,39 @@ class EffectManager
 {
   public var game:GameController;
   public var galaxy:Galaxy;
+  public var effect:Message;
 
-  public function new(_game:GameController, _galaxy:Galaxy)
+  public function new(_game:GameController, _galaxy:Galaxy, _effect:Message)
   {
     game = _game;
     galaxy = _galaxy;
+    effect = _effect;
   }
 
-  public function applyEffects(effects:Array<Message>)
+  public function targeted():Bool
   {
-    for(effect in effects) {
-      applyEffect(effect);
-    }
+    return effect.type() == "target";
+  }
+
+  public function apply(space:Space = null):Bool
+  {
+    return applyEffect(effect, space);
   }
 
   public function applyEffect(effect:Message, space:Space = null):Bool
   {
-    //effect = effect.get(1);
     switch(effect.type()) {
       case "resource": 
-        var resource = Std.string(effect.tokens[1]);
+        var resource = effect.getString(1);
         var amount = 0;
-        if(isVariable(Std.string(effect.tokens[2]))) {
-          amount = getVariable(effect.tokens[2]);
+        if(isVariable(effect.getString(2))) {
+          amount = getVariable(effect.getString(2));
         } else {
-          amount = Std.int(effect.tokens[2]);
+          amount = effect.getInt(2);
         }
 
         if(effect.tokens.length > 3) {
-          amount *= Std.int(effect.tokens[3]);
+          amount *= effect.getInt(3);
         }
 
         if(galaxy.player.getResource(resource) + amount < 0) {
@@ -45,10 +49,10 @@ class EffectManager
         //infoPanel.gainResource(space, "fuel", effect.tokens[1]);
         return true;
       case "convert":
-        var resourceA = Std.string(effect.tokens[1]),
-            amountA = Std.int(effect.tokens[2]),
-            resourceB = Std.string(effect.tokens[3]),
-            amountB = Std.int(effect.tokens[4]);
+        var resourceA = effect.getString(1),
+            amountA = effect.getInt(2),
+            resourceB = effect.getString(3),
+            amountB = effect.getInt(4);
 
         if(galaxy.player.getResource(resourceA) >= amountA) {
           galaxy.player.addResource(resourceA, -amountA);
@@ -61,29 +65,21 @@ class EffectManager
         var index = 1;
         var success = true;
         while(index < effect.tokens.length && success) {
-          success = success && applyEffect(effect.get(index));
+          success = success && applyEffect(effect.getMessage(index), space);
           index++;
         }
         return success;
       case "target":
         if(space == null) return false;
 
-        switch [effect.tokens[1], space.spaceType, space.explored] {
-          case ["unexplored", _, false],
-               ["explored", _, true],
-               ["star", Star, true],
-               ["planet", Planet(_), true],
-               ["friendly", Friendly(_), true],
-               ["enemy", Hostile, true],
-               ["rockDebris", Debris("rock"), true],
-               ["iceDebris", Debris("ice"), true]:
-            return applyEffect(effect.get(2));
-          default:
-            return false;
+        if(matchSpace(effect.getString(1), space)) {
+          return applyEffect(effect.getMessage(2), space);
+        } else {
+          return false;
         }
       case "changeSpace":
         space.removeEncounter();
-        switch(effect.tokens[1]) {
+        switch(effect.getString(1)) {
           case "void":
             space.spaceType = Voidness;
             space.updateGraphic();
@@ -97,13 +93,68 @@ class EffectManager
       case "stun":
         var pirate = cast(space.encounter, PirateEncounter);
         pirate.stats.stun();
-      // showType
-      // solarSail
-      // orbitalDefense
+      case "resetCycleProgress":
+        galaxy.resetCycleProgress();
+        game.powerPanel.pulse();
+      case "overdrive":
+        galaxy.player.addStatusEffect("overdrive");
+      case "showType":
+        var type = "all";
+        if(effect.tokens.length > 1) {
+          type = effect.getString(1);
+        }
+
+        if(space != null) {
+          if(space.typeRevealed) return false;
+          if(space.explored) return false;
+          if(matchSpace(type, space)) {
+            space.revealType();
+          }
+        } else {
+          game.grid.each(function(s:Space, x:Int, y:Int):Void {
+            if(matchSpace(type, s)) {
+              s.revealType();
+            }
+          });
+        }
+      case "solarSail":
+        space.grid.each(function(s:Space, x:Int, y:Int):Void {
+          if(x == space.x_index || y == space.y_index) {
+            s.explore();
+          }
+        });
+      case "orbitalDefense":
+        var naybs:Array<Space> = space.grid.neighbors(space, false);
+        for(nayb in naybs) {
+          if(matchSpace("hostile", nayb)) {
+            nayb.removeEncounter();
+          }
+        }
+      case "vultureBeam":
+        var pirate = cast(space.encounter, PirateEncounter);
+        pirate.scienceReward *= 2;
+        pirate.fuelReward *= 2;
       // gravityRay
-      // vultureBeam
     }
     return false;
+  }
+
+  public function matchSpace(str:String, space:Space):Bool
+  {
+    switch [str, space.spaceType, space.explored] {
+      case ["all", _, _],
+           ["unexplored", _, false],
+           ["explored", _, true],
+           ["star", Star, true],
+           ["planet", Planet(_), true],
+           ["friendly", Friendly(_), true],
+           ["hostile", Hostile, true],
+           ["rockDebris", Debris("rock"), true],
+           ["iceDebris", Debris("ice"), true]:
+        return true;
+      default:
+        return false;
+    }
   }
 
   public function isVariable(what:String) {
