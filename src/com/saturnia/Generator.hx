@@ -59,7 +59,7 @@ class Generator
 
     galaxy.cards = AugRandom.sample([for (k in tarotGraphics.keys()) k], 5);
 
-    for(i in 0...5) {
+    for(i in 0...Constants.NUM_TRADE_GOODS) {
       galaxy.goods.push(generateTradeGood());
     }
 

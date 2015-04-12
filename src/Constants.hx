@@ -33,4 +33,5 @@ class Constants
   public static var ENERGY_COLOR:Int = 0xFFEA00;
 
   public static var TURNS_PER_CYCLE:Int = 10;
+  public static var NUM_TRADE_GOODS:Int = 5;
 }

@@ -89,11 +89,35 @@ class PlayerResources extends CombatStats
 
   public function totalCargo():Int
   {
-    return 0;
+    var total = 0;
+    for(i in cargos) {
+      total += i;
+    }
+    return total;
   }
 
   public function spendCargo(amount:Int):Void
   {
+    var total = totalCargo();
+    var newTotal = 0;
+    var keys = [for(k in cargos.keys()) k];
+    keys.sort(function(a:TradeGood, b:TradeGood) { return cargos.get(b) - cargos.get(a); });
+
+    for(k in keys) {
+      if(amount == total || cargos.get(k) == 0) {
+        cargos.set(k, 0);
+      } else {
+        var newAmount = Math.ceil(cargos.get(k) * (1 - (amount / total))); 
+        cargos.set(k, newAmount);
+        newTotal += newAmount;
+      }
+    }
+
+    var diff = (amount + newTotal) - total;
+
+    for(i in 0...diff) {
+      cargos.set(keys[i], cargos.get(keys[i]) - 1);
+    }
   }
 
   public function addCrewMember(crewMember:CrewMember)
