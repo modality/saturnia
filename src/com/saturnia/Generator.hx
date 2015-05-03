@@ -191,6 +191,7 @@ class Generator
 
   public static function fillSpace(space:Space, sector:Sector):Space
   {
+    space.sector = sector;
     switch(space.spaceType) {
       case Friendly(type):
         switch(type) {

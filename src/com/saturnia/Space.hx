@@ -8,6 +8,7 @@ import com.modality.Block;
 
 class Space extends Block
 {
+  public var sector:Sector;
   public var grid:Grid<Space>;
   public var explored:Bool = false;
   public var locked:Bool = false;

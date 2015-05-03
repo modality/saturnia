@@ -43,9 +43,9 @@ class MilitaryPanel extends Base
 
     panel.addChild(new UILabel("Condottieri PMC", Constants.FONT_SIZE_LG), UIAlign.Left);
     panel.addChild(new UISpacer(660, 20), UIAlign.Left);
-    panel.addChild(new UILabel("Enemies: 4 pirates"), UIAlign.FloatLeft);
-    panel.addChild(new UILabel("Next Cycle: "+galaxy.cycleCounter+" turns"), UIAlign.FloatRight);
-    panel.addChild(new UILabel("Sector Explored: 64%"), UIAlign.Center);
+    panel.addNamedChild("enemy count label", new UILabel(""), UIAlign.FloatLeft);
+    panel.addNamedChild("cycle count label", new UILabel(""), UIAlign.FloatRight);
+    panel.addNamedChild("sector explored label", new UILabel(""), UIAlign.Center);
     panel.addChild(new UISpacer(660, 40, true), UIAlign.Left);
 
     panel.addChild(new UILabel("Policing Contract", Constants.FONT_SIZE_MD), UIAlign.Left);
@@ -55,40 +55,25 @@ class MilitaryPanel extends Base
       panel.addChild(new UILabel("The current policing contract expires in "+galaxy.policingContract+" cycle"+(galaxy.policingContract>1 ? "s" :"")+". Have a nice day. :)"), UIAlign.Left);
     } else {
       leftPanel.addChild(new UISpacer(300, 20), UIAlign.Left);
+      leftPanel.addNamedChild("flat rate label", new UILabel(""), UIAlign.Left);
 
-      var contract:Array<String> = [
-        "Known knowns",
-        "Unknown unknowns",
-        "Base outlay",
-        "Service charge",
-        "Danger assessment",
-        "Beeswax, official",
-        "Room and board, beekeeper",
-        "Mood lighting",
-        "Minibar, organic",
-        "Travel insurance, beehive",
-        "Bee chow",
-        "Hydroponic clover",
-        "Hood ornament polish",
-        "Depollenization process",
-        "Anti-pirate ammunition",
-        "Training video licensing fee",
-        "Conscription fee",
-        "Ointment, 64oz. tublet",
-        "Printer ink",
-        "Computer paper",
-        "Dry cleaning fee",
-        "Ceremonial orbs",
-        "Side dishes",
-      ];
+      var item:String;
+      var amount:Int;
+      var contractFull:Map<String, Int> = encounter.getFullContract(galaxy);
 
-      contract = AugRandom.sample(contract, 5);
-
-      for(item in contract) {
+      for(key in contractFull.keys()) {
+        item = StringTools.rpad(key, ".", 25);
+        amount = contractFull.get(key);
+        if(amount <= 0) {
+          amount = 0;
+          item += StringTools.lpad("(waived)", ".", 10);
+        } else {
+          item += StringTools.lpad(""+amount, ".", 10);
+        }
         leftPanel.addChild(new UILabel(item), UIAlign.Left);
       }
 
-      leftPanel.addChild(new UILabel("Total: "+contractPrice+" cargo"), UIAlign.Left);
+      leftPanel.addNamedChild("total contract amount", new UILabel(""), UIAlign.Left);
 
       rightPanel.addChild(new UILabel("Contract Length"), UIAlign.Left);
       rightPanel.addChild(new UIButton(40, 30, "+", increaseContractLength), UIAlign.FloatRight);
@@ -106,12 +91,14 @@ class MilitaryPanel extends Base
 
     addChild(panel.entity);
 
+    updateTerms();
     panel.updateGraphic();
   }
 
   public function increaseContractLength(button:UIButton):Void
   {
     contractLength++;
+    if(contractLength > 5) contractLength = 5;
     updateTerms();
   }
 
@@ -127,6 +114,44 @@ class MilitaryPanel extends Base
     rightPanel.getChild("contract length label").updateText(contractLength+" cycle"+(contractLength > 1 ? "s" : ""));
     rightPanel.getChild("sign contract button").active = contractPrice <= galaxy.player.totalCargo(); 
     rightPanel.getChild("sign contract button").updateGraphic();
+
+    var enemyCount = 0;
+    var exploredCount = 0;
+    var totalSpaces = 0;
+
+    encounter.space.grid.each(function(s:Space, i:Int, j:Int) {
+      totalSpaces++;
+      if(s.explored) {
+        exploredCount++;
+        if(s.spaceType == Hostile) {
+          enemyCount++;
+        }
+      }
+    });
+
+    var exploredPct = Math.round(100. * exploredCount / totalSpaces);
+
+    panel.getChild("enemy count label").updateText("Enemies: "+enemyCount+" pirates");
+    panel.getChild("cycle count label").updateText("Next Cycle: "+galaxy.cycleCounter+" turns");
+    panel.getChild("sector explored label").updateText("Sector Explored: "+exploredPct+"%");
+
+    if(galaxy.policingContract < 1) {
+      var item:String = StringTools.rpad(encounter.contractFlatName, ".", 25);
+      var amount:Int = encounter.contractFlatAmount * contractLength;
+
+      item += StringTools.lpad(""+amount, ".", 10);
+      leftPanel.getChild("flat rate label").updateText(item);
+      contractPrice = amount;
+
+      var contractFull:Map<String, Int> = encounter.getFullContract(galaxy);
+      for(value in contractFull) {
+        contractPrice += value;
+      }
+
+      var total:String = StringTools.lpad("Total Cargo", " ", 25) +
+                         StringTools.lpad(""+contractPrice, ".", 10);
+      leftPanel.getChild("total contract amount").updateText(total);
+    }
   }
 
   public function signContract(button:UIButton):Void
