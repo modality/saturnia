@@ -36,6 +36,7 @@ class UIPanel extends UIElement
 
   public function addChild(child:UIElement, align:UIAlign):Void
   {
+    if(child == null) return;
     var tuple:UITuple = { element: child, align: align };
     children.push(tuple);
     entity.addChild(child.entity);
@@ -44,6 +45,7 @@ class UIPanel extends UIElement
 
   public function removeChild(child:UIElement):Void
   {
+    if(child == null) return;
     var i = children.length-1;
     while(i >= 0) {
       if(children[i].element == child) {
@@ -52,6 +54,16 @@ class UIPanel extends UIElement
       i--;
     }
     entity.removeChild(child.entity);
+    updateGraphic();
+  }
+
+  public function eachChild(fn:UIElement->Void):Void
+  {
+    var i = children.length-1;
+    while(i >= 0) {
+      fn(children[i].element);
+      i--;
+    }
     updateGraphic();
   }
 

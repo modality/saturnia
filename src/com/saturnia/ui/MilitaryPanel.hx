@@ -5,6 +5,7 @@ import com.modality.TextBase;
 import com.modality.ui.UIPanel;
 import com.modality.ui.UIAlign;
 import com.modality.ui.UILabel;
+import com.modality.ui.UIElement;
 import com.modality.ui.UIButton;
 import com.modality.ui.UISpacer;
 import com.modality.AugRandom;
@@ -15,6 +16,7 @@ class MilitaryPanel extends Base
   public var galaxy:Galaxy;
 
   public var panel:UIPanel;
+  public var centerPanel:UIPanel;
   public var leftPanel:UIPanel;
   public var rightPanel:UIPanel;
 
@@ -35,9 +37,6 @@ class MilitaryPanel extends Base
     this.layer = Constants.OVERLAY_LAYER;
 
     panel = new UIPanel(20, 20, 660, 460);
-    leftPanel = new UIPanel(0, 0, 300, 0);
-    rightPanel = new UIPanel(0, 0, 300, 0);
-
     contractLength = 1;
     contractPrice = 0;
 
@@ -50,10 +49,30 @@ class MilitaryPanel extends Base
 
     panel.addChild(new UILabel("Policing Contract", Constants.FONT_SIZE_MD), UIAlign.Left);
 
+    centerPanel = new UIPanel(0, 0, 660, 300);
+    panel.addChild(centerPanel, UIAlign.Left);
+
+    buildPanel();
+
+    panel.addChild(new UISpacer(660, 40, true), UIAlign.Left);
+    panel.addChild(new UIButton(150, 50, "CLOSE", closePanel), UIAlign.Center);
+
+    addChild(panel.entity);
+    panel.updateGraphic();
+  }
+
+  public function buildPanel() {
+    centerPanel.eachChild(function(child:UIElement) {
+      centerPanel.removeChild(child);
+    });
+
     if(galaxy.policingContract > 0) {
-      panel.addChild(new UILabel("You cannot enter a new contract until the contract in effect expires."), UIAlign.Left);
-      panel.addChild(new UILabel("The current policing contract expires in "+galaxy.policingContract+" cycle"+(galaxy.policingContract>1 ? "s" :"")+". Have a nice day. :)"), UIAlign.Left);
+      centerPanel.addChild(new UILabel("You cannot enter a new contract until the contract in effect expires."), UIAlign.Left);
+      centerPanel.addChild(new UILabel("The current policing contract expires in "+galaxy.policingContract+" cycle"+(galaxy.policingContract>1 ? "s" :"")+". Have a nice day. :)"), UIAlign.Left);
     } else {
+      leftPanel = new UIPanel(0, 0, 300, 0);
+      rightPanel = new UIPanel(0, 0, 300, 0);
+
       leftPanel.addChild(new UISpacer(300, 20), UIAlign.Left);
       leftPanel.addNamedChild("flat rate label", new UILabel(""), UIAlign.Left);
 
@@ -82,17 +101,12 @@ class MilitaryPanel extends Base
 
       rightPanel.addNamedChild("sign contract button", new UIButton(150, 30, "Sign Contract", signContract), UIAlign.Center);
 
-      panel.addChild(rightPanel, UIAlign.FloatRight);
-      panel.addChild(leftPanel, UIAlign.Left);
+      centerPanel.addChild(rightPanel, UIAlign.FloatRight);
+      centerPanel.addChild(leftPanel, UIAlign.Left);
     }
 
-    panel.addChild(new UISpacer(660, 40, true), UIAlign.Left);
-    panel.addChild(new UIButton(150, 50, "CLOSE", closePanel), UIAlign.Center);
-
-    addChild(panel.entity);
-
     updateTerms();
-    panel.updateGraphic();
+    centerPanel.updateGraphic();
   }
 
   public function increaseContractLength(button:UIButton):Void
@@ -111,10 +125,6 @@ class MilitaryPanel extends Base
 
   public function updateTerms():Void
   {
-    rightPanel.getChild("contract length label").updateText(contractLength+" cycle"+(contractLength > 1 ? "s" : ""));
-    rightPanel.getChild("sign contract button").active = contractPrice <= galaxy.player.totalCargo(); 
-    rightPanel.getChild("sign contract button").updateGraphic();
-
     var enemyCount = 0;
     var exploredCount = 0;
     var totalSpaces = 0;
@@ -136,6 +146,10 @@ class MilitaryPanel extends Base
     panel.getChild("sector explored label").updateText("Sector Explored: "+exploredPct+"%");
 
     if(galaxy.policingContract < 1) {
+      rightPanel.getChild("contract length label").updateText(contractLength+" cycle"+(contractLength > 1 ? "s" : ""));
+      rightPanel.getChild("sign contract button").active = contractPrice <= galaxy.player.totalCargo(); 
+      rightPanel.getChild("sign contract button").updateGraphic();
+
       var item:String = StringTools.rpad(encounter.contractFlatName, ".", 25);
       var amount:Int = encounter.contractFlatAmount * contractLength;
 
@@ -156,10 +170,12 @@ class MilitaryPanel extends Base
 
   public function signContract(button:UIButton):Void
   {
-    galaxy.player.spendCargo(contractPrice);
+    //galaxy.player.spendCargo(contractPrice);
     galaxy.player.updated();
     galaxy.policingContract += contractLength;
-    closePanel(button);
+    buildPanel();
+    panel.updateGraphic();
+    //closePanel(button);
   }
 
   public function closePanel(button:UIButton):Void
