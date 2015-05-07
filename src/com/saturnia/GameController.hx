@@ -6,11 +6,11 @@ import pgr.dconsole.DC;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.Scene;
-import com.modality.Grid;
 import com.modality.Base;
 import com.modality.TextBase;
 import com.modality.cards.Message;
 
+import com.saturnia.ui.MapPanel;
 import com.saturnia.ui.InfoPanel;
 import com.saturnia.ui.MerchantPanel;
 import com.saturnia.ui.HackerPanel;
@@ -23,12 +23,11 @@ import com.saturnia.ui.PopupIcon;
 class GameController extends Scene
 {
   public var galaxy:Galaxy;
-  public var sector:Sector;
-  public var grid:Grid<Space>;
   public var inMerchant:Bool;
   public var inNavigation:Bool;
   public var regainFocus:Bool;
   
+  public var mapPanel:MapPanel;
   public var infoPanel:InfoPanel;
   public var friendlyPanel:Base;
   public var navigationPanel:NavigationPanel;
@@ -42,15 +41,18 @@ class GameController extends Scene
     inNavigation = false;
     regainFocus = false;
 
-    regainFocus = false;
 
     galaxy = Generator.generateGalaxy();
     infoPanel = new InfoPanel(galaxy.player);
     powerPanel = new PowerPanel(this, galaxy);
-    navigateTo(galaxy.getStartSector());
+    mapPanel = new MapPanel(galaxy);
+
+    infoPanel.sector = mapPanel.sector;
+    infoPanel.updateSectorGraphic();
 
     galaxy.addEventListener(Galaxy.CYCLE, cycle);
 
+    add(mapPanel);
     add(infoPanel);
     add(powerPanel);
 
@@ -82,8 +84,7 @@ class GameController extends Scene
           if(effectManager != null) {
             effectManager.apply(space);
             effectManager = null;
-          } else if(canExplore(space)) {
-            space.explore();
+          } else if(mapPanel.tryExplore(space)) {
             SoundManager.play("whoosh");
             galaxy.player.useFuel(1);
             switch(space.spaceType) {
@@ -157,34 +158,6 @@ class GameController extends Scene
     regainFocus = true;
   }
 
-  public function navigateTo(_sector:Sector):Void
-  {
-    if(navigationPanel != null) {
-      exitNavigation();
-    }
-    if(grid != null) {
-      grid.each(function(space:Space, i:Int, j:Int) {
-        remove(space);
-      });
-    }
-
-    sector = _sector;
-    sector.explored = true;
-    grid = sector.spaces;
-
-    infoPanel.sector = sector;
-    infoPanel.updateSectorGraphic();
-
-    grid.each(function(space:Space, i:Int, j:Int) {
-      space.updateGraphic();
-      if(space.spaceType == Start && !space.explored) {
-        space.spaceType = Star;
-        space.explore();
-      }
-      add(space);
-    });
-  }
-
   public function usePart(shipPart:ShipPart):Void
   {
     effectManager = new EffectManager(this, galaxy, shipPart.effect);
@@ -235,36 +208,7 @@ class GameController extends Scene
   {
     var canExploreNearPirate = galaxy.player.hasStatusEffect("exploreNearPirates");
     canExploreNearPirate = canExploreNearPirate || galaxy.policingContract > 0;
-    grid.each(function(s:Space, i:Int, j:Int):Void {
-      if(!s.explored) {
-        s.locked = false;
-        for(nayb in grid.neighbors(s, true)) {
-          if(nayb.explored && (nayb.hasObject("pirate") && !canExploreNearPirate)) {
-            s.locked = true; 
-          }
-        }
-        s.updateGraphic();
-      }
-    });
-  }
-
-  public function canExplore(space:Space):Bool
-  {
-    if(space.explored) return false;
-    if(space.locked) return false;
-
-    var s:Space;
-
-    s = grid.get(space.x_index-1, space.y_index);
-    if(s != null && s.explored) return true;
-    s = grid.get(space.x_index+1, space.y_index);
-    if(s != null && s.explored) return true;
-    s = grid.get(space.x_index, space.y_index-1);
-    if(s != null && s.explored) return true;
-    s = grid.get(space.x_index, space.y_index+1);
-    if(s != null && s.explored) return true;
-
-    return false;
+    mapPanel.checkLocked(canExploreNearPirate);
   }
 
   public function pulse()
@@ -276,24 +220,7 @@ class GameController extends Scene
   public function cycle(e:Event):Void
   {
     var piratesAttacked = false;
-    var pirates:Array<PirateEncounter> = [];
-
-    grid.each(function(space:Space, i:Int, j:Int):Void {
-      if(space.explored && space.spaceType == Hostile) {
-        if(space.encounter != null) {
-          var pe:PirateEncounter = cast(space.encounter, PirateEncounter);
-          if(!pe.stats.isDead()) {
-            pirates.push(pe);
-          }
-        }
-      /*
-      } else if(space.spaceType == Friendly) {
-        if(space.encounter != null) {
-          cast(space.encounter, FriendlyEncounter).cycle();
-        }
-      */
-      }
-    });
+    var pirates:Array<PirateEncounter> = mapPanel.getPirates();
 
     if(galaxy.policingContract == 0) {
       pirates.sort(function(a:PirateEncounter, b:PirateEncounter):Int {

@@ -111,7 +111,7 @@ class EffectManager
             space.revealType();
           }
         } else {
-          game.grid.each(function(s:Space, x:Int, y:Int):Void {
+          galaxy.sector.spaces.each(function(s:Space, x:Int, y:Int):Void {
             if(matchSpace(type, s)) {
               s.revealType();
             }
@@ -165,7 +165,7 @@ class EffectManager
   {
     var sumTypes = function(spaceTypes:Array<SpaceType>):Int {
       var count = 0;
-      game.grid.each(function(space:Space, i:Int, j:Int) {
+      galaxy.sector.spaces.each(function(space:Space, i:Int, j:Int) {
         for(spaceType in spaceTypes) {
           if(space.explored && space.spaceType == spaceType) {
             count++;

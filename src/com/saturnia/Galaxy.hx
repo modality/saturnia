@@ -9,6 +9,7 @@ class Galaxy extends Base
   public static var CYCLE:String = "cycle";
 
   public var player:PlayerResources;
+  public var sector:Sector;
   public var cards:Array<MajorArcana>;
   public var goods:Array<TradeGood>;
   public var sectors:Grid<Sector>;

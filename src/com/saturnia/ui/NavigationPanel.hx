@@ -80,7 +80,7 @@ class NavigationPanel extends Base
       btn = cast(scene.collidePoint("go_btn", Input.mouseX, Input.mouseY), TextBase);
       if(btn != null) {
         if(tarot_x != null && tarot_y != null) {
-          cast(scene, GameController).navigateTo(galaxy.getSector(tarot_x, tarot_y));
+          //cast(scene, GameController).navigateTo(galaxy.getSector(tarot_x, tarot_y));
         }
       }
 
