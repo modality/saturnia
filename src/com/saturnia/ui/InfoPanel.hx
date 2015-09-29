@@ -21,23 +21,11 @@ class InfoPanel extends Base
   public var sectorGfx:Base;
   public var sectorName:TextBase;
 
-  public var cards:Array<Base>;
-
   public function new(_player:PlayerResources)
   {
     super(500, 0);
 
     player = _player;
-
-    cards = [for (c in player.cards) new Base(0, 0, Assets.getImage(Generator.tarotGraphics.get(c)))];
-
-    var ci = 0;
-    for(c in cards) {
-      c.x = 0 + (ci * 40);
-      c.y = 200 + Std.random(10);
-      addChild(c);
-      ci++;
-    }
 
     player.addEventListener(PlayerResources.UPDATED, playerUpdated);
 
@@ -123,6 +111,7 @@ class InfoPanel extends Base
 
   public function updateSectorGraphic()
   {
+    /*
     sectorName.text = sector.title;
 
     var sectorImg = switch(sector.sectorType) {
@@ -133,6 +122,6 @@ class InfoPanel extends Base
     }
 
     sectorGfx.image = sectorImg;
-
+    */
   }
 }

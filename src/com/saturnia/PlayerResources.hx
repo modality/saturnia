@@ -14,7 +14,6 @@ class PlayerResources extends CombatStats
   public var maxEnergy:Int;
 
   public var cargos:Map<TradeGood, Int>;
-  public var cards:Array<MajorArcana>;
   public var crewMembers:Array<CrewMember>;
   public var shipParts:Array<ShipPart>;
 
@@ -34,7 +33,6 @@ class PlayerResources extends CombatStats
     shieldLevel = progShield;
 
     cargos = new Map<TradeGood, Int>();
-    cards = [];
     crewMembers = [];
     shipParts = [];
   }

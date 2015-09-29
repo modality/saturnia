@@ -111,20 +111,20 @@ class EffectManager
             space.revealType();
           }
         } else {
-          galaxy.sector.spaces.each(function(s:Space, x:Int, y:Int):Void {
+          galaxy.grid.spaces.each(function(s:Space, x:Int, y:Int):Void {
             if(matchSpace(type, s)) {
               s.revealType();
             }
           });
         }
       case "solarSail":
-        space.grid.each(function(s:Space, x:Int, y:Int):Void {
+        galaxy.grid.spaces.each(function(s:Space, x:Int, y:Int):Void {
           if(x == space.x_index || y == space.y_index) {
             s.explore();
           }
         });
       case "orbitalDefense":
-        var naybs:Array<Space> = space.grid.neighbors(space, false);
+        var naybs:Array<Space> = galaxy.grid.spaces.neighbors(space, false);
         for(nayb in naybs) {
           if(matchSpace("hostile", nayb)) {
             nayb.removeEncounter();
@@ -165,7 +165,7 @@ class EffectManager
   {
     var sumTypes = function(spaceTypes:Array<SpaceType>):Int {
       var count = 0;
-      galaxy.sector.spaces.each(function(space:Space, i:Int, j:Int) {
+      galaxy.grid.spaces.each(function(space:Space, i:Int, j:Int) {
         for(spaceType in spaceTypes) {
           if(space.explored && space.spaceType == spaceType) {
             count++;

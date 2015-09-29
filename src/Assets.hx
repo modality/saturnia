@@ -37,6 +37,12 @@ class Assets
     assetDictionary.set("space_military", "graphics/spaces/military.png");
     assetDictionary.set("space_merchant", "graphics/spaces/merchant.png");
 
+    assetDictionary.set("sector_underlay_red", "graphics/spaces/sector_underlay_red.png");
+    assetDictionary.set("sector_underlay_green", "graphics/spaces/sector_underlay_green.png");
+    assetDictionary.set("sector_underlay_blue", "graphics/spaces/sector_underlay_blue.png");
+
+    assetDictionary.set("space_frame", "graphics/icons/space_frame.png");
+
     assetDictionary.set("overlay_friendly", "graphics/spaces/friendly_overlay.png");
     assetDictionary.set("overlay_hostile", "graphics/spaces/enemy_overlay.png");
     assetDictionary.set("overlay_space", "graphics/spaces/space_overlay.png");

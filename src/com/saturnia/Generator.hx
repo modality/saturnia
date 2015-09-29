@@ -36,15 +36,6 @@ class Generator
   public static var sectorNames:Array<String>;
   public static var tradeGoods:Array<TradeGood>;
 
-  public static var tarotGraphics:Map<MajorArcana, String> = [
-    TheFool => "tarot_0",
-    TheMagician => "tarot_1",
-    TheHighPriestess => "tarot_2",
-    TheEmpress => "tarot_3",
-    TheEmperor => "tarot_4",
-    TheHierophant => "tarot_5"
-  ];
-
   public static function init():Void
   {
     sectorNames = [];
@@ -55,50 +46,30 @@ class Generator
   {
     var galaxy = new Galaxy();
 
-    galaxy.cards = AugRandom.sample([for (k in tarotGraphics.keys()) k], 5);
-
     for(i in 0...Constants.NUM_TRADE_GOODS) {
       galaxy.goods.push(generateTradeGood());
     }
 
-    // choose locations for keys
-    for(i in 2...galaxy.cards.length) {
-      var valid = false;
-      var pick1 = 0, pick2 = 0;
-      
-      while(!valid) {
-        valid = true;
-        pick1 = Std.random(i);
-        pick2 = Std.random(i);
-
-        if(pick1 == pick2) valid = false;
-        if(pick1 != i-1 && pick2 != i-1) valid = false;
-      }
-
-      galaxy.cardLocations.push([pick1, pick2]);
-    }
-
-    // decorate sectors
-    galaxy.sectors.init(function(i:Int, j:Int):Sector {
-      var sector:Sector = new Sector();
-      var goodsList = AugRandom.shuffle(galaxy.goods);
-
-      galaxy.addEventListener(Galaxy.CYCLE, sector.cycle);
-      sector.tarot_x = galaxy.cards[i];
-      sector.tarot_y = galaxy.cards[j];
-      if(i == j) {
-        sector.level = 5;
-      } else {
-        sector.level = i > j ? i : j;
-      }
-      sector.goodsBought = goodsList.slice(0, 3);
-      sector.goodsSold = goodsList.slice(3);
-
-      return fillDebugSector(sector);
-    });
-
     galaxy.setupPlayer();
+    galaxy.setupGrid();
     return galaxy;
+  }
+
+  public static function generateSector(galaxy:Galaxy, level:Int):Sector
+  {
+    var sector:Sector = new Sector();
+    var goodsList = AugRandom.shuffle(galaxy.goods);
+
+    galaxy.addEventListener(Galaxy.CYCLE, sector.cycle);
+
+    sector.level = level;
+    sector.goodsBought = goodsList.slice(0, 3);
+    sector.goodsSold = goodsList.slice(3);
+
+    //sector = fillDebugSector(sector);
+    sector = fillSector(sector);
+
+    return sector;
   }
 
   public static function fillDebugSector(sector:Sector):Sector

@@ -9,9 +9,6 @@ class NavigationPanel extends Base
   public var galaxy:Galaxy;
   public var go_btn:TextBase;
   public var cancel_btn:TextBase;
-  public var cards:Map<Base, MajorArcana>;
-  public var tarot_x:MajorArcana;
-  public var tarot_y:MajorArcana;
   public var sector_name:TextBase;
   public var sector_type:TextBase;
 
@@ -48,20 +45,6 @@ class NavigationPanel extends Base
     go_btn.type = "go_btn";
     go_btn.size = Constants.FONT_SIZE_MD;
 
-    cards = new Map<Base, MajorArcana>();
-
-    var ci = 0;
-    for(card in galaxy.player.cards) {
-      var base = new Base(0, 0, Assets.getImage(Generator.tarotGraphics.get(card)));
-      base.type = "tarot_card";
-      base.x = 40 + (ci * 80);
-      base.y = 80;
-      base.updateHitbox();
-      cards.set(base, card);
-      addChild(base);
-      ci++;
-    }
-    
     addChild(go_btn);
     addChild(cancel_btn);
   }
@@ -79,52 +62,14 @@ class NavigationPanel extends Base
 
       btn = cast(scene.collidePoint("go_btn", Input.mouseX, Input.mouseY), TextBase);
       if(btn != null) {
-        if(tarot_x != null && tarot_y != null) {
-          //cast(scene, GameController).navigateTo(galaxy.getSector(tarot_x, tarot_y));
-        }
-      }
-
-      var tarot:Base = cast(scene.collidePoint("tarot_card", Input.mouseX, Input.mouseY), Base); 
-      if(tarot != null) {
-        var card = cards.get(tarot);
-        if(tarot_x == card) {
-          tarot_x = null;
-        } else if(tarot_y == card) {
-          tarot_y = null;
-        } else if(tarot_x == null) {
-          tarot_x = card;
-        } else if(tarot_y == null) {
-          tarot_y = card;
-        }
-        relayout();
       }
     }
   }
 
   public function relayout()
   {
-    var ci = 0;
-    for(card in cards.keys()) {
-      if(tarot_x == cards.get(card)) {
-        card.x = this.x + 30;
-        card.y = this.y + 225;
-      } else if(tarot_y == cards.get(card)) {
-        card.x = this.x + 210;
-        card.y = this.y + 225;
-      } else {
-        card.x = this.x + 40 + (ci * 80);
-        card.y = this.y + 80;
-      }
-      ci++;
-    }
-
     sector_name.text = "Sector Name: ";
     sector_type.text = "Sector Type: ";
-    if(tarot_x != null && tarot_y != null) {
-      var sector = galaxy.getSector(tarot_x, tarot_y);
-      sector_name.text += sector.explored ? sector.title : "???";
-      sector_type.text += Std.string(sector.sectorType);
-    }
   }
 
 }
